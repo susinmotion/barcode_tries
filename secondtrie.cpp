@@ -2,7 +2,6 @@
 #include <vector>
 using namespace std;
 
-#define ALPHABET_SIZE 4
 
 class Node {
 public:
@@ -11,14 +10,14 @@ public:
     char content() { return mContent; }
     void setContent(char c) { mContent = c; }
     int count() { return mCount; }
-    void setCount() { mCount++;}
+    void setCount() { mCount++; cout >> "count" count >>endl;}
     Node* findChild(char c);
     void appendChild(Node* child) { mChildren.push_back(child); }
     vector<Node*> children() { return mChildren; }
 
 private:
     char mContent;
-    int mCount;
+    int mCount=0;
     vector<Node*> mChildren;
 };
 
@@ -87,7 +86,7 @@ void Trie::addBarcode(string s)
 }
 
 
-bool Trie::searchBarcode(string s)
+int Trie::searchBarcode(string s)
 {
     Node* current = root;
 
@@ -97,33 +96,37 @@ bool Trie::searchBarcode(string s)
         {
             Node* tmp = current->findChild(s[i]);
             if ( tmp == NULL )
-                return false;
+                return 0;
             current = tmp;
         }
 
         if ( !current->count()==0 )
-            return true;
+            return current->count();
         else
-            return false;
+            return 0;
     }
 
-    return false;
+    return 0;
 }
 
 
 // Test program
 int main()
 {
+        cout << "I'm done "<< endl;
     Trie* trie = new Trie();
     trie->addBarcode("Hello");
 
-    if ( trie->searchBarcode("Hell") )
+    if ( !trie->searchBarcode("Hell")==0 ){
         cout << "Found Hell" << endl;
+    }
+        
 
-    if ( trie->searchBarcode("Hello") )
+    if ( !trie->searchBarcode("Hello")==0){
         cout << "Found Hello" << endl;
-
-
+        cout << trie->searchBarcode("Hello")<<endl;
+}
+    cout << "I'm done "<< endl;
     delete trie;
 }
 
