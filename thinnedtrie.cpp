@@ -1,9 +1,15 @@
-#include "trie.h"
+#include <iostream>
+#include <vector>
+#include <string>
 #include "node.h"
+#include "trie.h"
+
+using namespace std;
+
 
 int main()
 {
-    Trie* trie = new Trie();
+    Trie* trie=new Trie();
     trie->addBarcode("Hello");
 
     trie->outputBarcodeCount("Hell");    

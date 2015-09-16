@@ -1,4 +1,6 @@
 #include "trie.h"
+#include "node.h"
+using namespace std;
 
 Trie::Trie()
 {
