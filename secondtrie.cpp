@@ -2,21 +2,23 @@
 #include <vector>
 using namespace std;
 
+#define ALPHABET_SIZE 4
+
 class Node {
 public:
-    Node() { mContent = ' '; mMarker = false; }
+    Node() { mContent = ' '; mCount = 0; }
     ~Node() {}
     char content() { return mContent; }
     void setContent(char c) { mContent = c; }
-    bool wordMarker() { return mMarker; }
-    void setWordMarker() { mMarker = true; }
+    int count() { return mCount; }
+    void setCount() { mCount++;}
     Node* findChild(char c);
     void appendChild(Node* child) { mChildren.push_back(child); }
     vector<Node*> children() { return mChildren; }
 
 private:
     char mContent;
-    bool mMarker;
+    int mCount;
     vector<Node*> mChildren;
 };
 
@@ -24,9 +26,9 @@ class Trie {
 public:
     Trie();
     ~Trie();
-    void addWord(string s);
-    bool searchWord(string s);
-    void deleteWord(string s);
+    void addBarcode(string s);
+    bool searchBarcode(string s);
+    void deletBarcode(string s);
 private:
     Node* root;
 };
@@ -55,13 +57,13 @@ Trie::~Trie()
     // Free memory
 }
 
-void Trie::addWord(string s)
+void Trie::addBarcode(string s)
 {
     Node* current = root;
 
     if ( s.length() == 0 )
     {
-        current->setWordMarker(); // an empty word
+        current->setCount(); // an empty word
         return;
     }
 
@@ -80,12 +82,12 @@ void Trie::addWord(string s)
             current = tmp;
         }
         if ( i == s.length() - 1 )
-            current->setWordMarker();
+            current->setCount();
     }
 }
 
 
-bool Trie::searchWord(string s)
+bool Trie::searchBarcode(string s)
 {
     Node* current = root;
 
@@ -99,7 +101,7 @@ bool Trie::searchWord(string s)
             current = tmp;
         }
 
-        if ( current->wordMarker() )
+        if ( !current->count()==0 )
             return true;
         else
             return false;
@@ -113,24 +115,14 @@ bool Trie::searchWord(string s)
 int main()
 {
     Trie* trie = new Trie();
-    trie->addWord("Hello");
-    trie->addWord("Balloon");
-    trie->addWord("Ball");
+    trie->addBarcode("Hello");
 
-    if ( trie->searchWord("Hell") )
+    if ( trie->searchBarcode("Hell") )
         cout << "Found Hell" << endl;
 
-    if ( trie->searchWord("Hello") )
+    if ( trie->searchBarcode("Hello") )
         cout << "Found Hello" << endl;
 
-    if ( trie->searchWord("Helloo") )
-        cout << "Found Helloo" << endl;
-
-    if ( trie->searchWord("Ball") )
-        cout << "Found Ball" << endl;
-
-    if ( trie->searchWord("Balloon") )
-        cout << "Found Balloon" << endl;
 
     delete trie;
 }
