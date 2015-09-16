@@ -10,14 +10,14 @@ public:
     char content() { return mContent; }
     void setContent(char c) { mContent = c; }
     int count() { return mCount; }
-    void setCount() { mCount++; cout >> "count" count >>endl;}
+    void setCount() { mCount++; cout << "count=" <<mCount << endl;}
     Node* findChild(char c);
     void appendChild(Node* child) { mChildren.push_back(child); }
     vector<Node*> children() { return mChildren; }
 
 private:
     char mContent;
-    int mCount=0;
+    int mCount;
     vector<Node*> mChildren;
 };
 
@@ -26,7 +26,7 @@ public:
     Trie();
     ~Trie();
     void addBarcode(string s);
-    bool searchBarcode(string s);
+    int outputBarcodeCount(string s);
     void deletBarcode(string s);
 private:
     Node* root;
@@ -86,46 +86,36 @@ void Trie::addBarcode(string s)
 }
 
 
-int Trie::searchBarcode(string s)
+int Trie::outputBarcodeCount(string s)
 {
     Node* current = root;
-
+    int barcodeCount=0;
     while ( current != NULL )
     {
         for ( int i = 0; i < s.length(); i++ )
         {
             Node* tmp = current->findChild(s[i]);
-            if ( tmp == NULL )
-                return 0;
+            if ( tmp == NULL ){
+                barcodeCount= current->count();
+		cout << s << " was found " << barcodeCount << " times." << endl;
+		return barcodeCount;
+		}
             current = tmp;
         }
-
-        if ( !current->count()==0 )
-            return current->count();
-        else
-            return 0;
-    }
-
-    return 0;
+}
+    return barcodeCount;
 }
 
 
 // Test program
 int main()
 {
-        cout << "I'm done "<< endl;
     Trie* trie = new Trie();
     trie->addBarcode("Hello");
 
-    if ( !trie->searchBarcode("Hell")==0 ){
-        cout << "Found Hell" << endl;
-    }
-        
+    trie->outputBarcodeCount("Hell");    
 
-    if ( !trie->searchBarcode("Hello")==0){
-        cout << "Found Hello" << endl;
-        cout << trie->searchBarcode("Hello")<<endl;
-}
+    trie->outputBarcodeCount("Hello");
     cout << "I'm done "<< endl;
     delete trie;
 }
