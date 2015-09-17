@@ -13,8 +13,8 @@ void print_trie(Node* current, string outputString=string(14,'\0'), int index = 
                 for (int i=0; i<children.size(); i++){
 
                         current = children[i];
-
-                        print_trie(current);
+			index++;
+                        print_trie(current, outputString, index);
                 }
         }
 	else if(current->count()!=0){
