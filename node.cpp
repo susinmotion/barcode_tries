@@ -8,7 +8,7 @@ Node::~Node() {}
 
     void Node::setContent(char c) { mContent = c; }
 
-    int Node::count() { return mCount; 
+    int Node::count() { return mCount; }
 
     void Node::setCount() { mCount++; cout << "count=" <<mCount << endl;}
 
