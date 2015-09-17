@@ -1,44 +1,19 @@
-#include <vector>
-#include <algorithm>
 #include "node.h"
-#include "leafdata.h"
-#include <iostream>
-using namespace std;
 
-char Node::content() {
-    return mContent;
-}
+    Node::Node() { mContent = ' '; mCount = 0; }
+    
+Node::~Node() {}
 
-void Node::setContent(char c) {
-    mContent = c;
-}
+    char Node::content() { return mContent; }
 
-vector<Node*> Node::children() {
-    return mChildren; 
-}
+    void Node::setContent(char c) { mContent = c; }
 
-void Node::appendChild(Node* pChild) {
-    mChildren.push_back(pChild); 
-}
+    int Node::count() { return mCount; }
 
-Node* Node::findChild(char c){
-    for ( int i = 0; i < mChildren.size(); i++ ) {
-        Node* pTmp = mChildren.at(i);
-        if ( pTmp->content() == c ){
-            return pTmp;
-        }
-    }
-    return NULL;
-}
+    void Node::setCount() { mCount++; cout << "count=" <<mCount << endl;}
 
-void Node::initializeLeafData(int numberOfROIs, int numberOfPhases){
-    mLeafData= vector<vector <LeafData*> >(numberOfROIs, vector<LeafData*> (numberOfPhases, NULL));
-}
+    Node* Node::findChild(char c);
 
-vector <vector<LeafData*> > Node::leafData(){
-    return mLeafData;
-}
+    void Node::appendChild(Node* child) { mChildren.push_back(child); }
 
-void Node::setLeafData(int ROINumber, int phase, LeafData* data){
-    mLeafData[ROINumber][phase]=data;
-}
+    vector<Node*> Node::children() { return mChildren; }
