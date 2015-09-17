@@ -32,7 +32,7 @@ public:
 private:
     Node* root;
 };
-*/
+
 Node* Node::findChild(char c)
 {
     for ( int i = 0; i < mChildren.size(); i++ )
@@ -46,7 +46,7 @@ Node* Node::findChild(char c)
 
     return NULL;
 }
-/*
+
 Trie::Trie()
 {
     root = new Node();
@@ -56,7 +56,7 @@ Trie::~Trie()
 {
     // Free memory
 }
-*/
+
 void Trie::addBarcode(string s)
 {
     Node* current = root;
@@ -107,7 +107,7 @@ int Trie::outputBarcodeCount(string s)
     return barcodeCount;
 }
 
-
+*/
 // Test program
 int main()
 {
