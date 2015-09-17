@@ -19,7 +19,6 @@ void Trie::addBarcode(string s)
         Node* child = current->findChild(s[i]);
         if ( child != NULL )
         {
-	     cout<<child->content()<<endl;
             current = child;
         }
         else
@@ -40,19 +39,18 @@ int Trie::outputBarcodeCount(string s)
 {
     Node* current = mRoot;
     int barcodeCount=0;
-    while ( current != NULL )
+    for ( int i = 0; i <= s.length(); i++ )
     {
-        for ( int i = 0; i < s.length(); i++ )
-        {
-            Node* tmp = current->findChild(s[i]);
-            if ( tmp == NULL ){
-                barcodeCount= current->count();
-		cout << s << " was found " << barcodeCount << " times." << endl;
-		return barcodeCount;
-		}
-            current = tmp;
-        }
-}
+      Node* tmp = current->findChild(s[i]);
+      if (tmp == NULL){
+       	  if (i==s.length()){        
+		barcodeCount= current->count();
+          }
+	  cout << s << " was found " << barcodeCount << " times." << endl;
+	  return barcodeCount;
+      }
+      current = tmp;
+    }
     return barcodeCount;
 }
 Node* Trie::root(){
