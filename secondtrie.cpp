@@ -2,6 +2,7 @@
 #include <vector>
 using namespace std;
 #include "node.h"
+#include "trie.h"
 /*
 class Node {
 public:
@@ -20,7 +21,7 @@ private:
     int mCount;
     vector<Node*> mChildren;
 };
-*/
+
 class Trie {
 public:
     Trie();
@@ -31,7 +32,7 @@ public:
 private:
     Node* root;
 };
-
+*/
 Node* Node::findChild(char c)
 {
     for ( int i = 0; i < mChildren.size(); i++ )
@@ -45,7 +46,7 @@ Node* Node::findChild(char c)
 
     return NULL;
 }
-
+/*
 Trie::Trie()
 {
     root = new Node();
@@ -55,7 +56,7 @@ Trie::~Trie()
 {
     // Free memory
 }
-
+*/
 void Trie::addBarcode(string s)
 {
     Node* current = root;
