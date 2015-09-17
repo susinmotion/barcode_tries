@@ -1,8 +1,8 @@
 #include <iostream>
 #include <vector>
 using namespace std;
-
-
+#include "node.h"
+/*
 class Node {
 public:
     Node() { mContent = ' '; mCount = 0; }
@@ -20,7 +20,7 @@ private:
     int mCount;
     vector<Node*> mChildren;
 };
-
+*/
 class Trie {
 public:
     Trie();
@@ -116,9 +116,6 @@ int main()
     trie->outputBarcodeCount("Hell");    
 
     trie->outputBarcodeCount("Hello");
-    trie->addBarcode("Hello");    
-    trie->outputBarcodeCount("Hello");
-
     cout << "I'm done "<< endl;
     delete trie;
 }
