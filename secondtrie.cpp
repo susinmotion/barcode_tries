@@ -116,6 +116,9 @@ int main()
     trie->outputBarcodeCount("Hell");    
 
     trie->outputBarcodeCount("Hello");
+    trie->addBarcode("Hello");    
+    trie->outputBarcodeCount("Hello");
+
     cout << "I'm done "<< endl;
     delete trie;
 }

@@ -1,8 +1,10 @@
 #include "trie.h"
+#include "node.h"
+using namespace std;
 
 Trie::Trie()
 {
-    root = new Node();
+    mRoot = new Node();
 }
 
 Trie::~Trie()
@@ -10,9 +12,13 @@ Trie::~Trie()
     // Free memory
 }
 
+Node* Trie::root(){
+    return *mRoot;
+}
+
 void Trie::addBarcode(string s)
 {
-    Node* current = root;
+    Node* current = mRoot;
 
     if ( s.length() == 0 )
     {
@@ -42,7 +48,7 @@ void Trie::addBarcode(string s)
 
 int Trie::outputBarcodeCount(string s)
 {
-    Node* current = root;
+    Node* current = mRoot;
     int barcodeCount=0;
     while ( current != NULL )
     {
