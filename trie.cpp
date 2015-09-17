@@ -4,21 +4,6 @@
 #include <vector>
 #include <string>
 using namespace std;
-/*
-Trie::Trie()
-{
-    mRoot = new Node();
-}
-
-Trie::~Trie()
-{
-    // Free memory
-}
-
-Node* Trie::root(){
-    return root;
-}
-*/
 
 void Trie::addBarcode(string s)
 {
@@ -32,7 +17,6 @@ void Trie::addBarcode(string s)
     for ( int i = 0; i < s.length(); i++ )
     {   
         Node* child = current->findChild(s[i]);
-#include "trie.h"
         if ( child != NULL )
         {
 	     cout<<child->content()<<endl;
