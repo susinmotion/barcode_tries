@@ -4,10 +4,10 @@ using namespace std;
 
 class Trie {
 public:
-   Trie(){ root = new Node;}
+   Trie(){ mRoot = new Node;}
     void addBarcode(string s);
     int outputBarcodeCount(string s);
-    //Node* root;
+    Node* root();
 private:
-    Node* root;
+    Node* mRoot;
 };
