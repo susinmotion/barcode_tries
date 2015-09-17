@@ -3,7 +3,7 @@
 #include <iostream>
 using namespace std;
 
-//Node::Node() { mContent = ' '; mCount = 0; }
+//    Node::Node() { mContent = ' '; mCount = 0; }
     
 //Node::~Node() {}
 
@@ -14,8 +14,9 @@ using namespace std;
     int Node::count() { return mCount; }
 
     void Node::setCount() { mCount++; cout << "count=" <<mCount << endl;}
-    
-void Node::appendChild(Node* child) { mChildren.push_back(child); }
+
+    Node* Node::findChild(char c);
+
+    void Node::appendChild(Node* child) { mChildren.push_back(child); }
 
     vector<Node*> Node::children() { return mChildren; }
-
