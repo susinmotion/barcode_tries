@@ -10,9 +10,9 @@ public:
     void setContent(char c);
     int count();
     void setCount();
-    Node* findChild(char c);
-    void appendChild(Node* child);
     vector<Node*> children();
+    void appendChild(Node* child);
+    Node* findChild(char c);
 
 private:
     char mContent;
