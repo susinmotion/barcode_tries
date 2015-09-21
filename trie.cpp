@@ -42,7 +42,7 @@ int Trie::outputBarcodeCount(string s){
             cout << s << " was found " << barcodeCount << " times." << endl;
             return barcodeCount;
         }
-        current = tmp;
+        current = nodeAtNextLevel;
     }
     return barcodeCount;
 }
