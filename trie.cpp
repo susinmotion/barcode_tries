@@ -1,3 +1,6 @@
+#ifndef TRIE_H
+#define TRIE_H
+
 #include "trie.h"
 #include "node.h"
 #include <iostream>
@@ -5,12 +8,9 @@
 #include <string>
 using namespace std;
 
-void Trie::addBarcode(string s)
-{
+void Trie::addBarcode(string s){
     Node* current = mRoot;
-
-    if ( s.length() == 0 )
-    {
+    if ( s.length() == 0 ){
         current->setCount(); // an empty word
         return;
     }
@@ -18,12 +18,8 @@ void Trie::addBarcode(string s)
     {   
         Node* child = current->findChild(s[i]);
         if ( child != NULL )
-        {
             current = child;
-        }
-        else
-
-        {
+        else{
             Node* tmp = new Node();
             tmp->setContent(s[i]);
             current->appendChild(tmp);
@@ -34,25 +30,26 @@ void Trie::addBarcode(string s)
     }
 }
 
-
-int Trie::outputBarcodeCount(string s)
-{
+int Trie::outputBarcodeCount(string s){
     Node* current = mRoot;
     int barcodeCount=0;
-    for ( int i = 0; i <= s.length(); i++ )
-    {
-      Node* tmp = current->findChild(s[i]);
-      if (tmp == NULL){
-       	  if (i==s.length()){        
-		barcodeCount= current->count();
-          }
-	  cout << s << " was found " << barcodeCount << " times." << endl;
-	  return barcodeCount;
-      }
-      current = tmp;
+    for ( int i = 0; i <= s.length(); i++ ){
+        Node* nodeAtNextLevel = current->findChild(s[i]);
+        if (nodeAtNextLevel == NULL){
+            if ( i == s.length() ){        
+                barcodeCount = current->count();
+            }
+            cout << s << " was found " << barcodeCount << " times." << endl;
+            return barcodeCount;
+        }
+        current = tmp;
     }
     return barcodeCount;
 }
+
 Node* Trie::root(){
-	return mRoot;
-	}
+    return mRoot;
+}
+
+#endif
+
