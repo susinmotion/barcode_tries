@@ -10,7 +10,7 @@ using namespace std;
 //I want to start at the root of the tree, if it has a value, print it.
 //if it doesn't, iterate through the children and call the function recursively
 
-void print_trie(Node* current, string outputString = (14,""), int index = 0)
+/*void print_trie(Node* current, string outputString=string(14,'\0'), int index = 0)
 {
 	outputString[index] = current->content();
 	vector <Node*> children = current->children();
@@ -23,19 +23,19 @@ void print_trie(Node* current, string outputString = (14,""), int index = 0)
 			print_trie(current);
 		}
 	}
-}
+}*/
 
 int main()
 {
     Trie* trie = new Trie();
     trie->addBarcode("Hello");
 
-    trie->outputBarcodeCount("Hell");    
+  //  trie->outputBarcodeCount("Hell");    
 
-    trie->outputBarcodeCount("Hello");
+    //trie->outputBarcodeCount("Hello");
 
-    Node* current = trie->root();
-    print_trie(current);
+   // Node* current = trie->root();
+   // print_trie(current);
 
     cout << "I'm done "<< endl;
     delete trie;

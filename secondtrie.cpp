@@ -1,124 +1,100 @@
 #include <iostream>
 #include <vector>
+#include <string>
+#include <sstream>
+#include <fstream>
+#include "node.h"
+#include "trie.h"
 using namespace std;
 
+void read_file_into_trie(Trie* trie){
+	string filename = "shorter.fastq";
+    int count=0;    
+	ifstream readfile (filename.c_str());
 
-class Node {
-public:
-    Node() { mContent = ' '; mCount = 0; }
-    ~Node() {}
-    char content() { return mContent; }
-    void setContent(char c) { mContent = c; }
-    int count() { return mCount; }
-    void setCount() { mCount++; cout << "count=" <<mCount << endl;}
-    Node* findChild(char c);
-    void appendChild(Node* child) { mChildren.push_back(child); }
-    vector<Node*> children() { return mChildren; }
+    string barcode;
+	int throwout;
+	string throwoutstring;
 
-private:
-    char mContent;
-    int mCount;
-    vector<Node*> mChildren;
-};
+//  string hname = "hist.txt";
+//  string gene = "rpob";
+//  string aligncheck = "TTCGGTTCCAGCCAGC";
+//  int alignshift = 5;
+	
+    if (readfile.is_open()){ 
+        cout<<"file isopen"<<endl;
+        getline(readfile,barcode);
+        while (readfile>>throwout){
+            count++;
+            readfile>>barcode;
+            if (barcode.find("N")==-1){
+          		trie->addBarcode(barcode);
+            }
+            readfile>>throwoutstring;
+    	}
+    }
+}
 
-class Trie {
-public:
-    Trie();
-    ~Trie();
-    void addBarcode(string s);
-    int outputBarcodeCount(string s);
-    void deletBarcode(string s);
-private:
-    Node* root;
-};
+int return_max_count(Node* current, int &max ){
+    vector <Node*> children = current->children();
+    
+    if (!children.empty()){
+        for (int i=0; i<children.size(); i++){
+            current = children[i];
+            return_max_count(current, max);
+        }
+    } 
+    else if((current->count()!=0) && (current->count()>max) ){
+        max=current->count();
+        return max;
+    }   
+    return max;
+}
 
-Node* Node::findChild(char c)
-{
-    for ( int i = 0; i < mChildren.size(); i++ )
-    {
-        Node* tmp = mChildren.at(i);
-        if ( tmp->content() == c )
-        {
-            return tmp;
+void print_trie(Node* current, string barcode, int index){
+    barcode[index] = current->content();
+    vector <Node*> children = current->children();
+    if (!children.empty()){
+        for (int i=0; i<children.size(); i++){
+            current = children[i];
+			index++;
+            print_trie(current, barcode, index);
         }
     }
-
-    return NULL;
-}
-
-Trie::Trie()
-{
-    root = new Node();
-}
-
-Trie::~Trie()
-{
-    // Free memory
-}
-
-void Trie::addBarcode(string s)
-{
-    Node* current = root;
-
-    if ( s.length() == 0 )
-    {
-        current->setCount(); // an empty word
+	else if(current->count()!=0){
+        cout<<"Barcode "<<barcode<<" was found "<<current->count()<<" times."<<endl;
         return;
     }
-
-    for ( int i = 0; i < s.length(); i++ )
-    {        
-        Node* child = current->findChild(s[i]);
-        if ( child != NULL )
-        {
-            current = child;
-        }
-        else
-        {
-            Node* tmp = new Node();
-            tmp->setContent(s[i]);
-            current->appendChild(tmp);
-            current = tmp;
-        }
-        if ( i == s.length() - 1 )
-            current->setCount();
-    }
 }
 
-
-int Trie::outputBarcodeCount(string s)
-{
-    Node* current = root;
-    int barcodeCount=0;
-    while ( current != NULL )
-    {
-        for ( int i = 0; i < s.length(); i++ )
-        {
-            Node* tmp = current->findChild(s[i]);
-            if ( tmp == NULL ){
-                barcodeCount= current->count();
-		cout << s << " was found " << barcodeCount << " times." << endl;
-		return barcodeCount;
-		}
-            current = tmp;
-        }
-}
-    return barcodeCount;
-}
-
-
-// Test program
 int main()
 {
     Trie* trie = new Trie();
+    
     trie->addBarcode("Hello");
-
+    trie->addBarcode("TestingMore");
+    trie->addBarcode("TestingMore");
+    trie->addBarcode("TestingMore");
+    trie->addBarcode("SomeMoreString");
+    trie->addBarcode("Thisissuperlong");
     trie->outputBarcodeCount("Hell");    
-
+    trie->outputBarcodeCount("Thisissuperlonghowillyouprint,huh?");
     trie->outputBarcodeCount("Hello");
-    trie->addBarcode("Hello");    
-    trie->outputBarcodeCount("Hello");
+    trie->outputBarcodeCount("Hellow");    
 
+    Node* current = trie->root();
+    cout<<endl<<"printing the trie"<<endl;
+    print_trie(current, string(1000,'\0'), 0);
+
+    Trie* trie2 = new Trie();
+    trie2->outputBarcodeCount("testing");
+    //output barcode count and print trie don't work until something has been put in the trie.
+
+    read_file_into_trie(trie2);
+    current= trie2->root();
+    int max=0;
+    max=return_max_count(current, max);
+    cout<<max<<" is the max."<<endl;    
     cout << "I'm done "<< endl;
     delete trie;
 }

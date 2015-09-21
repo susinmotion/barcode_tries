@@ -1,19 +1,31 @@
+#include <vector>
 #include "node.h"
+#include <iostream>
+using namespace std;
 
-    Node::Node() { mContent = ' '; mCount = 0; }
+char Node::content() { return mContent; }
+
+void Node::setContent(char c) { mContent = c; }
+
+int Node::count() { return mCount; }
+
+void Node::setCount() { mCount++; }
     
-Node::~Node() {}
+void Node::appendChild(Node* child) { mChildren.push_back(child); }
 
-    char Node::content() { return mContent; }
+vector<Node*> Node::children() { return mChildren; }
 
-    void Node::setContent(char c) { mContent = c; }
+Node* Node::findChild(char c)
+{
+    for ( int i = 0; i < mChildren.size(); i++ )
+    {
+        Node* tmp = mChildren.at(i);
+        if ( tmp->content() == c )
+        {
+            return tmp;
+        }
+    }
 
-    int Node::count() { return mCount; }
+   return NULL;
+}
 
-    void Node::setCount() { mCount++; cout << "count=" <<mCount << endl;}
-
-    Node* Node::findChild(char c);
-
-    void Node::appendChild(Node* child) { mChildren.push_back(child); }
-
-    vector<Node*> Node::children() { return mChildren; }
