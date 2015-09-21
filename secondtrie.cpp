@@ -8,7 +8,6 @@
 using namespace std;
 
 void read_file_into_trie(Trie* trie){
-cout<<"hi!!"<<endl;
 	string fname = "shorter.fastq";
 	//string hname = "hist.txt";
 //	string gene = "rpob";
@@ -24,14 +23,12 @@ int count=0;
 	if (readfile.is_open())
 { cout<<"file isopen"<<endl;
 getline(readfile,barcode);
-cout<<barcode<<endl;
  	   while (readfile>>throwout)
     		{
 		count++;
 		readfile>>barcode;
 		if (barcode.find("N")==-1){
 	
-		cout<<barcode<<" "<<count<<endl;        	
 	/*	istringstream iss(line);
         	int throwthisout;
         	string sequence;
@@ -46,7 +43,7 @@ readfile>>throwoutstring;
 }
 }
 
-int return_max_count(Node* current, int& max )
+int return_max_count(Node* current, int &max )
 {
 
         vector <Node*> children = current->children();
@@ -59,9 +56,7 @@ int return_max_count(Node* current, int& max )
                 }
         }
         else if((current->count()!=0) && (current->count()>max) ){
-	max&=current->count();
-	//I'm leaving off here! I am not passing by reference/value properly. current->count() is right, but max isn't/isn't being passed correctly
-cout<<current->count()<<endl;
+	max=current->count();
 	return max;
 }
 return max;
