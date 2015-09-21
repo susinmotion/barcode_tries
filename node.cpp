@@ -3,29 +3,37 @@
 #include <iostream>
 using namespace std;
 
-char Node::content() { return mContent; }
+char Node::content() {
+	return mContent;
+}
 
-void Node::setContent(char c) { mContent = c; }
+void Node::setContent(char c) {
+	mContent = c;
+}
 
-int Node::count() { return mCount; }
+int Node::count() {
+	return mCount;
+}
 
-void Node::setCount() { mCount++; }
-    
-void Node::appendChild(Node* child) { mChildren.push_back(child); }
+void Node::setCount() {
+	mCount++; 
+}
 
-vector<Node*> Node::children() { return mChildren; }
+vector<Node*> Node::children() {
+	return mChildren; 
+}
 
-Node* Node::findChild(char c)
-{
-    for ( int i = 0; i < mChildren.size(); i++ )
-    {
+void Node::appendChild(Node* child) {
+	mChildren.push_back(child); 
+}
+
+Node* Node::findChild(char c){
+    for ( int i = 0; i < mChildren.size(); i++ ) {
         Node* tmp = mChildren.at(i);
-        if ( tmp->content() == c )
-        {
+        if ( tmp->content() == c ){
             return tmp;
         }
     }
-
-   return NULL;
+    return NULL;
 }
 
