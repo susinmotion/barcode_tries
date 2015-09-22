@@ -18,6 +18,7 @@ void read_file_into_trie(Trie* trie){
     string alignSequence="GTTCTTCGG";
     string sequence;
     string barcode;
+    string target;
     string throwoutstring;
     int indexOfAlign;
 
@@ -38,7 +39,7 @@ void read_file_into_trie(Trie* trie){
                 continue; 
             }
             barcode=sequence.substr(indexOfAlign-BARCODE_LENGTH, BARCODE_LENGTH);
-            trie->addBarcode(barcode);
+            trie->addBarcode(barcode,sequence, target);
             readfile>>throwoutstring;
             getline(readfile, throwoutstring);
             getline(readfile,throwoutstring);
@@ -62,14 +63,12 @@ pair<int, char> unhash_variants (int variant_hash){
     int pos = (variant_hash - nucleotide_pos) / 5;
     return pair<int, char>(pos, nucleotide);
 }
-vector<int> check_substitutions(string sequence, string target,  int (*hash_matrix)[5]){
-    vector<int> substitutions;
+void check_substitutions(string sequence, string target,  int (*hash_matrix)[5], Node* current){
     for (int i =0; i<target.length(); i++){
         if (sequence[i]!=target[i]){
-            substitutions.push_back(hash_variants(i, sequence[i], hash_matrix));
+            current->appendVariant(hash_variants(i, sequence[i], hash_matrix));
         }
     }
-    return substitutions;
 }
 
 int return_max_count(Node* current, int &max ){
@@ -144,10 +143,13 @@ int main()
         }
     }
     int (* hash_matrix_pointer)[5]= hash_matrix;
-    int out = hash_variants(9, 'A', hash_matrix_pointer);
-    cout << out << "= 9, A"<< endl;
-    cout <<unhash_variants(out).first<<" "<<unhash_variants(out).second<<endl;
+//    int out = hash_variants(9, 'A', hash_matrix_pointer);
+    Trie* t = new Trie();
+    t->addBarcode("AAAA", "ACGT","ACGG");
 
+  //  cout << out << "= 9, A"<< endl;
+   // cout <<unhash_variants(out).first<<" "<<unhash_variants(out).second<<endl;
+    print_trie(t->root(),  string(1000,'\0'), 0);
     clock_t end = clock();
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     cout << "I'm done "<< endl;

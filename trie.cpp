@@ -27,20 +27,20 @@ void Trie::addBarcode(string barcode, string sequence, string target){
         }
         if ( i == barcode.length() - 1 )
             current->setCount();
-            vector<int> variants = find_variants(sequence, target);
+            vector<int> variants =  check_substitutions(sequence, target);
     }
 }
 
-int Trie::outputBarcodeCount(string s){
+int Trie::outputBarcodeCount(string barcode){
     Node* current = mRoot;
     int barcodeCount=0;
-    for ( int i = 0; i <= s.length(); i++ ){
-        Node* nodeAtNextLevel = current->findChild(s[i]);
+    for ( int i = 0; i <= barcode.length(); i++ ){
+        Node* nodeAtNextLevel = current->findChild(barcode[i]);
         if (nodeAtNextLevel == NULL){
-            if ( i == s.length() ){        
+            if ( i == barcode.length() ){        
                 barcodeCount = current->count();
             }
-            cout << s << " was found " << barcodeCount << " times." << endl;
+            cout << barcode << " was found " << barcodeCount << " times." << endl;
             return barcodeCount;
         }
         current = nodeAtNextLevel;

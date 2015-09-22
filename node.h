@@ -10,7 +10,7 @@ public:
     void setContent(char c);
     int count();
     void setCount();
-    vector<int> variants;
+    vector<int> variants();
     void appendVariant(int variant);
     vector<Node*> children();
     void appendChild(Node* child);
