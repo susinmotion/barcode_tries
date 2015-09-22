@@ -4,27 +4,35 @@
 using namespace std;
 
 char Node::content() {
-	return mContent;
+    return mContent;
 }
 
 void Node::setContent(char c) {
-	mContent = c;
+    mContent = c;
 }
 
 int Node::count() {
-	return mCount;
+    return mCount;
 }
 
 void Node::setCount() {
-	mCount++; 
+    mCount++; 
+}
+
+vector<int> Node::variants(){
+    return mVariants;
+}
+
+void Node::appendVariant(int variant) {
+   mVariants.push_back(variant);
 }
 
 vector<Node*> Node::children() {
-	return mChildren; 
+    return mChildren; 
 }
 
 void Node::appendChild(Node* child) {
-	mChildren.push_back(child); 
+    mChildren.push_back(child); 
 }
 
 Node* Node::findChild(char c){

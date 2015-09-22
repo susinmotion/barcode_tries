@@ -8,25 +8,26 @@
 #include <string>
 using namespace std;
 
-void Trie::addBarcode(string s){
+void Trie::addBarcode(string barcode, string sequence, string target){
     Node* current = mRoot;
-    if ( s.length() == 0 ){
+    if ( barcode.length() == 0 ){
         current->setCount(); // an empty word
         return;
     }
-    for ( int i = 0; i < s.length(); i++ )
+    for ( int i = 0; i < barcode.length(); i++ )
     {   
-        Node* child = current->findChild(s[i]);
+        Node* child = current->findChild(barcode[i]);
         if ( child != NULL )
             current = child;
         else{
             Node* tmp = new Node();
-            tmp->setContent(s[i]);
+            tmp->setContent(barcode[i]);
             current->appendChild(tmp);
             current = tmp;
         }
-        if ( i == s.length() - 1 )
+        if ( i == barcode.length() - 1 )
             current->setCount();
+            vector<int> variants = find_variants(sequence, target);
     }
 }
 
