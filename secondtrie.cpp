@@ -10,7 +10,6 @@ using namespace std;
 
 #define BARCODE_LENGTH 14
 #define logfilename "mds.log"
-
 void read_file_into_trie(Trie* trie){
     string filename = "/mnt/storage/data/justin/Archive/miseq/Data/Intensities/BaseCalls/1_S1_L001_R1_001.fastq";
     int count=0;    
@@ -22,7 +21,6 @@ void read_file_into_trie(Trie* trie){
     string throwoutstring;
     int indexOfAlign;
 
-//  string hname = "hist.txt";
 //  string gene = "rpob";
 //  string aligncheck = "TTCGGTTCCAGCCAGC";
 //  int alignshift = 5;
@@ -46,6 +44,23 @@ void read_file_into_trie(Trie* trie){
             getline(readfile,throwoutstring);
         }
     }
+}
+
+int hash_variants (int pos, char nucleotide, int (*hash_matrix)[5]){
+    string nucleotides = "ACGTN";
+    int nucleotide_pos = nucleotides.find(nucleotide);
+    cout << "found nucleotide at" <<pos <<" "<<nucleotide_pos<<endl;
+    int variant_hash = *(*(hash_matrix+pos)+nucleotide_pos);
+    cout <<variant_hash<<endl;
+    return variant_hash;
+}
+
+pair<int, char> unhash_variants (int variant_hash){
+    string nucleotides = "ACGTN";
+    int nucleotide_pos = variant_hash % 5;
+    char nucleotide = nucleotides.at(nucleotide_pos);
+    int pos = (variant_hash - nucleotide_pos) / 5;
+    return pair<int, char>(pos, nucleotide);
 }
 
 int return_max_count(Node* current, int &max ){
@@ -103,17 +118,31 @@ int main()
     trie2->outputBarcodeCount("testing");
     //output barcode count and print trie don't work until something has been put in the trie.
 */  clock_t begin = clock();
+   /* 
     read_file_into_trie(trie);
     Node* current= trie->root();
     int max=0;
-    ofstream writefile;
-    print_trie(current, string(1000,'\0'), 0);
+    //print_trie(current, string(1000,'\0'), 0);
     max=return_max_count(current, max);
-    cout<<max<<" is the max."<<endl;
+   */
+    //cout<<max<<" is the max."<<endl;
+    int hash_matrix[400][5];
+    short int count;
+    for (int row = 0; row < 400; row++){
+        for (int col = 0; col < 5; col++){
+            hash_matrix[row][col] = count;
+            count++;
+        }
+    }
+    int (* hash_matrix_pointer)[5]= hash_matrix;
+    int out = hash_variants(9, 'A', hash_matrix_pointer);
+    cout << out << "= 9, A"<< endl;
+    cout <<unhash_variants(out).first<<" "<<unhash_variants(out).second<<endl;
+
     clock_t end = clock();
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     cout << "I'm done "<< endl;
-    cout << elapesd_secs <<endl;
+    cout << elapsed_secs <<endl;
     delete trie;
 }
 
