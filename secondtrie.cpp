@@ -62,6 +62,15 @@ pair<int, char> unhash_variants (int variant_hash){
     int pos = (variant_hash - nucleotide_pos) / 5;
     return pair<int, char>(pos, nucleotide);
 }
+vector<int> check_substitutions(string sequence, string target,  int (*hash_matrix)[5]){
+    vector<int> substitutions;
+    for (int i =0; i<target.length(); i++){
+        if (sequence[i]!=target[i]){
+            substitutions.push_back(hash_variants(i, sequence[i], hash_matrix));
+        }
+    }
+    return substitutions;
+}
 
 int return_max_count(Node* current, int &max ){
     vector <Node*> children = current->children();
