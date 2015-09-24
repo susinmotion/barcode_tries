@@ -5,12 +5,15 @@
 #include <fstream>
 #include "node.h"
 #include "trie.h"
-using namespace std;
+#include "variants.h"
+#include "hash_matrix.h"
 #include <ctime>
+using namespace std;
 
 #define BARCODE_LENGTH 14
 #define logfilename "mds.log"
-void read_file_into_trie(Trie* trie){
+
+void read_file_into_trie(Trie* trie, int ** hash_matrix_pointer){
     string filename = "/mnt/storage/data/justin/Archive/miseq/Data/Intensities/BaseCalls/1_S1_L001_R1_001.fastq";
     int count=0;    
     ifstream readfile (filename.c_str());
@@ -39,19 +42,19 @@ void read_file_into_trie(Trie* trie){
                 continue; 
             }
             barcode=sequence.substr(indexOfAlign-BARCODE_LENGTH, BARCODE_LENGTH);
-            trie->addBarcode(barcode,sequence, target);
+            trie->addBarcode(barcode,sequence, target, hash_matrix_pointer);
             readfile>>throwoutstring;
             getline(readfile, throwoutstring);
             getline(readfile,throwoutstring);
         }
     }
 }
-
-int hash_variants (int pos, char nucleotide, int (*hash_matrix)[5]){
+/*
+int hash_variants (int pos, char nucleotide){
     string nucleotides = "ACGTN";
     int nucleotide_pos = nucleotides.find(nucleotide);
     cout << "found nucleotide at" <<pos <<" "<<nucleotide_pos<<endl;
-    int variant_hash = *(*(hash_matrix+pos)+nucleotide_pos);
+    int variant_hash = *(*(hash_matrix_pointer+pos)+nucleotide_pos);
     cout <<variant_hash<<endl;
     return variant_hash;
 }
@@ -63,14 +66,14 @@ pair<int, char> unhash_variants (int variant_hash){
     int pos = (variant_hash - nucleotide_pos) / 5;
     return pair<int, char>(pos, nucleotide);
 }
-void check_substitutions(string sequence, string target,  int (*hash_matrix)[5], Node* current){
+void check_substitutions(string sequence, string target, Node* current){
     for (int i =0; i<target.length(); i++){
         if (sequence[i]!=target[i]){
-            current->appendVariant(hash_variants(i, sequence[i], hash_matrix));
+            current->appendVariant(hash_variants(i, sequence[i]));
         }
     }
 }
-
+*/
 int return_max_count(Node* current, int &max ){
     vector <Node*> children = current->children();
     
@@ -98,7 +101,7 @@ void print_trie(Node* current, string barcode, int index){
         }
     }
     else if(current->count()!=0){
-        cout<<barcode<<" "<<current->count()<<endl;
+        cout<<barcode<<" "<<current->count()<<" "<<(current->variants()).at(0)<<endl;
         return;
     }
 }
@@ -134,26 +137,19 @@ int main()
     max=return_max_count(current, max);
    */
     //cout<<max<<" is the max."<<endl;
-    int hash_matrix[400][5];
-    short int count;
-    for (int row = 0; row < 400; row++){
-        for (int col = 0; col < 5; col++){
-            hash_matrix[row][col] = count;
-            count++;
-        }
-    }
-    int (* hash_matrix_pointer)[5]= hash_matrix;
 //    int out = hash_variants(9, 'A', hash_matrix_pointer);
+    int ** hash_matrix_pointer= initialize_hash_mtx();
     Trie* t = new Trie();
-    t->addBarcode("AAAA", "ACGT","ACGG");
+    t->addBarcode("AAAA", "ACGT","ACGG",hash_matrix_pointer);
 
   //  cout << out << "= 9, A"<< endl;
    // cout <<unhash_variants(out).first<<" "<<unhash_variants(out).second<<endl;
-    print_trie(t->root(),  string(1000,'\0'), 0);
+    t->print_trie();
     clock_t end = clock();
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     cout << "I'm done "<< endl;
     cout << elapsed_secs <<endl;
     delete trie;
+    delete hash_matrix_pointer;
 }
 

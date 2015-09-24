@@ -3,12 +3,13 @@
 
 #include "trie.h"
 #include "node.h"
+#include "variants.h"
 #include <iostream>
 #include <vector>
 #include <string>
 using namespace std;
 
-void Trie::addBarcode(string barcode, string sequence, string target){
+void Trie::addBarcode(string barcode, string sequence, string target, int ** hash_matrix_pointer){
     Node* current = mRoot;
     if ( barcode.length() == 0 ){
         current->setCount(); // an empty word
@@ -27,7 +28,9 @@ void Trie::addBarcode(string barcode, string sequence, string target){
         }
         if ( i == barcode.length() - 1 )
             current->setCount();
-            vector<int> variants =  check_substitutions(sequence, target);
+            if (hash_matrix_pointer != NULL){
+            check_substitutions(sequence, target, current, hash_matrix_pointer);
+        }
     }
 }
 
@@ -51,6 +54,51 @@ int Trie::outputBarcodeCount(string barcode){
 Node* Trie::root(){
     return mRoot;
 }
+
+void Trie::print_trie(Node* current, string barcode, int index){
+    if (current == NULL){
+        current = root();
+    }
+    barcode[index] = current->content();
+    vector <Node*> children = current->children();
+    if (!children.empty()){
+        for (int i=0; i<children.size(); i++){
+            current = children[i];
+            index++;
+            print_trie(current, barcode, index);
+        }
+    }
+    else if(current->count()!=0){
+        cout<<barcode<<" "<<current->count()<<" "<<unhash_variants((current->variants()).at(0)).first<<" "<< unhash_variants((current->variants()).at(0)).second<<endl;
+        return;
+    }
+}
+
+void Trie::print_variants(){
+    Trie* variants_trie = new Trie;
+    create_variants_trie(variants_trie);
+    variants_trie->print_trie();
+}
+
+void Trie::create_variants_trie( Trie* variants_trie, Node* current, string barcode, int index){
+    if (current == NULL){
+        current = root();
+    }
+    barcode[index] = current->content();
+    vector <Node*> children = current->children();
+    if (!children.empty()){
+        for (int i=0; i<children.size(); i++){
+            current = children[i];
+            index++;
+            create_variants_trie(variants_trie, current, barcode, index);
+        }
+    }
+    else if(current->count()!=0){
+        variants_trie->addBarcode(barcode);
+        return;
+    }
+}
+
 
 #endif
 
