@@ -15,9 +15,10 @@ using namespace std;
 
 void read_file_into_trie(Trie* trie, int ** hash_matrix_pointer){
     string filename = "/mnt/storage/data/justin/Archive/miseq/Data/Intensities/BaseCalls/1_S1_L001_R1_001.fastq";
+    cout<<"in read file"<<filename<<endl;
     int count=0;    
     ifstream readfile (filename.c_str());
-
+    cout<<"hello!"<<endl;
     string alignSequence="GTTCTTCGG";
     string sequence;
     string barcode;
@@ -108,7 +109,6 @@ void print_trie(Node* current, string barcode, int index){
 
 int main()
 {
-    Trie* trie = new Trie();
   /* 
     trie->addBarcode("Hello");
     trie->addBarcode("TestingMore");
@@ -138,18 +138,23 @@ int main()
    */
     //cout<<max<<" is the max."<<endl;
 //    int out = hash_variants(9, 'A', hash_matrix_pointer);
+    cout<<"start"<<endl;
     int ** hash_matrix_pointer= initialize_hash_mtx();
+    cout<<"initialized hash matrix"<<endl;
     Trie* t = new Trie();
-    t->addBarcode("AAAA", "ACGT","ACGG",hash_matrix_pointer);
-
-  //  cout << out << "= 9, A"<< endl;
+    cout <<"made a trie"<<endl; 
+    //t->addBarcode("AAAA", "ACGT","ACGG",hash_matrix_pointer);
+    read_file_into_trie(t, hash_matrix_pointer);
+    cout <<"read file"<<endl;  
+//  cout << out << "= 9, A"<< endl;
    // cout <<unhash_variants(out).first<<" "<<unhash_variants(out).second<<endl;
-    t->print_trie();
+//    t->print_variants();
+    t->populate_variants();
+    t->print_variants();
     clock_t end = clock();
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     cout << "I'm done "<< endl;
     cout << elapsed_secs <<endl;
-    delete trie;
-    delete hash_matrix_pointer;
+    hash_matrix_pointer=NULL;
 }
 
