@@ -24,7 +24,6 @@ vector<int> Node::variants(){
 }
 
 void Node::appendVariant(int variant) {
-   //cout<<"variant is "<<variant<<endl;
    mVariants.push_back(variant);
 }
 
@@ -32,15 +31,15 @@ vector<Node*> Node::children() {
     return mChildren; 
 }
 
-void Node::appendChild(Node* child) {
-    mChildren.push_back(child); 
+void Node::appendChild(Node* pChild) {
+    mChildren.push_back(pChild); 
 }
 
 Node* Node::findChild(char c){
     for ( int i = 0; i < mChildren.size(); i++ ) {
-        Node* tmp = mChildren.at(i);
-        if ( tmp->content() == c ){
-            return tmp;
+        Node* pTmp = mChildren.at(i);
+        if ( pTmp->content() == c ){
+            return pTmp;
         }
     }
     return NULL;

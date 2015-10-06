@@ -12,39 +12,32 @@
 using namespace std;
 
 
-void Trie::addBarcode(string barcode, string sequence, string target, int ** hash_matrix_pointer){
-    Node* current = mRoot;
+void Trie::addBarcode(string barcode, string sequence, string target, int ** ppHashMatrixPointer){
+    Node* pCurrentNode = mRootPointer;
     int rThresh = 3;
+
     if ( barcode.length() == 0 ){
-	current->setCount(); // an empty word
+	pCurrentNode->setCount(); // an empty barcode
 	return;
     }
-    for ( int i = 0; i < barcode.length(); i++ )
+    for ( int i = 0; i < barcode.length(); i++ )//go through barcode base by base. if it's in the trie, continue. if not, add it.
     {  
-	Node* child = current->findChild(barcode[i]);
-	if ( child != NULL )
-	    current = child;
-	else{
-	    Node* tmp = new Node();
-	    tmp->setContent(barcode[i]);
-	    current->appendChild(tmp);
-	    current = tmp;
+	Node* pChildNode = pCurrentNode->findChild(barcode[i]);
+	if ( pChildNode != NULL ){
+	    pCurrentNode = pChildNode;
+        }
+	else {
+	    Node* pTmp = new Node();
+	    pTmp->setContent(barcode[i]);
+	    pCurrentNode->appendChild(pTmp);
+	    pCurrentNode = pTmp;
 	}
-	if ( i == barcode.length() - 1 ){
-	    if (hash_matrix_pointer != NULL){
-	    check_substitutions(sequence, target, current, hash_matrix_pointer);
-	    }
-            current->setCount();
-            if (current->count()==rThresh){
-                add_important_node(current);
-               // Node* temp=new Node(current);
-               // cout<<typeid(temp).name()<<endl;
-               // cout<<temp<<"address of temp"<<endl;
-                //set_most_recent_3(current);
-               
-               // temp=NULL;
-  //              cout<<current<<" address of current"<<endl;
-    //            cout <<most_recent_3_node->count()<<"Most recent 3 count"<<endl;
+
+	if ( i == barcode.length() - 1 ){//if we are at the end of the barcode, check for variants.
+	    checkSubstitutions(sequence, target, pCurrentNode, ppHashMatrixPointer);
+            pCurrentNode->setCount();
+            if (pCurrentNode->count()==rThresh){//if there are enough reads, add pointer to list of important nodes for output later
+                addImportantNode(pCurrentNode);
             }
         }
     }
@@ -53,120 +46,78 @@ stack <Node*> Trie::importantNodes(){
     return mImportantNodes;
 }
 
-//int[] Trie::variant_counts(){
-  //  return mVariant_counts;
-//}
-/*
-void Trie::populate_variants(){
-   1;// while (!mImportantNodes.empty()){
-        mImportantNodes.pop();
-        int current_variant = current->variants().at(0);
-        variant_counts_ptr()[current_variant]++;
-    }
-}
-*/
-
-void Trie::populate_variants(){
-   for (int i=0; i<2000;++i){
-       mVariant_counts[i]=0;
+void Trie::populateVariants(){
+   for (int i=0; i<2000;++i){//initialize variant counts hash array to 0
+       mVariantCounts[i]=0;
    }
   cout<<mImportantNodes.size()<<"=number of important nodes"<<endl;
-   Node* current;
-    while (!mImportantNodes.empty()){
-        current = mImportantNodes.top();
-      //  int current_count = mImportantNodes.top()->count();
-        if (!current->variants().empty()){
-            //cout<<"there's a variant "<<current->variants().at(0)<<endl;
-            int current_variant = current->variants().at(0);
-            mVariant_counts[current_variant]++;
+    while (!mImportantNodes.empty()){//go through important nodes and increment value in variant counts hash array as varaints are found.
+        if (!mImportantNodes.top()->variants().empty()){
+            int currentVariant = mImportantNodes.top()->variants().at(0);
+            mVariantCounts[currentVariant]++;
             mImportantVariantsCount++;
         }
             mImportantNodes.pop();
     }
 }
 
-void Trie::add_important_node(Node* important_node){
-    mImportantNodes.push(important_node);
+void Trie::addImportantNode(Node* pImportantNode){
+    mImportantNodes.push(pImportantNode);
 }
 
 int Trie::outputBarcodeCount(string barcode){
-    Node* current = mRoot;
+    Node* pCurrentNode = mRootPointer;
     int barcodeCount=0;
     for ( int i = 0; i <= barcode.length(); i++ ){
-	Node* nodeAtNextLevel = current->findChild(barcode[i]);
-	if (nodeAtNextLevel == NULL){
+	Node* pNodeAtNextLevel = pCurrentNode->findChild(barcode[i]);
+	if (pNodeAtNextLevel == NULL){
 	    if ( i == barcode.length() ){        
-		barcodeCount = current->count();
+		barcodeCount = pCurrentNode->count();
 	    }
 	    cout << barcode << " was found " << barcodeCount << " times." << endl;
 	    return barcodeCount;
 	}
-	current = nodeAtNextLevel;
+	pCurrentNode = pNodeAtNextLevel;
     }
     return barcodeCount;
 }
 
-Node* Trie::root(){
-    return mRoot;
+Node* Trie::pRootPointer(){
+    return mRootPointer;
 }
 
-void Trie::print_trie(Node* current, string barcode, int index){
-    if (current == NULL){
-	current = root();
+void Trie::printTrie(Node* pCurrentNode, string barcode, int index){
+    if (pCurrentNode == NULL){
+	pCurrentNode = pRootPointer();
+        cout<<"Barcode  Count"<<endl;
     }
     else{
-    barcode[index] = current->content();
+    barcode[index] = pCurrentNode->content();
             index++;
     }
-    vector <Node*> children = current->children();
+    vector <Node*> children = pCurrentNode->children();
     if (!children.empty()){
 	for (int i=0; i<children.size(); i++){
-	    current = children[i];
-	    print_trie(current, barcode, index);
+	    pCurrentNode = children[i];
+	    printTrie(pCurrentNode, barcode, index);
 	}
     }
-    else if(current->count()!=0){
-       cout<<barcode<<"  barcode  -> count :"<<current->count()<<endl;
-       if (!current->variants().empty()){
-           cout<<" "<<unhash_variants((current->variants()).at(0)).first<<" "<< unhash_variants((current->variants()).at(0)).second<<endl;
+    else if(pCurrentNode->count()!=0){
+       cout<<barcode<<" "<<pCurrentNode->count()<<endl;
+       if (!pCurrentNode->variants().empty()){
+           cout<<" "<<unhashVariants((pCurrentNode->variants()).at(0)).first<<" "<< unhashVariants((pCurrentNode->variants()).at(0)).second<<endl;
        }
        return;
     }
 }
-void Trie::print_variants(){
-    for (int i=0; i<2000;++i){
-        int count =mVariant_counts[i];
+void Trie::printVariants(){
+    for (int i=0; i<2000;++i){//unhash and output variants found in variant counts hash array. Output count/total count for each variant.
+        int count =mVariantCounts[i];
         if (count != 0){
-            cout<<unhash_variants(i).first<<" "<<unhash_variants(i).second<<" "<<float(count)/mImportantVariantsCount<<"%"<<endl;
+            cout<<unhashVariants(i).first<<" "<<unhashVariants(i).second<<" "<<float(count)/mImportantVariantsCount<<"%"<<endl;
         }
     }
 }
-/*
-void Trie::print_variants(){
-    Trie* variants_trie = new Trie;
-    create_variants_trie(variants_trie);
-    variants_trie->print_trie();
-}
-
-void Trie::create_variants_trie( Trie* variants_trie, Node* current, string barcode, int index){
-    if (current == NULL){
-        current = root();
-    }
-    barcode[index] = current->content();
-    vector <Node*> children = current->children();
-    if (!children.empty()){
-        for (int i=0; i<children.size(); i++){
-            current = children[i];
-            index++;
-            create_variants_trie(variants_trie, current, barcode, index);
-        }
-    }
-    else if(current->count()!=0){
-        variants_trie->addBarcode(char((current->variants()).at(0)));
-        return;
-    }
-}
-*/
 
 #endif
 

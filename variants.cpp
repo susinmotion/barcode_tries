@@ -4,25 +4,25 @@
 
 using namespace std;
 
-int hash_variants (int pos, char nucleotide, int *(hash_matrix_pointer)[5]){
+int hashVariants (int pos, char nucleotide, int *(ppHashMatrixPointer)[5]){
     string nucleotides = "ACGTN";
-    int nucleotide_pos = nucleotides.find(nucleotide);
-    int variant_hash =*(*(hash_matrix_pointer+pos)+nucleotide_pos);
-    return variant_hash;
+    int nucleotidePos = nucleotides.find(nucleotide);
+    int variantHash =*(*(ppHashMatrixPointer+pos)+nucleotidePos);
+    return variantHash;
 }
 
-pair<int, char> unhash_variants (int variant_hash){
+pair<int, char> unhashVariants (int variantHash){
     string nucleotides = "ACGTN";
-    int nucleotide_pos = variant_hash % 5;
-    char nucleotide = nucleotides.at(nucleotide_pos);
-    int pos = (variant_hash - nucleotide_pos) / 5;
+    int nucleotidePos = variantHash % 5;
+    char nucleotide = nucleotides.at(nucleotidePos);
+    int pos = (variantHash - nucleotidePos) / 5;
     return pair<int, char>(pos, nucleotide);
 }
 
-void check_substitutions(string sequence, string target, Node* current, int ** hash_matrix_pointer){
+void checkSubstitutions(string sequence, string target, Node* pCurrentNode, int ** ppHashMatrixPointer){
     for (int i =0; i<target.length(); i++){
         if (sequence[i]!=target[i]){
-            current->appendVariant(hash_variants(i, sequence[i], hash_matrix_pointer));
+            pCurrentNode->appendVariant(hashVariants(i, sequence[i], ppHashMatrixPointer));
         }
     }
 }
