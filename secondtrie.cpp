@@ -10,11 +10,12 @@
 #include <ctime>
 using namespace std;
 
-#define BARCODE_LENGTH 14
+#define BARCODE_LENGTH 4
 #define logfilename "mds.log"
 
 void read_file_into_trie(Trie* trie, int ** hash_matrix_pointer){
-    string filename = "/mnt/storage/data/justin/Archive/miseq/Data/Intensities/BaseCalls/1_S1_L001_R1_001.fastq";
+//    string filename = "/mnt/storage/data/justin/Archive/miseq/Data/Intensities/BaseCalls/1_S1_L001_R1_001.fastq";
+    string filename = "veryshort2.txt";
     cout<<"in read file"<<filename<<endl;
     int count=0;    
     ifstream readfile (filename.c_str());
@@ -22,7 +23,7 @@ void read_file_into_trie(Trie* trie, int ** hash_matrix_pointer){
     string alignSequence="GTTCTTCGG";
     string sequence;
     string barcode;
-    string target;
+    string target="GTTCTTCGGAAAA";
     string throwoutstring;
     int indexOfAlign;
 
@@ -43,7 +44,7 @@ void read_file_into_trie(Trie* trie, int ** hash_matrix_pointer){
                 continue; 
             }
             barcode=sequence.substr(indexOfAlign-BARCODE_LENGTH, BARCODE_LENGTH);
-            trie->addBarcode(barcode,sequence, target, hash_matrix_pointer);
+            trie->addBarcode(barcode,sequence.substr(BARCODE_LENGTH), target, hash_matrix_pointer);
             readfile>>throwoutstring;
             getline(readfile, throwoutstring);
             getline(readfile,throwoutstring);
@@ -151,6 +152,7 @@ int main()
 //    t->print_variants();
     t->populate_variants();
     t->print_variants();
+    //t->print_trie();
     clock_t end = clock();
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     cout << "I'm done "<< endl;

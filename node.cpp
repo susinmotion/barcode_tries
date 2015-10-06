@@ -24,6 +24,7 @@ vector<int> Node::variants(){
 }
 
 void Node::appendVariant(int variant) {
+   //cout<<"variant is "<<variant<<endl;
    mVariants.push_back(variant);
 }
 

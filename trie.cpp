@@ -8,10 +8,13 @@
 #include <vector>
 #include <string>
 #include <stack>
+#include <typeinfo>
 using namespace std;
+
 
 void Trie::addBarcode(string barcode, string sequence, string target, int ** hash_matrix_pointer){
     Node* current = mRoot;
+    int rThresh = 3;
     if ( barcode.length() == 0 ){
 	current->setCount(); // an empty word
 	return;
@@ -32,9 +35,16 @@ void Trie::addBarcode(string barcode, string sequence, string target, int ** has
 	    check_substitutions(sequence, target, current, hash_matrix_pointer);
 	    }
             current->setCount();
-            if (current->count()==3){
-                Node* important_node = current;
-                add_important_node(important_node);
+            if (current->count()==rThresh){
+                add_important_node(current);
+               // Node* temp=new Node(current);
+               // cout<<typeid(temp).name()<<endl;
+               // cout<<temp<<"address of temp"<<endl;
+                //set_most_recent_3(current);
+               
+               // temp=NULL;
+  //              cout<<current<<" address of current"<<endl;
+    //            cout <<most_recent_3_node->count()<<"Most recent 3 count"<<endl;
             }
         }
     }
@@ -49,7 +59,6 @@ stack <Node*> Trie::importantNodes(){
 /*
 void Trie::populate_variants(){
    1;// while (!mImportantNodes.empty()){
-        Node* current = mImportantNodes.top();
         mImportantNodes.pop();
         int current_variant = current->variants().at(0);
         variant_counts_ptr()[current_variant]++;
@@ -61,16 +70,18 @@ void Trie::populate_variants(){
    for (int i=0; i<2000;++i){
        mVariant_counts[i]=0;
    }
-   cout<<mImportantNodes.size()<<endl;
+  cout<<mImportantNodes.size()<<"=number of important nodes"<<endl;
    Node* current;
     while (!mImportantNodes.empty()){
         current = mImportantNodes.top();
-        int current_count = current->count();
-        cout<<current_count<<endl;
-        current = NULL;
-        mImportantNodes.pop();
-        mVariant_counts[current_count]++;
-        cout<<mVariant_counts[current_count]<<endl;
+      //  int current_count = mImportantNodes.top()->count();
+        if (!current->variants().empty()){
+            //cout<<"there's a variant "<<current->variants().at(0)<<endl;
+            int current_variant = current->variants().at(0);
+            mVariant_counts[current_variant]++;
+            mImportantVariantsCount++;
+        }
+            mImportantNodes.pop();
     }
 }
 
@@ -103,18 +114,22 @@ void Trie::print_trie(Node* current, string barcode, int index){
     if (current == NULL){
 	current = root();
     }
+    else{
     barcode[index] = current->content();
+            index++;
+    }
     vector <Node*> children = current->children();
     if (!children.empty()){
 	for (int i=0; i<children.size(); i++){
 	    current = children[i];
-	    index++;
 	    print_trie(current, barcode, index);
 	}
     }
     else if(current->count()!=0){
-       cout<<barcode<<" "<<current->count()<<endl;
-       cout<<" "<<unhash_variants((current->variants()).at(0)).first<<" "<< unhash_variants((current->variants()).at(0)).second<<endl;
+       cout<<barcode<<"  barcode  -> count :"<<current->count()<<endl;
+       if (!current->variants().empty()){
+           cout<<" "<<unhash_variants((current->variants()).at(0)).first<<" "<< unhash_variants((current->variants()).at(0)).second<<endl;
+       }
        return;
     }
 }
@@ -122,8 +137,7 @@ void Trie::print_variants(){
     for (int i=0; i<2000;++i){
         int count =mVariant_counts[i];
         if (count != 0){
-            //cout<<count<<" "<<unhash_variants(i).first<<" "<<unhash_variants(i).second<<endl;
-            cout<<count<<"samples were found "<<i<<"times"<<endl;
+            cout<<unhash_variants(i).first<<" "<<unhash_variants(i).second<<" "<<float(count)/mImportantVariantsCount<<"%"<<endl;
         }
     }
 }

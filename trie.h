@@ -18,5 +18,6 @@ public:
 private:
     Node* mRoot;
     stack <Node*> mImportantNodes;
-    int  mVariant_counts [2];
+    int  mVariant_counts [2000];
+    int mImportantVariantsCount;
 };
