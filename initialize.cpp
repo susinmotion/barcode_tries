@@ -21,12 +21,14 @@ void readFileIntoTrie(Trie* trie){
     cout<<"in read file"<<filename<<endl;
     int count=0;
     ifstream readfile (filename.c_str());
-    string alignSequence="GTTCTTCGG";
+    string alignSequenceStart="GTTCTTCGG";
+    string alignSequenceFinish="GGGGG";
     string sequence;
     string barcode;
-    string target="GTTCTTCGGAAAA";
+    string target="AAAA";
     string throwoutstring;
-    int indexOfAlign;
+    int indexOfAlignStart;
+    int indexOfAlignFinish;
 
     int ** ppHashMatrixPointer = initializeHashMtx();
     if (readfile.is_open()){
@@ -34,15 +36,17 @@ void readFileIntoTrie(Trie* trie){
         while (getline(readfile,throwoutstring)){
             count++;
             readfile>>sequence;
-            indexOfAlign=sequence.find(alignSequence,BARCODE_LENGTH);
-            if (indexOfAlign == -1){
+            indexOfAlignStart=sequence.find(alignSequenceStart,BARCODE_LENGTH);
+            indexOfAlignFinish=sequence.find(alignSequenceFinish,BARCODE_LENGTH+alignSequenceStart.length());
+            if ((indexOfAlignStart == -1) || (indexOfAlignFinish == -1) ){
                 readfile>>throwoutstring;
                 getline(readfile,throwoutstring);
                 getline(readfile,throwoutstring);
                 continue;
             }
-            barcode=sequence.substr(indexOfAlign-BARCODE_LENGTH, BARCODE_LENGTH);
-            trie->addBarcode(barcode,sequence.substr(BARCODE_LENGTH), target, ppHashMatrixPointer);
+            barcode=sequence.substr(indexOfAlignStart-BARCODE_LENGTH, BARCODE_LENGTH);
+            sequence=sequence.substr(BARCODE_LENGTH+alignSequenceStart.length(), indexOfAlignFinish-BARCODE_LENGTH-alignSequenceStart.length());
+            trie->addBarcode(barcode,sequence, target, ppHashMatrixPointer);
             readfile>>throwoutstring;
             getline(readfile, throwoutstring);
             getline(readfile,throwoutstring);
