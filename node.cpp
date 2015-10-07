@@ -1,7 +1,6 @@
 #include <vector>
-#include <algorithm>
+#include <stack>
 #include "node.h"
-#include "leafdata.h"
 #include <iostream>
 using namespace std;
 
@@ -13,6 +12,26 @@ void Node::setContent(char c) {
     mContent = c;
 }
 
+int Node::count() {
+    return mCount;
+}
+
+void Node::setCount() {
+    mCount++; 
+}
+
+vector<int> Node::substitutions(){
+    return mSubstitutions;
+}
+
+void Node::appendSubstitution(int substitution) {
+   mSubstitutions.push_back(substitution);
+}
+
+void Node::setIndel(int pos, int length){
+    mHasIndel=true;
+    mIndel=make_pair(pos, length);
+}
 vector<Node*> Node::children() {
     return mChildren; 
 }
@@ -31,14 +50,3 @@ Node* Node::findChild(char c){
     return NULL;
 }
 
-void Node::initializeLeafData(int numberOfROIs, int numberOfPhases){
-    mLeafData= vector<vector <LeafData*> >(numberOfROIs, vector<LeafData*> (numberOfPhases, NULL));
-}
-
-vector <vector<LeafData*> > Node::leafData(){
-    return mLeafData;
-}
-
-void Node::setLeafData(int ROINumber, int phase, LeafData* data){
-    mLeafData[ROINumber][phase]=data;
-}

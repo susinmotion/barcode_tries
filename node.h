@@ -1,8 +1,10 @@
 #ifndef NODE_H
 #define NODE_H
 
+#include <typeinfo>
+#include <iostream>
 #include <vector>
-#include "leafdata.h"
+#include <stack>
 using namespace std;
 
 class Node {
@@ -37,16 +39,21 @@ public:
     }*/
     char content();
     void setContent(char c);
+    int count();
+    void setCount();
+    vector <int> substitutions();
+    void appendSubstitution(int substitution);
+    void setIndel(int pos, int length);
     vector<Node*> children();
     void appendChild(Node* child);
     Node* findChild(char c);
-    void initializeLeafData(int numberOfROIs, int numberOfPhases);
-    vector <vector<LeafData*> > leafData();
-    void setLeafData(int ROINumber, int phase, LeafData* data);
 
 private:
     char mContent;
+    int mCount;
+    vector <int> mSubstitutions;
+    bool mHasIndel;
+    pair <int, int> mIndel;
     vector<Node*> mChildren;
-    vector <vector<LeafData*> > mLeafData;
 };
 #endif
