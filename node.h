@@ -43,7 +43,10 @@ public:
     void setCount();
     vector <int> substitutions();
     void appendSubstitution(int substitution);
-    void setIndel(int pos, int length);
+    void setIndel(pair<int, int>posLength);
+    bool hasIndel();
+    pair <int, int> indel();
+    bool hasVariant();
     vector<Node*> children();
     void appendChild(Node* child);
     Node* findChild(char c);

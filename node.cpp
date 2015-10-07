@@ -27,10 +27,19 @@ vector<int> Node::substitutions(){
 void Node::appendSubstitution(int substitution) {
    mSubstitutions.push_back(substitution);
 }
-
-void Node::setIndel(int pos, int length){
+bool Node::hasIndel(){
+   return mHasIndel;
+}
+void Node::setIndel(pair<int,int> posLength){
     mHasIndel=true;
-    mIndel=make_pair(pos, length);
+    mIndel=posLength;
+}
+pair <int, int> Node::indel(){
+    return mIndel;
+}
+ 
+bool Node::hasVariant(){
+    return(mHasIndel || !mSubstitutions.empty());
 }
 vector<Node*> Node::children() {
     return mChildren; 

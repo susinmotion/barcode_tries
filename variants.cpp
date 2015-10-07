@@ -1,4 +1,5 @@
 #include "variants.h"
+#include <algorithm>
 #include <vector>
 #include <string>
 
@@ -24,15 +25,26 @@ void checkVariants(string sequence, string target, Node* pCurrentNode, int ** pp
         int indelLength=sequence.length()-target.length();
         for (int i=0; i<(min(sequence.length(), target.length())); ++i){
             if (sequence[i]!=target[i]){
-                pCurrentNode->setIndel(indelLength, i);
+                pair <int,int> indel=make_pair(i, indelLength);
+                if (pCurrentNode->hasIndel()==false){
+                    pCurrentNode->setIndel(indel);
+                }
+                else if (pCurrentNode->indel()!=indel){ //DUMP
+                }
             }
         }
     }
     else{
         for (int i =0; i<target.length(); i++){
             if (sequence[i]!=target[i]){
-                
-                pCurrentNode->appendSubstitution(hashSubstitutions(i, sequence[i], ppHashMatrixPointer));
+                int substitutionHash = hashSubstitutions(i, sequence[i], ppHashMatrixPointer);
+                vector <int> existingSubstitutions=pCurrentNode->substitutions();
+                if (existingSubstitutions.empty()){
+                   pCurrentNode->appendSubstitution(substitutionHash);
+                }
+                else if(find(existingSubstitutions.begin(), existingSubstitutions.end(), substitutionHash)!=existingSubstitutions.end()){
+                    //DUMP
+                }
             }
         }
     }
