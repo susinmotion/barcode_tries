@@ -1,3 +1,6 @@
+#ifndef TRIE_H
+#define TRIE_H
+
 #include "node.h"
 #include <string>
 #include<stack>
@@ -14,9 +17,12 @@ public:
     void printTrie(Node* pCurrentNodePointer = NULL, string barcode= string(18,'\0'), int index=0);
     void printVariants();
     void populateVariants();
+    int returnMaxCount(int& max, Node* pCurrentNode=NULL );
 private:
     Node* mRootPointer;
     stack <Node*> mImportantNodes;
     int  mVariantCounts [2000];
     int mImportantVariantsCount;
 };
+
+#endif

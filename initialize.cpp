@@ -1,23 +1,23 @@
-#include <iostream>
-#include <vector>
-#include <string>
-#include <sstream>
-#include <fstream>
-#include "node.h"
 #include "trie.h"
-#include "variants.h"
-#include "initialize.h"
-#include <ctime>
-using namespace std;
-
-int BARCODE_LENGTH=4;
-#define logfilename "mds.log"
-/*
-void readFileIntoTrie(Trie* trie, int ** ppHashMatrixPointer){
+#include <string>
+extern int BARCODE_LENGTH;
+int ** initializeHashMtx(){
+    int ** ppHashMatrixPointer = new int*[400];
+    short int count;
+    for (int row = 0; row < 400; row++){
+        ppHashMatrixPointer[row]=new int[5];
+        for (int col = 0; col < 5; col++){
+            *(* (ppHashMatrixPointer+row)+col) = count;
+            count++;
+        }
+    }
+    return ppHashMatrixPointer;
+}
+void readFileIntoTrie(Trie* trie){
 //    string filename = "/mnt/storage/data/justin/Archive/miseq/Data/Intensities/BaseCalls/1_S1_L001_R1_001.fastq";
     string filename = "veryshort2.txt";
     cout<<"in read file"<<filename<<endl;
-    int count=0;    
+    int count=0;
     ifstream readfile (filename.c_str());
     string alignSequence="GTTCTTCGG";
     string sequence;
@@ -25,10 +25,11 @@ void readFileIntoTrie(Trie* trie, int ** ppHashMatrixPointer){
     string target="GTTCTTCGGAAAA";
     string throwoutstring;
     int indexOfAlign;
-    
-    if (readfile.is_open()){ 
+
+    int ** ppHashMatrixPointer = initializeHashMtx();
+    if (readfile.is_open()){
         cout<<"file isopen"<<endl;
-       	while (getline(readfile,throwoutstring)){
+        while (getline(readfile,throwoutstring)){
             count++;
             readfile>>sequence;
             indexOfAlign=sequence.find(alignSequence,BARCODE_LENGTH);
@@ -36,7 +37,7 @@ void readFileIntoTrie(Trie* trie, int ** ppHashMatrixPointer){
                 readfile>>throwoutstring;
                 getline(readfile,throwoutstring);
                 getline(readfile,throwoutstring);
-                continue; 
+                continue;
             }
             barcode=sequence.substr(indexOfAlign-BARCODE_LENGTH, BARCODE_LENGTH);
             trie->addBarcode(barcode,sequence.substr(BARCODE_LENGTH), target, ppHashMatrixPointer);
@@ -45,26 +46,4 @@ void readFileIntoTrie(Trie* trie, int ** ppHashMatrixPointer){
             getline(readfile,throwoutstring);
         }
     }
-}*/
-int main()
-{ 
-    clock_t begin = clock();
-    cout<<"start"<<endl;
-   // int ** ppHashMatrixPointer= initializeHashMtx();
-    
-    Trie* t = new Trie();
-    
-    readFileIntoTrie(t);
-    cout <<"read file"<<endl;  
-   
-    t->populateVariants();
-    t->printVariants();
-    int max=0;
-    cout<<t->returnMaxCount(max)<<endl; 
-    clock_t end = clock();
-    double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-    cout << "I'm done "<< endl;
-    cout << elapsed_secs <<endl;
-//    ppHashMatrixPointer=NULL;
 }
-

@@ -1,6 +1,3 @@
-#ifndef TRIE_H
-#define TRIE_H
-
 #include "trie.h"
 #include "node.h"
 #include "variants.h"
@@ -10,6 +7,26 @@
 #include <stack>
 #include <typeinfo>
 using namespace std;
+
+int Trie::returnMaxCount(int& max,Node* pCurrentNode ){
+    if (pCurrentNode==NULL){
+        pCurrentNode=pRootPointer();
+    }
+
+    vector <Node*> children = pCurrentNode->children();
+
+    if (!children.empty()){
+        for (int i=0; i<children.size(); i++){
+            pCurrentNode = children[i];
+            returnMaxCount(max, pCurrentNode);
+        }
+    }
+    else if((pCurrentNode->count()!=0) && (pCurrentNode->count()>max) ){
+        max=pCurrentNode->count();
+        return max;
+    }
+    return max;
+}
 
 
 void Trie::addBarcode(string barcode, string sequence, string target, int ** ppHashMatrixPointer){
@@ -119,5 +136,4 @@ void Trie::printVariants(){
     }
 }
 
-#endif
 
