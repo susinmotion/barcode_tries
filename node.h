@@ -4,6 +4,7 @@
 #include <typeinfo>
 #include <iostream>
 #include <vector>
+#include <stack>
 using namespace std;
 
 class Node {
@@ -40,8 +41,9 @@ public:
     void setContent(char c);
     int count();
     void setCount();
-    vector<int> variants();
-    void appendVariant(int variant);
+    vector <int> substitutions();
+    void appendSubstitution(int substitution);
+    void setIndel(int pos, int length);
     vector<Node*> children();
     void appendChild(Node* child);
     Node* findChild(char c);
@@ -49,7 +51,9 @@ public:
 private:
     char mContent;
     int mCount;
-    vector<int> mVariants;
+    vector <int> mSubstitutions;
+    bool mHasIndel;
+    pair <int, int> mIndel;
     vector<Node*> mChildren;
 };
 #endif

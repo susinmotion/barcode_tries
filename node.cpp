@@ -1,4 +1,5 @@
 #include <vector>
+#include <stack>
 #include "node.h"
 #include <iostream>
 using namespace std;
@@ -19,14 +20,18 @@ void Node::setCount() {
     mCount++; 
 }
 
-vector<int> Node::variants(){
-    return mVariants;
+vector<int> Node::substitutions(){
+    return mSubstitutions;
 }
 
-void Node::appendVariant(int variant) {
-   mVariants.push_back(variant);
+void Node::appendSubstitution(int substitution) {
+   mSubstitutions.push_back(substitution);
 }
 
+void Node::setIndel(int pos, int length){
+    mHasIndel=true;
+    mIndel=make_pair(pos, length);
+}
 vector<Node*> Node::children() {
     return mChildren; 
 }

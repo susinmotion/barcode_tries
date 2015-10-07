@@ -1,10 +1,10 @@
 #include "node.h"
 #include <string>
 
-int hashVariants (int pos, char nucleotide);
+int hashSubstitutions (int pos, char nucleotide);
 
-pair<int, char> unhashVariants (int variantHash);
+pair<int, char> unhashSubstitutions (int variantHash);
 
-void checkSubstitutions(string sequence, string target, Node* pCurrentNode, int ** ppHashMatrixPointer);
+void checkVariants(string sequence, string target, Node* pCurrentNode, int ** ppHashMatrixPointer);
 
 

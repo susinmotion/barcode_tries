@@ -51,7 +51,7 @@ void Trie::addBarcode(string barcode, string sequence, string target, int ** ppH
 	}
 
 	if ( i == barcode.length() - 1 ){//if we are at the end of the barcode, check for variants.
-	    checkSubstitutions(sequence, target, pCurrentNode, ppHashMatrixPointer);
+	    checkVariants(sequence, target, pCurrentNode, ppHashMatrixPointer);
             pCurrentNode->setCount();
             if (pCurrentNode->count()==rThresh){//if there are enough reads, add pointer to list of important nodes for output later
                 addImportantNode(pCurrentNode);
@@ -69,9 +69,11 @@ void Trie::populateVariants(){
    }
   cout<<mImportantNodes.size()<<"=number of important nodes"<<endl;
     while (!mImportantNodes.empty()){//go through important nodes and increment value in variant counts hash array as varaints are found.
-        if (!mImportantNodes.top()->variants().empty()){
-            int currentVariant = mImportantNodes.top()->variants().at(0);
-            mVariantCounts[currentVariant]++;
+       vector <int> currentSubstitutions = mImportantNodes.top()->substitutions();
+       while (!currentSubstitutions.empty()){
+            int currentSubstitution = currentSubstitutions.back();
+            currentSubstitutions.pop_back();
+            mVariantCounts[currentSubstitution]++;
             mImportantVariantsCount++;
         }
             mImportantNodes.pop();
@@ -121,8 +123,8 @@ void Trie::printTrie(Node* pCurrentNode, string barcode, int index){
     }
     else if(pCurrentNode->count()!=0){
        cout<<barcode<<" "<<pCurrentNode->count()<<endl;
-       if (!pCurrentNode->variants().empty()){
-           cout<<" "<<unhashVariants((pCurrentNode->variants()).at(0)).first<<" "<< unhashVariants((pCurrentNode->variants()).at(0)).second<<endl;
+       if (!pCurrentNode->substitutions().empty()){
+           cout<<" "<<unhashSubstitutions((pCurrentNode->substitutions()).back()).first<<" "<< unhashSubstitutions((pCurrentNode->substitutions()).back()).second<<endl;
        }
        return;
     }
@@ -131,7 +133,7 @@ void Trie::printVariants(){
     for (int i=0; i<2000;++i){//unhash and output variants found in variant counts hash array. Output count/total count for each variant.
         int count =mVariantCounts[i];
         if (count != 0){
-            cout<<unhashVariants(i).first<<" "<<unhashVariants(i).second<<" "<<float(count)/mImportantVariantsCount<<"%"<<endl;
+            cout<<unhashSubstitutions(i).first<<" "<<unhashSubstitutions(i).second<<" "<<float(count)/mImportantVariantsCount<<"%"<<endl;
         }
     }
 }

@@ -1,6 +1,8 @@
 #include "trie.h"
 #include <string>
+#include <fstream>
 extern int BARCODE_LENGTH;
+
 int ** initializeHashMtx(){
     int ** ppHashMatrixPointer = new int*[400];
     short int count;
