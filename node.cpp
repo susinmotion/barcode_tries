@@ -1,5 +1,6 @@
 #include <vector>
 #include <stack>
+#include <algorithm>
 #include "node.h"
 #include <iostream>
 using namespace std;
@@ -25,8 +26,17 @@ vector<int> Node::substitutions(){
 }
 
 void Node::appendSubstitution(int substitution) {
-   mSubstitutions.push_back(substitution);
+    mSubstitutions.push_back(substitution);
 }
+void Node::replaceSubstitutions(vector<int>substitutions){
+    for (int i=0; i<mSubstitutions.size(); ++i){//go through existing substitutions. if an item is there but isn't in the new list, mark it as uncertain
+        if (find(substitutions.begin(), substitutions.end(), mSubstitutions[i])==substitutions.end()){
+            substitutions.push_back((mSubstitutions[i]/5)*5+4);
+        }
+    }
+    mSubstitutions = substitutions;
+}
+
 bool Node::hasIndel(){
    return mHasIndel;
 }

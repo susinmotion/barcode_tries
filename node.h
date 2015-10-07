@@ -43,6 +43,7 @@ public:
     void setCount();
     vector <int> substitutions();
     void appendSubstitution(int substitution);
+    void replaceSubstitutions(vector<int>substitutions);
     void setIndel(pair<int, int>posLength);
     bool hasIndel();
     pair <int, int> indel();
