@@ -1,12 +1,10 @@
 #include "node.h"
 #include <string>
 
-int ** initializeHashMtx();
+int hashVariants (int pos, char nucleotide);
 
-int hashSubstitutions (int pos, char nucleotide);
+pair<int, char> unhashVariants (int variantHash);
 
-pair<int, char> unhashSubstitutions (int variantHash);
-
-void checkVariants(string sequence, string target, LeafData* pCurrentData);
+void checkSubstitutions(string sequence, string target, Node* pCurrentNode, int ** ppHashMatrixPointer);
 
 
