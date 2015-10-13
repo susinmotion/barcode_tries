@@ -69,14 +69,16 @@ void Trie::populateVariants(){
    }
   cout<<mImportantNodes.size()<<"=number of important nodes"<<endl;
     while (!mImportantNodes.empty()){//go through important nodes and increment value in variant counts hash array as varaints are found.
-       vector <int> currentSubstitutions = mImportantNodes.top()->substitutions();
-       while (!currentSubstitutions.empty()){
-            int currentSubstitution = currentSubstitutions.back();
-            currentSubstitutions.pop_back();
-            mVariantCounts[currentSubstitution]++;
-            mImportantVariantsCount++;
+       if (!mImportantNodes.top()->isTrash()){
+           vector <int> currentSubstitutions = mImportantNodes.top()->substitutions();
+           while (!currentSubstitutions.empty()){
+                int currentSubstitution = currentSubstitutions.back();
+                currentSubstitutions.pop_back();
+                mVariantCounts[currentSubstitution]++;
+                mImportantVariantsCount++;
+            }
         }
-            mImportantNodes.pop();
+        mImportantNodes.pop();
     }
 }
 

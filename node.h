@@ -47,6 +47,8 @@ public:
     void setIndel(pair<int, int>posLength);
     bool hasIndel();
     pair <int, int> indel();
+    void makeTrash();
+    bool isTrash();
     bool hasVariant();
     vector<Node*> children();
     void appendChild(Node* child);
@@ -58,6 +60,7 @@ private:
     vector <int> mSubstitutions;
     bool mHasIndel;
     pair <int, int> mIndel;
+    bool mIsTrash;
     vector<Node*> mChildren;
 };
 #endif

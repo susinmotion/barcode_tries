@@ -26,10 +26,13 @@ void checkVariants(string sequence, string target, Node* pCurrentNode, int ** pp
         for (int i=0; i<(min(sequence.length(), target.length())); ++i){
             if (sequence[i]!=target[i]){
                 pair <int,int> indel=make_pair(i, indelLength);
-                if (pCurrentNode->hasIndel()==false){
-                    pCurrentNode->setIndel(indel);
+                if ( (pCurrentNode->count()>0) && (pCurrentNode->indel()!=indel) ){
+                    pCurrentNode->makeTrash();
+                    cout<<"trash!"<<endl;
                 }
-                else if (pCurrentNode->indel()!=indel){ //DUMP
+                else{
+                    pCurrentNode->setIndel(indel);
+                    cout<<i<<" "<<indelLength<<" found indel"<<endl;
                 }
             }
         }
@@ -41,7 +44,7 @@ void checkVariants(string sequence, string target, Node* pCurrentNode, int ** pp
         for (int i =0; i<target.length(); i++){
             if (sequence[i]!=target[i]){
                 int substitutionHash = hashSubstitutions(i, sequence[i], ppHashMatrixPointer);
-                if( (pCurrentNode->count()>1) && 
+                if( (pCurrentNode->count()>0) && 
                   (find(existingSubstitutions.begin(), existingSubstitutions.end(), substitutionHash)==existingSubstitutions.end())){
                   substitutionHash=(substitutionHash/5)*5+4;
                 }

@@ -47,7 +47,14 @@ void Node::setIndel(pair<int,int> posLength){
 pair <int, int> Node::indel(){
     return mIndel;
 }
- 
+
+bool Node::isTrash(){
+    return mIsTrash;
+}
+
+void Node::makeTrash(){
+    mIsTrash=true;
+}
 bool Node::hasVariant(){
     return(mHasIndel || !mSubstitutions.empty());
 }
