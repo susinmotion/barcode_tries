@@ -27,8 +27,10 @@ void checkVariants(string sequence, string target, Node* pCurrentNode, int ** pp
             if (sequence[i]!=target[i]){
                 pair <int,int> indel=make_pair(i, indelLength);
                 if ( (pCurrentNode->count()>0) && (pCurrentNode->indel()!=indel) ){
+                    cout<<i<<" "<<indelLength<<" "<<sequence<<" "<<"Trash!! because count is <0 and we can't find the indel. Wild type OR S! then INDEL"<<endl;
                     pCurrentNode->makeTrash();
                     cout<<"trash!"<<endl;
+                    return;
                 }
                 else{
                     pCurrentNode->setIndel(indel);
@@ -38,15 +40,22 @@ void checkVariants(string sequence, string target, Node* pCurrentNode, int ** pp
         }
     }
     else{
+        if (pCurrentNode->hasIndel()){
+            cout<<sequence<<" was indel, now S or WT, but we don't check, just TRASH"<<endl;
+            pCurrentNode->makeTrash();
+            return;
+        }
         vector <int> confirmedSubstitutions;
         vector <int> existingSubstitutions=pCurrentNode->substitutions();
         
         for (int i =0; i<target.length(); i++){
             if (sequence[i]!=target[i]){
                 int substitutionHash = hashSubstitutions(i, sequence[i], ppHashMatrixPointer);
-                if( (pCurrentNode->count()>0) && 
+                   cout<<"fond substitutuion "<<substitutionHash;
+                  if( (pCurrentNode->count()>0) && 
                   (find(existingSubstitutions.begin(), existingSubstitutions.end(), substitutionHash)==existingSubstitutions.end())){
-                  substitutionHash=(substitutionHash/5)*5+4;
+                   cout<<sequence[i]<<" "<<i<<" found substitution and count<0 but substiatution not listed--- W/S"<<endl; 
+                   substitutionHash=(substitutionHash/5)*5+4;
                 }
                 confirmedSubstitutions.push_back(substitutionHash);
             }
