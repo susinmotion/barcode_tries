@@ -1,0 +1,13 @@
+S/S/I
+CCGCGTTCTTCGGAGAAGGGGG
+...
+...
+>
+CCGCGTTCTTCGGAGAAGGGGG
+...
+...
+>
+CCGCGTTCTTCGGAAGGGGAAGGGGG
+~                                                                                                  
+~                                                                                                  
+                                  
