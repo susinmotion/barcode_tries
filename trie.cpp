@@ -31,7 +31,6 @@ int Trie::returnMaxCount(int& max,Node* pCurrentNode ){
 
 void Trie::addBarcode(string barcode, string sequence, string target, int ** ppHashMatrixPointer){
     Node* pCurrentNode = mRootPointer;
-    int rThresh = 3;
 
     if ( barcode.length() == 0 ){
 	pCurrentNode->setCount(); // an empty barcode
@@ -53,7 +52,7 @@ void Trie::addBarcode(string barcode, string sequence, string target, int ** ppH
 	if ( i == barcode.length() - 1 ){//if we are at the end of the barcode, check for variants.
 	    checkVariants(sequence, target, pCurrentNode, ppHashMatrixPointer);
             pCurrentNode->setCount();
-            if (pCurrentNode->count()==rThresh){//if there are enough reads, add pointer to list of important nodes for output later
+            if (pCurrentNode->count()==mThresholdOfImportance){//if there are enough reads, add pointer to list of important nodes for output later
                 addImportantNode(pCurrentNode);
             }
         }
@@ -140,4 +139,7 @@ void Trie::printVariants(){
     }
 }
 
+void Trie::setThresholdOfImportance(int threshold){
+    mThresholdOfImportance=threshold;
+}
 

@@ -41,7 +41,7 @@ void readFileIntoTrie(Trie* trie){
     string alignSequenceStart=userDefinedVariables["alignSequenceStart"];
     string alignSequenceFinish=userDefinedVariables["alignSequenceFinish"];
     string target=userDefinedVariables["target"];
-
+    trie->setThresholdOfImportance( atoi (userDefinedVariables["thresholdOfImportance"].c_str()) );
 
     int count=0;
     ifstream readfile (filename.c_str());
