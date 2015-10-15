@@ -51,7 +51,7 @@ void checkVariants(string sequence, string target, Node* pCurrentNode, int ** pp
         for (int i =0; i<target.length(); i++){
             if (sequence[i]!=target[i]){
                 int substitutionHash = hashSubstitutions(i, sequence[i], ppHashMatrixPointer);
-                   cout<<"fond substitutuion "<<substitutionHash;
+                   cout<<"fond substitutuion "<<substitutionHash<<endl;
                   if( (pCurrentNode->count()>0) && 
                   (find(existingSubstitutions.begin(), existingSubstitutions.end(), substitutionHash)==existingSubstitutions.end())){
                    cout<<sequence[i]<<" "<<i<<" found substitution and count<0 but substiatution not listed--- W/S"<<endl; 

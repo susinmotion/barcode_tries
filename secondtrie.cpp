@@ -7,14 +7,20 @@
 #include "trie.h"
 #include "variants.h"
 #include "initialize.h"
+#include <typeinfo>
 #include <ctime>
+#include <map>
+//#include "constants.h"
+
 using namespace std;
 
-int BARCODE_LENGTH=4;
 #define logfilename "mds.log"
+//map <string, int> userDefinedVariables;
 
 int main()
-{ 
+{   cout<<"HI!"<<endl;
+
+    //int BARCODE_LENGTH=4;
     clock_t begin = clock();
     cout<<"start"<<endl;
     

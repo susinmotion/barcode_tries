@@ -1,7 +1,25 @@
 #include "trie.h"
 #include <string>
+#include <map>
 #include <fstream>
-extern int BARCODE_LENGTH;
+//#include "constants.h"
+
+using namespace std;
+
+map <string, string> readConfig(){
+    map <string, string> userDefinedVariables;
+    userDefinedVariables.clear();
+    ifstream infile("example.cfg");
+    string key;
+    string value;
+    while (infile >> key >>value){
+        pair <string, string> varPair = make_pair (key, value);
+        userDefinedVariables.insert(varPair);
+    }
+    return userDefinedVariables;
+}
+    
+
 
 int ** initializeHashMtx(){
     int ** ppHashMatrixPointer = new int*[400];
@@ -16,21 +34,25 @@ int ** initializeHashMtx(){
     return ppHashMatrixPointer;
 }
 void readFileIntoTrie(Trie* trie){
+    map <string, string> userDefinedVariables=readConfig();
+    int BARCODE_LENGTH=atoi(userDefinedVariables["BARCODE_LENGTH"].c_str() );
 //    string filename = "/mnt/storage/data/justin/Archive/miseq/Data/Intensities/BaseCalls/1_S1_L001_R1_001.fastq";
-    string filename = "veryshort2.txt";
-    cout<<"in read file"<<filename<<endl;
+    string filename = userDefinedVariables["filename"];
+    string alignSequenceStart=userDefinedVariables["alignSequenceStart"];
+    string alignSequenceFinish=userDefinedVariables["alignSequenceFinish"];
+    string target=userDefinedVariables["target"];
+
+
     int count=0;
     ifstream readfile (filename.c_str());
-    string alignSequenceStart="GTTCTTCGG";
-    string alignSequenceFinish="GGGGG";
     string sequence;
     string barcode;
-    string target="AAAA";
     string throwoutstring;
     int indexOfAlignStart;
     int indexOfAlignFinish;
 
     int ** ppHashMatrixPointer = initializeHashMtx();
+
     if (readfile.is_open()){
         cout<<"file isopen"<<endl;
         while (getline(readfile,throwoutstring)){
@@ -46,6 +68,7 @@ void readFileIntoTrie(Trie* trie){
             }
             barcode=sequence.substr(indexOfAlignStart-BARCODE_LENGTH, BARCODE_LENGTH);
             sequence=sequence.substr(BARCODE_LENGTH+alignSequenceStart.length(), indexOfAlignFinish-BARCODE_LENGTH-alignSequenceStart.length());
+            cout<<sequence<<" "<<barcode<<endl;
             trie->addBarcode(barcode,sequence, target, ppHashMatrixPointer);
             readfile>>throwoutstring;
             getline(readfile, throwoutstring);
