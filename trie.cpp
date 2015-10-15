@@ -9,21 +9,20 @@
 using namespace std;
 
 int Trie::returnMaxCount(int& max,Node* pCurrentNode ){
-    if (pCurrentNode==NULL){
-        pCurrentNode=pRootPointer();
+    if (pCurrentNode==NULL){ //if this is the first time the function is called, set current to root
+        pCurrentNode=mRootPointer;
     }
 
     vector <Node*> children = pCurrentNode->children();
 
-    if (!children.empty()){
+    if (!children.empty()){ //if there are still children, go one level down and recurse
         for (int i=0; i<children.size(); i++){
             pCurrentNode = children[i];
             returnMaxCount(max, pCurrentNode);
         }
     }
-    else if((pCurrentNode->count()!=0) && (pCurrentNode->count()>max) ){
+    else if(pCurrentNode->count()>max){//if the current count is greater than the max, reset the max
         max=pCurrentNode->count();
-        return max;
     }
     return max;
 }
@@ -33,24 +32,24 @@ void Trie::addBarcode(string barcode, string sequence, string target, int ** ppH
     Node* pCurrentNode = mRootPointer;
 
     if ( barcode.length() == 0 ){
-	pCurrentNode->setCount(); // an empty barcode
-	return;
+        pCurrentNode->setCount(); // an empty barcode
+        return;
     }
     for ( int i = 0; i < barcode.length(); i++ )//go through barcode base by base. if it's in the trie, continue. if not, add it.
     {  
-	Node* pChildNode = pCurrentNode->findChild(barcode[i]);
-	if ( pChildNode != NULL ){
-	    pCurrentNode = pChildNode;
+    Node* pChildNode = pCurrentNode->findChild(barcode[i]);
+    if ( pChildNode != NULL ){
+        pCurrentNode = pChildNode;
         }
-	else {
-	    Node* pTmp = new Node();
-	    pTmp->setContent(barcode[i]);
-	    pCurrentNode->appendChild(pTmp);
-	    pCurrentNode = pTmp;
-	}
+    else {
+        Node* pTmp = new Node();
+        pTmp->setContent(barcode[i]);
+        pCurrentNode->appendChild(pTmp);
+        pCurrentNode = pTmp;
+    }
 
-	if ( i == barcode.length() - 1 ){//if we are at the end of the barcode, check for variants.
-	    checkVariants(sequence, target, pCurrentNode, ppHashMatrixPointer);
+    if ( i == barcode.length() - 1 ){//if we are at the end of the barcode, check for variants.
+        checkVariants(sequence, target, pCurrentNode, ppHashMatrixPointer);
             pCurrentNode->setCount();
             if (pCurrentNode->count()==mThresholdOfImportance){//if there are enough reads, add pointer to list of important nodes for output later
                 addImportantNode(pCurrentNode);
@@ -88,16 +87,16 @@ void Trie::addImportantNode(Node* pImportantNode){
 int Trie::outputBarcodeCount(string barcode){
     Node* pCurrentNode = mRootPointer;
     int barcodeCount=0;
-    for ( int i = 0; i <= barcode.length(); i++ ){
-	Node* pNodeAtNextLevel = pCurrentNode->findChild(barcode[i]);
-	if (pNodeAtNextLevel == NULL){
-	    if ( i == barcode.length() ){        
-		barcodeCount = pCurrentNode->count();
-	    }
-	    cout << barcode << " was found " << barcodeCount << " times." << endl;
-	    return barcodeCount;
-	}
-	pCurrentNode = pNodeAtNextLevel;
+    for ( int i = 0; i <= barcode.length(); i++ ){//go through the trie until you get to the end of the barcode
+        Node* pNodeAtNextLevel = pCurrentNode->findChild(barcode[i]);
+        if (pNodeAtNextLevel == NULL){
+            if ( i == barcode.length() ){        
+                barcodeCount = pCurrentNode->count();
+            }
+            cout << barcode << " was found " << barcodeCount << " times." << endl;
+            return barcodeCount;
+        }
+        pCurrentNode = pNodeAtNextLevel;
     }
     return barcodeCount;
 }
@@ -107,8 +106,8 @@ Node* Trie::pRootPointer(){
 }
 
 void Trie::printTrie(Node* pCurrentNode, string barcode, int index){
-    if (pCurrentNode == NULL){
-	pCurrentNode = pRootPointer();
+    if (pCurrentNode == NULL){//if this 
+        pCurrentNode = mRootPointer;
         cout<<"Barcode  Count"<<endl;
     }
     else{
@@ -117,10 +116,10 @@ void Trie::printTrie(Node* pCurrentNode, string barcode, int index){
     }
     vector <Node*> children = pCurrentNode->children();
     if (!children.empty()){
-	for (int i=0; i<children.size(); i++){
-	    pCurrentNode = children[i];
-	    printTrie(pCurrentNode, barcode, index);
-	}
+        for (int i=0; i<children.size(); i++){
+            pCurrentNode = children[i];
+            printTrie(pCurrentNode, barcode, index);
+        }
     }
     else if(pCurrentNode->count()!=0){
        cout<<barcode<<" "<<pCurrentNode->count()<<endl;
