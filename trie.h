@@ -18,11 +18,13 @@ public:
     void printVariants();
     void populateVariants();
     int returnMaxCount(int& max, Node* pCurrentNode=NULL );
+    void setThresholdOfImportance(int threshold);
 private:
     Node* mRootPointer;
     stack <Node*> mImportantNodes;
     int  mVariantCounts [2000];
     int mImportantVariantsCount;
+    int mThresholdOfImportance;
 };
 
 #endif
