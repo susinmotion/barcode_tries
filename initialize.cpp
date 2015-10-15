@@ -36,15 +36,15 @@ int ** initializeHashMtx(){
 void readFileIntoTrie(Trie* trie){
     map <string, string> userDefinedVariables=readConfig();
     int BARCODE_LENGTH=atoi(userDefinedVariables["BARCODE_LENGTH"].c_str() );
-//    string filename = "/mnt/storage/data/justin/Archive/miseq/Data/Intensities/BaseCalls/1_S1_L001_R1_001.fastq";
-    string filename = userDefinedVariables["filename"];
-    string alignSequenceStart=userDefinedVariables["alignSequenceStart"];
-    string alignSequenceFinish=userDefinedVariables["alignSequenceFinish"];
-    string target=userDefinedVariables["target"];
-    trie->setThresholdOfImportance( atoi (userDefinedVariables["thresholdOfImportance"].c_str()) );
+//    string FILENAME = "/mnt/storage/data/justin/Archive/miseq/Data/Intensities/BaseCalls/1_S1_L001_R1_001.fastq";
+    string ALIGN_SEQUENCE_START=userDefinedVariables["ALIGN_SEQUENCE_START"];
+    string ALIGN_SEQUENCE_FINISH=userDefinedVariables["ALIGN_SEQUENCE_FINISH"];
+    string TARGET=userDefinedVariables["TARGET"];
+    
+    trie->setThresholdOfImportance( atoi (userDefinedVariables["THRESHOLD_OF_IMPORTANCE"].c_str()) );
+    ifstream readfile (userDefinedVariables["FILENAME"].c_str());
 
     int count=0;
-    ifstream readfile (filename.c_str());
     string sequence;
     string barcode;
     string throwoutstring;
@@ -58,8 +58,8 @@ void readFileIntoTrie(Trie* trie){
         while (getline(readfile,throwoutstring)){
             count++;
             readfile>>sequence;
-            indexOfAlignStart=sequence.find(alignSequenceStart,BARCODE_LENGTH);
-            indexOfAlignFinish=sequence.find(alignSequenceFinish,BARCODE_LENGTH+alignSequenceStart.length());
+            indexOfAlignStart=sequence.find(ALIGN_SEQUENCE_START,BARCODE_LENGTH);
+            indexOfAlignFinish=sequence.find(ALIGN_SEQUENCE_FINISH,BARCODE_LENGTH+ALIGN_SEQUENCE_START.length());
             if ((indexOfAlignStart == -1) || (indexOfAlignFinish == -1) ){
                 readfile>>throwoutstring;
                 getline(readfile,throwoutstring);
@@ -67,9 +67,11 @@ void readFileIntoTrie(Trie* trie){
                 continue;
             }
             barcode=sequence.substr(indexOfAlignStart-BARCODE_LENGTH, BARCODE_LENGTH);
-            sequence=sequence.substr(BARCODE_LENGTH+alignSequenceStart.length(), indexOfAlignFinish-BARCODE_LENGTH-alignSequenceStart.length());
+            sequence=sequence.substr(BARCODE_LENGTH+ALIGN_SEQUENCE_START.length(), indexOfAlignFinish-BARCODE_LENGTH-ALIGN_SEQUENCE_START.length());
+            
             cout<<sequence<<" "<<barcode<<endl;
-            trie->addBarcode(barcode,sequence, target, ppHashMatrixPointer);
+            
+            trie->addBarcode(barcode,sequence, TARGET, ppHashMatrixPointer);
             readfile>>throwoutstring;
             getline(readfile, throwoutstring);
             getline(readfile,throwoutstring);
