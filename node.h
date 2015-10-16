@@ -44,11 +44,11 @@ public:
     vector <int> substitutions();
     void appendSubstitution(int substitution);
     void replaceSubstitutions(vector<int>substitutions);
-    void setIndel(pair<int, int>posLength);
     bool hasIndel();
     pair <int, int> indel();
-    void makeTrash();
+    void setIndel(pair<int, int>posLength);
     bool isTrash();
+    void makeTrash();
     bool hasVariant();
     vector<Node*> children();
     void appendChild(Node* child);
