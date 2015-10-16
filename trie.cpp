@@ -11,7 +11,7 @@ Node* Trie::pRootPointer(){
     return mRootPointer;
 }
 
-void Trie::addBarcode(string barcode, string sequence, string target, int ** ppHashMatrixPointer){
+void Trie::addBarcode(string barcode, string sequence, string target){
     Node* pCurrentNode = mRootPointer;
 
     if ( barcode.length() == 0 ){
@@ -31,7 +31,7 @@ void Trie::addBarcode(string barcode, string sequence, string target, int ** ppH
         }
 
         if ( i == barcode.length() - 1 ){//if we are at the end of the barcode, check for variants.
-            checkVariants(sequence, target, pCurrentNode, ppHashMatrixPointer);
+            checkVariants(sequence, target, pCurrentNode);
             pCurrentNode->setCount();
             if (pCurrentNode->count()==mThresholdOfImportance){//if there are enough reads, add pointer to list of important nodes for output later
                 addImportantNode(pCurrentNode);
