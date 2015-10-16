@@ -18,8 +18,6 @@ map <string, string> readConfig(){ //read config file into map of user defined v
     return userDefinedVariables;
 }
     
-
-
 int ** initializeHashMtx(){//cols 0-4 represent bases ACGTN, in that order. Rows represent position of variant.
     int maxSequenceLength=400;
     int ** ppHashMatrixPointer = new int*[maxSequenceLength];
@@ -74,5 +72,8 @@ void readFileIntoTrie(Trie* trie){//set constants based on config file
                 trie->addBarcode(barcode,sequence, TARGET, ppHashMatrixPointer);
             }
         }
+    }
+    else {
+        cout<<"Error opening file"<<endl;
     }
 }
