@@ -5,15 +5,15 @@
 
 using namespace std;
 
+string nucleotides = "ACGTN";
+
 int hashSubstitutions (int pos, char nucleotide, int *(ppHashMatrixPointer)[5]){
-    string nucleotides = "ACGTN";
     int nucleotidePos = nucleotides.find(nucleotide);
     int variantHash =*(*(ppHashMatrixPointer+pos)+nucleotidePos);
     return variantHash;
 }
 
 pair<int, char> unhashSubstitutions (int variantHash){
-    string nucleotides = "ACGTN";
     int nucleotidePos = variantHash % 5;
     char nucleotide = nucleotides.at(nucleotidePos);
     int pos = (variantHash - nucleotidePos) / 5;
@@ -48,7 +48,7 @@ void checkVariants(string sequence, string target, Node* pCurrentNode, int ** pp
         vector <int> confirmedSubstitutions;
         vector <int> existingSubstitutions=pCurrentNode->substitutions();
         
-        for (int i =0; i<target.length(); i++){
+        for (int i=0; i<target.length(); i++){
             if (sequence[i]!=target[i]){
                 int substitutionHash = hashSubstitutions(i, sequence[i], ppHashMatrixPointer);
                 cout<<"fond substitutuion "<<substitutionHash<<endl;

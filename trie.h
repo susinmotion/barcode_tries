@@ -3,28 +3,28 @@
 
 #include "node.h"
 #include <string>
-#include<stack>
+#include <stack>
 using namespace std;
 
 class Trie {
 public:
     Trie(){ mRootPointer = new Node; }
+    Node* pRootPointer();
     void addBarcode(string barcode, string sequence="", string target="", int ** ppHashMatrixPointer=NULL);
+    void setThresholdOfImportance(int threshold);
     stack <Node*> importantNodes();
     void addImportantNode(Node* importantNodePointer);
-    int outputBarcodeCount(string barcode);
-    Node* pRootPointer();
-    void printTrie(Node* pCurrentNodePointer = NULL, string barcode= string(18,'\0'), int index=0);
-    void printVariants();
     void populateVariants();
+    void printVariants();
+    void printTrie(Node* pCurrentNodePointer = NULL, string barcode= string(18,'\0'), int index=0);
+    int returnBarcodeCount(string barcode);
     int returnMaxCount(int& max, Node* pCurrentNode=NULL );
-    void setThresholdOfImportance(int threshold);
 private:
     Node* mRootPointer;
-    stack <Node*> mImportantNodes;
-    int  mVariantCounts [2000];
-    int mImportantVariantsCount;
     int mThresholdOfImportance;
+    stack <Node*> mImportantNodes;
+    int mVariantCounts [2000];
+    int mImportantVariantsCount;
 };
 
 #endif
