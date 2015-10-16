@@ -1,26 +1,10 @@
 #include <iostream>
-#include <vector>
-#include <string>
-#include <sstream>
-#include <fstream>
-#include "node.h"
-#include "trie.h"
-#include "variants.h"
 #include "initialize.h"
-#include <typeinfo>
 #include <ctime>
-#include <map>
-//#include "constants.h"
 
 using namespace std;
 
-#define logfilename "mds.log"
-//map <string, int> userDefinedVariables;
-
-int main()
-{   cout<<"HI!"<<endl;
-
-    //int BARCODE_LENGTH=4;
+int main(){  
     clock_t begin = clock();
     cout<<"start"<<endl;
     
@@ -31,7 +15,7 @@ int main()
    
     t->populateVariants();
     t->printVariants();
-    int max=0;
+    int max=0; //is there a better way to do this max situation?
     cout<<t->returnMaxCount(max)<<endl; 
     clock_t end = clock();
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;

@@ -28,7 +28,7 @@ vector<int> Node::substitutions(){
 void Node::appendSubstitution(int substitution) {
     mSubstitutions.push_back(substitution);
 }
-void Node::replaceSubstitutions(vector<int>substitutions){
+void Node::replaceSubstitutions(vector<int>substitutions){//** I know why the hash shifting happens in 2 parts, but it's kind of icky...
     for (int i=0; i<mSubstitutions.size(); ++i){//go through existing substitutions. if an item is there but isn't in the new list, mark it as uncertain
         if (find(substitutions.begin(), substitutions.end(), mSubstitutions[i])==substitutions.end()){
             substitutions.push_back((mSubstitutions[i]/5)*5+4);
@@ -41,12 +41,14 @@ void Node::replaceSubstitutions(vector<int>substitutions){
 bool Node::hasIndel(){
    return mHasIndel;
 }
+
+pair <int, int> Node::indel(){
+    return mIndel;
+}
+
 void Node::setIndel(pair<int,int> posLength){
     mHasIndel=true;
     mIndel=posLength;
-}
-pair <int, int> Node::indel(){
-    return mIndel;
 }
 
 bool Node::isTrash(){
@@ -56,9 +58,11 @@ bool Node::isTrash(){
 void Node::makeTrash(){
     mIsTrash=true;
 }
-bool Node::hasVariant(){
+
+bool Node::hasVariant(){//does this get used?
     return(mHasIndel || !mSubstitutions.empty());
 }
+
 vector<Node*> Node::children() {
     return mChildren; 
 }
