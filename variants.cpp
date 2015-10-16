@@ -37,42 +37,35 @@ pair<int, char> unhashSubstitutions (int variantHash){//unhash int into pos/nucl
 }
 
 void checkVariants(string sequence, string target, Node* pCurrentNode){
-    if ( sequence.length()!=target.length() ){//if the sequence is longer or shorter than expected mark indel
-        int indelLength=sequence.length()-target.length();
-        for (int i=0; i<(min(sequence.length(), target.length())); ++i){
-            if ( sequence[i]!=target[i] ){
-                pair <int,int> indel=make_pair(i, indelLength);
+    int variantPos;
+    vector <int> currentSubstitutions;
+    for (int i=0; i<(min(sequence.length(), target.length())); ++i){
+        if ( sequence[i]!=target[i] ){//check to see if the sequence differs from the target
+            variantPos = i;
+            if ( sequence.length()!=target.length() ){//if the sequence is longer or shorter than expected mark indel
+                int indelLength=sequence.length()-target.length();
+                pair <int,int> indel=make_pair(variantPos, indelLength);
+
                 if ( (pCurrentNode->count()>0) && (pCurrentNode->indel()!=indel) ){//if there's been a read before that doesn't match the indel found, trash all reads from this barcode
                     pCurrentNode->makeTrash();
-                    return;
                 }
                 else{
                     pCurrentNode->setIndel(indel);
                 }
+                return;
             }
-        }
-    }
-    else{
-        if ( pCurrentNode->hasIndel() ){
-            cout<<sequence<<" was indel, now S or WT, but we don't check, just TRASH"<<endl;
-            pCurrentNode->makeTrash();
-            return;
-        }
-        vector <int> confirmedSubstitutions;
-        vector <int> existingSubstitutions=pCurrentNode->substitutions();
-        
-        for (int i=0; i<target.length(); i++){
-            if ( sequence[i]!=target[i] ){
-                int substitutionHash = hashSubstitutions(i, sequence[i]);
-                if( (pCurrentNode->count()>0) && 
-                  (find(existingSubstitutions.begin(), existingSubstitutions.end(), substitutionHash)==existingSubstitutions.end())){
-                    cout<<sequence[i]<<" "<<i<<" found substitution and count<0 but substiatution not listed--- W/S"<<endl; 
-                    substitutionHash=(substitutionHash/5)*5+4;
+
+            else{
+                if ( pCurrentNode->hasIndel() ){//if we are getting a substitution and we had an indel before, trash
+                    pCurrentNode->makeTrash();
+                return;
                 }
-                confirmedSubstitutions.push_back(substitutionHash);
-            }
+                int substitutionHash = hashSubstitutions(variantPos, sequence[variantPos]);
+                currentSubstitutions.push_back(substitutionHash);
+            }      
         }
-        pCurrentNode->replaceSubstitutions(confirmedSubstitutions);
     }
-    
+    if (currentSubstitutions.size()!=0){
+        pCurrentNode->replaceSubstitutions(currentSubstitutions);
+    }
 }
