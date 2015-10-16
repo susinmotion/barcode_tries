@@ -10,7 +10,7 @@ class Trie {
 public:
     Trie(){ mRootPointer = new Node; }
     Node* pRootPointer();
-    void addBarcode(string barcode, string sequence="", string target="", int ** ppHashMatrixPointer=NULL);
+    void addBarcode(string barcode, string sequence="", string target="");
     void setThresholdOfImportance(int threshold);
     stack <Node*> importantNodes();
     void addImportantNode(Node* importantNodePointer);

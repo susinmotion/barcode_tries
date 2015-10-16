@@ -18,19 +18,6 @@ map <string, string> readConfig(){ //read config file into map of user defined v
     return userDefinedVariables;
 }
     
-int ** initializeHashMtx(){//cols 0-4 represent bases ACGTN, in that order. Rows represent position of variant.
-    int maxSequenceLength=400;
-    int ** ppHashMatrixPointer = new int*[maxSequenceLength];
-    short int count;
-    for (int row = 0; row < maxSequenceLength; row++){
-        ppHashMatrixPointer[row]=new int[5];
-        for (int col = 0; col < 5; col++){
-            *(* (ppHashMatrixPointer+row)+col) = count;
-            count++;
-        }
-    }
-    return ppHashMatrixPointer;
-}
 void readFileIntoTrie(Trie* trie){//set constants based on config file
     map <string, string> userDefinedVariables=readConfig();
     const int BARCODE_LENGTH=atoi(userDefinedVariables["BARCODE_LENGTH"].c_str() );
@@ -48,8 +35,6 @@ void readFileIntoTrie(Trie* trie){//set constants based on config file
     string throwoutstring;
     int indexForwardAlign;
     int indexReverseAlign;
-
-    int ** ppHashMatrixPointer = initializeHashMtx();
 
     if (readfile.is_open()){
         cout<<"file isopen"<<endl;
@@ -69,7 +54,7 @@ void readFileIntoTrie(Trie* trie){//set constants based on config file
             
                 cout<<sequence<<" "<<barcode<<endl;
             
-                trie->addBarcode(barcode,sequence, TARGET, ppHashMatrixPointer);
+                trie->addBarcode(barcode,sequence, TARGET);
             }
         }
     }
