@@ -52,8 +52,6 @@ void readFileIntoTrie(Trie* trie){//set constants based on config file
                 barcode=sequence.substr(indexForwardAlign-BARCODE_LENGTH, BARCODE_LENGTH);//extract barcode and read from full sequence
                 sequence=sequence.substr(BARCODE_LENGTH+FORWARD_ALIGN_SEQ.length(), indexReverseAlign-BARCODE_LENGTH-FORWARD_ALIGN_SEQ.length());//maybe rename this variable at some point
             
-                cout<<sequence<<" "<<barcode<<endl;
-            
                 trie->addBarcode(barcode,sequence, TARGET);
             }
         }
