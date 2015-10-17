@@ -75,7 +75,7 @@ void Trie::printVariants(){
     for (int i=0; i<2000;++i){//unhash and output variants found in variant counts hash array. Output count/total count for each variant.
         int count =mVariantCounts[i];
         if (count != 0){
-            cout<<unhashSubstitutions(i).first<<" "<<unhashSubstitutions(i).second<<" "<<float(count)/mImportantVariantsCount<<"%"<<endl;
+            cout<<unhashSubstitutions(i).first<<" "<<unhashSubstitutions(i).second<<" "<<float(count)/mImportantVariantsCount<<endl;
         }
     }
 }

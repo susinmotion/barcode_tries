@@ -28,8 +28,8 @@ vector<int> Node::substitutions(){
 void Node::appendSubstitution(int substitution) {
     mSubstitutions.push_back(substitution);
 }
+//this is still a little icky...
 void Node::replaceSubstitutions(vector<int>currentSubstitutions){//check substitutions found in this read against those from other reads of this barcode. Non-matches are listed as unconfirmed
-    cout<<mSubstitutions.size()<<" this is the number of substitutuiosn listed"<<endl;
     if (mCount>0){
         vector <int> confirmedSubstitutions;
         for (int i=0; i<mSubstitutions.size(); ++i){//go through existing substitutions. if an item is there but isn't in the new list, mark it as uncertain
@@ -37,23 +37,24 @@ void Node::replaceSubstitutions(vector<int>currentSubstitutions){//check substit
             vector<int>::iterator pos = find(currentSubstitutions.begin(), currentSubstitutions.end(), mSubstitutions[i]);
             if (pos == currentSubstitutions.end() ){
                 substitutionHash = (mSubstitutions[i]/5)*5+4;
-                cout<<substitutionHash<< "is being added to confirmedSubstitutions just got edited"<<endl;
             }
             else {
                 substitutionHash = mSubstitutions[i];
-                cout<<substitutionHash<< "is being added to confirmedSubstitutions about to be edited"<<endl;
                 currentSubstitutions.erase(pos);
             }
-            confirmedSubstitutions.push_back(substitutionHash);
+            if ( find(confirmedSubstitutions.begin(), confirmedSubstitutions.end(), substitutionHash)==confirmedSubstitutions.end()){
+                confirmedSubstitutions.push_back(substitutionHash);
+            }
         }
-        for (int i=0; i<currentSubstitutions.size(); ++i){//hashes remaining in currentSubstitutions are unconfirmed
-            confirmedSubstitutions.push_back( (currentSubstitutions[i]/5)*5+4 );
-            cout<<((currentSubstitutions[i]/5 )* 5+4)<< " is being added to confirmedSubstitutions as an edited hash"<<endl;        
+        for (int i=0; i<currentSubstitutions.size(); ++i){//hashes remaining in currentSubstitutions are marked as uncertain
+            int substitutionHash=(currentSubstitutions[i]/5)*5+4;
+            if ( find(confirmedSubstitutions.begin(), confirmedSubstitutions.end(), substitutionHash)==confirmedSubstitutions.end()){
+                confirmedSubstitutions.push_back(substitutionHash);
+            }     
         }
         mSubstitutions = confirmedSubstitutions;//replace existing substitutions with confirmed substitutions
     }
     else {//if this is the first read, no check is necessary
-        cout<<currentSubstitutions.front()<<" gets an automatic pass since it's the first read"<<endl;
         mSubstitutions = currentSubstitutions;
     }
 }
