@@ -8,7 +8,7 @@ using namespace std;
 map <string, string> readConfig(){ //read config file into map of user defined variables
     map <string, string> userDefinedVariables;
     userDefinedVariables.clear();
-    ifstream infile("example.cfg");
+    ifstream infile("test.cfg");
     string key;
     string value;
     while (infile >> key >>value){
