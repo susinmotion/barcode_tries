@@ -1,6 +1,6 @@
 #ifndef TRIE_H
 #define TRIE_H
-
+#include <map>
 #include "node.h"
 #include <string>
 #include <stack>
@@ -23,8 +23,10 @@ private:
     Node* mRootPointer;
     int mThresholdOfImportance;
     stack <Node*> mImportantNodes;
-    int mVariantCounts [2000];
-    int mImportantVariantsCount;
+    map<pair<int, int>, int> mIndels;
+    int mIndelsCount;
+    int mSubstitutionsCounts [2000];
+    int mImportantSubstitutionsCount;
 };
 
 #endif

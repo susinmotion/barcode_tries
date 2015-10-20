@@ -8,7 +8,7 @@ using namespace std;
 map <string, string> readConfig(){ //read config file into map of user defined variables
     map <string, string> userDefinedVariables;
     userDefinedVariables.clear();
-    ifstream infile("test.cfg");
+    ifstream infile("example.cfg");
     string key;
     string value;
     while (infile >> key >>value){
@@ -37,7 +37,7 @@ void readFileIntoTrie(Trie* trie){//set constants based on config file
     int indexReverseAlign;
 
     if (readfile.is_open()){
-        cout<<"file isopen"<<endl;
+        cout<<userDefinedVariables["FILENAME"]<<" is open"<<endl;
         while (getline(readfile,throwoutstring)){//read sequence. 4 lines is a read. 2nd line has sequence
             count++;
             readfile>>sequence;
@@ -51,7 +51,6 @@ void readFileIntoTrie(Trie* trie){//set constants based on config file
             if ((indexForwardAlign != -1) && (indexReverseAlign != -1) ){//if align.seq found, add read to trie
                 barcode=sequence.substr(indexForwardAlign-BARCODE_LENGTH, BARCODE_LENGTH);//extract barcode and read from full sequence
                 sequence=sequence.substr(BARCODE_LENGTH+FORWARD_ALIGN_SEQ.length(), indexReverseAlign-BARCODE_LENGTH-FORWARD_ALIGN_SEQ.length());//maybe rename this variable at some point
-            
                 trie->addBarcode(barcode,sequence, TARGET);
             }
         }

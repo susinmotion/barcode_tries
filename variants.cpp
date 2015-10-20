@@ -40,7 +40,7 @@ void checkVariants(string sequence, string target, Node* pCurrentNode){
     int variantPos;
     vector <int> currentSubstitutions;
     for (int i=0; i<(min(sequence.length(), target.length())); ++i){
-        if ( sequence[i]!=target[i] ){//check to see if the sequence differs from the target
+        if ( sequence[i]!=target[i] && sequence[i]!='N'){//check to see if the sequence differs from the target
             variantPos = i;
             if ( sequence.length()!=target.length() ){//if the sequence is longer or shorter than expected mark indel
                 int indelLength=sequence.length()-target.length();
