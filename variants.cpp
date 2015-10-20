@@ -10,7 +10,7 @@ string nucleotides = "ACGTN";
 int ** initializeHashMtx(){//cols 0-4 represent bases ACGTN, in that order. Rows represent position of variant.
     int maxSequenceLength=400;
     int ** ppHashMatrixPointer = new int*[maxSequenceLength];
-    short int count;
+    short int count=0;
     for (int row = 0; row < maxSequenceLength; row++){
         ppHashMatrixPointer[row]=new int[5];
         for (int col = 0; col < 5; col++){
