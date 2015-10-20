@@ -90,7 +90,7 @@ void Trie::printVariants(){
         }
     }
     for(map< pair<int, int>, int>::const_iterator it = mIndels.begin(); it != mIndels.end(); ++it){
-        cout << it->first.first << " " << it->first.second << " " << it->second/float(mIndels.size()) << endl;
+        cout << it->first.first << " " << it->first.second << " " << it->second/float(mIndelsCount) << endl;
     }
 }
 
