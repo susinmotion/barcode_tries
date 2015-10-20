@@ -25,8 +25,8 @@ private:
     stack <Node*> mImportantNodes;
     map<pair<int, int>, int> mIndels;
     int mIndelsCount;
-    int mSubstitutionsCounts [2000];
-    int mImportantSubstitutionsCount;
+    int mSubstitutions[2000];
+    int mSubstitutionsCount;
 };
 
 #endif
