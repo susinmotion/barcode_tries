@@ -2,7 +2,7 @@
 #include <string>
 #include <map>
 #include <fstream>
-
+#include <cstdlib>
 using namespace std;
 
 map <string, string> readConfig(){ //read config file into map of user defined variables
