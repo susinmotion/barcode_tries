@@ -1,7 +1,7 @@
 #include <vector>
+#include <stack>
 #include <algorithm>
 #include "node.h"
-#include "leafdata.h"
 #include <iostream>
 using namespace std;
 
@@ -11,6 +11,77 @@ char Node::content() {
 
 void Node::setContent(char c) {
     mContent = c;
+}
+
+int Node::count() {
+    return mCount;
+}
+
+void Node::setCount() {
+    mCount++; 
+}
+
+vector<int> Node::substitutions(){
+    return mSubstitutions;
+}
+
+void Node::appendSubstitution(int substitution) {
+    mSubstitutions.push_back(substitution);
+}
+//this is still a little icky...
+void Node::replaceSubstitutions(vector<int>currentSubstitutions){//check substitutions found in this read against those from other reads of this barcode. Non-matches are listed as unconfirmed
+    if (mCount>0){
+        vector <int> confirmedSubstitutions;
+        for (int i=0; i<mSubstitutions.size(); ++i){//go through existing substitutions. if an item is there but isn't in the new list, mark it as uncertain
+            int substitutionHash;
+            vector<int>::iterator pos = find(currentSubstitutions.begin(), currentSubstitutions.end(), mSubstitutions[i]);
+            if (pos == currentSubstitutions.end() ){
+                substitutionHash = (mSubstitutions[i]/5)*5+4;
+            }
+            else {
+                substitutionHash = mSubstitutions[i];
+                currentSubstitutions.erase(pos);
+            }
+            if ( find(confirmedSubstitutions.begin(), confirmedSubstitutions.end(), substitutionHash)==confirmedSubstitutions.end()){
+                confirmedSubstitutions.push_back(substitutionHash);
+            }
+        }
+        for (int i=0; i<currentSubstitutions.size(); ++i){//hashes remaining in currentSubstitutions are marked as uncertain
+            int substitutionHash=(currentSubstitutions[i]/5)*5+4;
+            if ( find(confirmedSubstitutions.begin(), confirmedSubstitutions.end(), substitutionHash)==confirmedSubstitutions.end()){
+                confirmedSubstitutions.push_back(substitutionHash);
+            }     
+        }
+        mSubstitutions = confirmedSubstitutions;//replace existing substitutions with confirmed substitutions
+    }
+    else {//if this is the first read, no check is necessary
+        mSubstitutions = currentSubstitutions;
+    }
+}
+
+bool Node::hasIndel(){
+   return mHasIndel;
+}
+
+pair <int, int> Node::indel(){
+    return mIndel;
+}
+
+void Node::setIndel(pair<int,int> posLength){
+    mHasIndel=true;
+    mIndel=posLength;
+}
+
+bool Node::isTrash(){
+    return mIsTrash;
+}
+
+void Node::makeTrash(){
+    mIsTrash=true;
+}
+
+bool Node::hasVariant(){//does this get used?
+    return(mHasIndel || !mSubstitutions.empty());
 }
 
 vector<Node*> Node::children() {
@@ -31,14 +102,3 @@ Node* Node::findChild(char c){
     return NULL;
 }
 
-void Node::initializeLeafData(int numberOfROIs, int numberOfPhases){
-    mLeafData= vector<vector <LeafData*> >(numberOfROIs, vector<LeafData*> (numberOfPhases, NULL));
-}
-
-vector <vector<LeafData*> > Node::leafData(){
-    return mLeafData;
-}
-
-void Node::setLeafData(int ROINumber, int phase, LeafData* data){
-    mLeafData[ROINumber][phase]=data;
-}

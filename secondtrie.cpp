@@ -1,31 +1,25 @@
 #include <iostream>
 #include "initialize.h"
 #include <ctime>
-#include <fstream>
-#include <vector>
-#include <string>
-#include "trie.h"
 
 using namespace std;
 
-int main(){  //file config.cfg contains a list of config files
+int main(){  
     clock_t begin = clock();
     cout<<"start"<<endl;
     
-    Trie* trie = readFileIntoTrie("example.cfg");
-    cout <<"read file"<<endl;  
+    Trie* t = new Trie();
     
-    string target="TGTCTCAGTTTATGGACCAGAACAACCCGCTGTCTGAGATTACGCACAAACGTCGTATCTCCGCACTCGGCCCAGGCGGTCT";
-    trie->populateVariants();
-    trie->printVariants(4);        
-   // trie->printTrie();
-
+    readFileIntoTrie(t);
+    cout <<"read file"<<endl;  
+   
+    t->populateVariants();
+    t->printVariants();
     //int max=0; //is there a better way to do this max situation?
     //cout<<t->returnMaxCount(max)<<" is the max count"<<endl; 
     clock_t end = clock();
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     cout << "I'm done "<< endl;
     cout << elapsed_secs <<endl;
-    
 }
 

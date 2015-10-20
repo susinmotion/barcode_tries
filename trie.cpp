@@ -5,21 +5,17 @@
 #include <vector>
 #include <string>
 #include <stack>
-#include <fstream>
-#include <cstdlib>
-#include <sstream>
-#include <typeinfo>
-#include <iomanip>
 using namespace std;
 
 Node* Trie::pRootPointer(){
     return mRootPointer;
 }
 
-void Trie::addBarcode(int ROINumber, int phase, string barcode, string sequence, string target){
+void Trie::addBarcode(string barcode, string sequence, string target){
     Node* pCurrentNode = mRootPointer;
+
     if ( barcode.length() == 0 ){
-        pCurrentNode->initializeLeafData(mNumberOfROIs, mNumberOfPhases); // an empty barcode
+        pCurrentNode->setCount(); // an empty barcode
         return;
     }
     for ( int i = 0; i < barcode.length(); i++ ){//go through barcode base by base. if it's in the trie, continue. if not, add it. 
@@ -35,136 +31,69 @@ void Trie::addBarcode(int ROINumber, int phase, string barcode, string sequence,
         }
 
         if ( i == barcode.length() - 1 ){//if we are at the end of the barcode, check for variants.
-            if (pCurrentNode->leafData().empty()){
-                pCurrentNode->initializeLeafData(mNumberOfROIs, mNumberOfPhases);
-            }
-            LeafData* pCurrentData= pCurrentNode->leafData()[ROINumber][phase];
-            if (pCurrentData==NULL){
-                pCurrentData=new LeafData;
-            }
-            checkVariants(sequence, target, pCurrentData);
-            pCurrentData->setCount();
-            pCurrentNode->setLeafData(ROINumber, phase, pCurrentData);
-            if (pCurrentNode->leafData()[ROINumber][phase]->count()==mThresholdOfImportance){//if there are enough reads, add pointer to list of important nodes for output later
-                addImportantNode(pCurrentNode, ROINumber, phase);
+            checkVariants(sequence, target, pCurrentNode);
+            pCurrentNode->setCount();
+            if (pCurrentNode->count()==mThresholdOfImportance){//if there are enough reads, add pointer to list of important nodes for output later
+                addImportantNode(pCurrentNode);
             }
         }
     }
 }
 
-void Trie::setThresholdROIPhaseGenesBarcodelen(int threshold, int numberOfROIs, int numberOfPhases, vector<string>genes, int barcodeLength){
+void Trie::setThresholdOfImportance(int threshold){
     mThresholdOfImportance=threshold;
-    mNumberOfROIs= numberOfROIs;
-    mNumberOfPhases = numberOfPhases;
-    mGenes = genes;
-    stack <Node*> empty_stack;
-    mImportantNodes=vector <vector <stack <Node*> > >(mNumberOfROIs, vector<stack<Node* > >(mNumberOfPhases, empty_stack));
-    mBarcodeLength=barcodeLength;
 }
 
-vector< vector< stack <Node*> > >Trie::importantNodes(){
+stack <Node*> Trie::importantNodes(){
     return mImportantNodes;
 }
 
-void Trie::addImportantNode(Node* pImportantNode, int ROINumber, int phase){
-    mImportantNodes[ROINumber][phase].push(pImportantNode);
+void Trie::addImportantNode(Node* pImportantNode){
+    mImportantNodes.push(pImportantNode);
 }
 
 void Trie::populateVariants(){
-    mVariantsCount= vector <vector<int> >(mNumberOfROIs, vector<int>(mNumberOfPhases,  0));
-    mSubstitutionsCount= vector< vector <int> >(mNumberOfROIs, vector<int>(mNumberOfPhases,0 ));
-    mNodesChecked= vector <vector<int> >(mNumberOfROIs, vector<int>(mNumberOfPhases,  0));
-    map<int, int> empty_map1;
-    mSubstitutions= vector<vector <map <int, int> > >( mNumberOfROIs, vector< map<int, int> >(mNumberOfPhases, empty_map1));
-    map<pair<int,int>, int> empty_map;
-    mIndels = vector<vector <map <pair<int,int>, int> > >( mNumberOfROIs, vector< map<pair<int,int>, int> >(mNumberOfPhases, empty_map));
-              
-    cout<<mNumberOfROIs<< " rois"<<endl;
-    cout<<mNumberOfPhases<<" phases"<<endl;
-    int totalImportantNodes=0;
-    for (int i=0; i<mNumberOfROIs; ++i){
-        for (int j=0; j<mNumberOfPhases; ++j){
-            while (!mImportantNodes[i][j].empty()){//go through important nodes and increment value in variant counts hash array as varaints are found.
-                LeafData* currentData=mImportantNodes[i][j].top()->leafData()[i][j];
-                totalImportantNodes++;
-                if (currentData!=NULL){
-                    mNodesChecked[i][j]++;
-                   if (!currentData->isTrash()){
-                        if (currentData->hasIndel()==true){
-                            mVariantsCount[i][j]++;
-                            if (mIndels[i][j][currentData->indel()]){
-                                mIndels[i][j][currentData->indel()]++;
-                            }
-                            else{
-                                mIndels[i][j][currentData->indel()]=1;
-                            }
-                        }
-                        else{
-                            vector <int> currentSubstitutions = currentData->substitutions();
-                            while (!currentSubstitutions.empty()){
-                                int currentSubstitution = currentSubstitutions.back();
-                                currentSubstitutions.pop_back();
-                                mSubstitutions[i][j][currentSubstitution]++;
-                                //cout<<i<<" "<<j<<" "<<currentSubstitution<<" "<<mSubstitutions[i][j][currentSubstitution]<<endl;
-                                mVariantsCount[i][j]++;
-                                mSubstitutionsCount[i][j]++;
-                            }
-                        }
-                    }
-                   // else{cout<<"Trash"<<endl;}
-
+    for (int i=0; i<2000;++i){//initialize variant counts hash array to 0
+       mSubstitutions[i]=0;
+    }
+    cout<<mImportantNodes.size()<<"=number of important nodes"<<endl;
+    while (!mImportantNodes.empty()){//go through important nodes and increment value in variant counts hash array as varaints are found.
+        if (!mImportantNodes.top()->isTrash()){
+            if (mImportantNodes.top()->hasIndel()==true){
+                mIndelsCount++;
+                if (mIndels[mImportantNodes.top()->indel()]){
+                     mIndels[mImportantNodes.top()->indel()]++;
+                 }
+                else{
+                    mIndels[mImportantNodes.top()->indel()]=1;
                 }
-                mImportantNodes[i][j].pop(); 
-            }      
+            }
+            else{
+                vector <int> currentSubstitutions = mImportantNodes.top()->substitutions();
+                while (!currentSubstitutions.empty()){
+                    int currentSubstitution = currentSubstitutions.back();
+                    currentSubstitutions.pop_back();
+                    mSubstitutions[currentSubstitution]++;
+                    mSubstitutionsCount++;
+                }
+           }
+        }
+        mImportantNodes.pop();
+    }
+}
+
+void Trie::printVariants(){
+    for (int i=0; i<2000;++i){//unhash and output variants found in variant counts hash array. Output count/total count for each variant.
+        int count =mSubstitutions[i];
+        if (count != 0){
+            cout<<unhashSubstitutions(i).first<<" "<<unhashSubstitutions(i).second<<" "<<float(count)/mSubstitutionsCount<<endl;
         }
     }
-    cout<<totalImportantNodes<<"=number of important nodes"<<endl;
+    for(map< pair<int, int>, int>::const_iterator it = mIndels.begin(); it != mIndels.end(); ++it){
+        cout << it->first.first << " " << it->first.second << " " << it->second/float(mIndels.size()) << endl;
+    }
 }
 
-
-void Trie::printVariants(int targetLength){
-    cout<<"printing trie "<<endl;
-    for (int i=0; i<mNumberOfROIs; ++i){
-        for (int j=0; j<mNumberOfPhases; ++j){
-            if (mVariantsCount[i][j]!=0){
-                ostringstream os;
-                os<<j;
-                string filename= mGenes[i]+"_"+os.str()+".txt";
-                string matrixFilename = mGenes[i]+"_"+os.str()+"matrix.txt";
-                ofstream outfile;
-                ofstream matrixOutfile;
-                outfile.open (filename.c_str());
-                matrixOutfile.open (matrixFilename.c_str());
-
-                outfile<<"ROI: "<<mGenes[i]<<endl<<"Phase: "<<j<<endl<<"Total nodes checked: "<< mNodesChecked[i][j]<<endl<<"Total variants found: "<<mVariantsCount[i][j]<<endl;
-                map<int,int>::iterator it1;
-                for (int l=0; l<5; ++l){//go through each base
-                    for (int k = 0; k<targetLength; ++k){
-                        it1=mSubstitutions[i][j].find(k*5+l);
-                        if (it1 == mSubstitutions[i][j].end()){
-                            cout<<k*5+l<< " not found"<<endl;
-                            matrixOutfile<<left<<setw(15)<<setfill(' ')<<"0";   
-                        }
-                        else {
-                            cout<<it1->second<<" count of "<<k*5+l<<endl;
-                            matrixOutfile<<left<<setw(15)<<setfill(' ')<<it1->second/(float)mSubstitutionsCount[i][j];
-                        }
-                    }
-                    matrixOutfile<<endl;
-                }
-                for (map <int, int>::const_iterator it=mSubstitutions[i][j].begin(); it != mSubstitutions[i][j].end(); ++it){
-                    outfile<<unhashSubstitutions(it->first).first<<" "<<unhashSubstitutions(it->first).second<<" "<< it->second << endl;
-                }
-                for(map< pair<int, int>, int>::const_iterator it = mIndels[i][j].begin(); it != mIndels[i][j].end(); ++it){
-                    outfile << it->first.first << " " << it->first.second << " " << it->second << endl;
-                }
-                outfile.close();
-            }
-        }
-    }  
-}
-
-/* WHAT do we actually want for this? For a given ROI and a given PHase, the barcode count? OR the total count regardless?
 int Trie::returnBarcodeCount(string barcode){
     Node* pCurrentNode = mRootPointer;
     int barcodeCount=0;
@@ -180,16 +109,11 @@ int Trie::returnBarcodeCount(string barcode){
     }
     return barcodeCount;
 }
-*/
-
 
 void Trie::printTrie(Node* pCurrentNode, string barcode, int index){
-
-
     if ( pCurrentNode == NULL ){//if this is the first iteration, set current at root of trie
         pCurrentNode = mRootPointer;
         cout<<"Barcode Count"<<endl;
-        barcode=string(mBarcodeLength, '\0');
     }
     else{//add the content of this node to the barcode
         barcode[index] = pCurrentNode->content();
@@ -202,36 +126,15 @@ void Trie::printTrie(Node* pCurrentNode, string barcode, int index){
             printTrie(pCurrentNode, barcode, index);
         }
     }
-    else if( !pCurrentNode->leafData().empty()){//if we reach a leaf, print the count and variants
-        ofstream summaryFile;
-        summaryFile.open("summary.txt", ios::app);
-        summaryFile<<"barcode: "<<barcode<<endl;
-        for (int i=0; i<mNumberOfROIs; ++i){
-            summaryFile<<mGenes[i]<<endl;
-            for (int j=0; j<mNumberOfPhases; ++j){
-                LeafData* currentData= pCurrentNode->leafData()[i][j];
-                if (currentData!=NULL){
-                    summaryFile<<"phase "<<j<<endl;
-
-                    if (!currentData->substitutions().empty()){
-                        for (int q=0; q<currentData->substitutions().size(); ++q){
-                            summaryFile<<" "<<unhashSubstitutions(currentData->substitutions()[q]).first<<" "<< unhashSubstitutions(currentData->substitutions()[q]).second<<endl;
-                        }
-                    }
-                
-                    if (currentData->hasIndel()){                   
-                        summaryFile<<currentData->indel().first<<" "<<currentData->indel().second<<endl;
-}
-                }
-            }
-        summaryFile.close();
+    else if( pCurrentNode->count()!=0 ){//if we reach a leaf, print the count and variants
+       cout<<barcode<<" "<<pCurrentNode->count()<<endl;
+       if (!pCurrentNode->substitutions().empty()){
+           cout<<" "<<unhashSubstitutions((pCurrentNode->substitutions()).back()).first<<" "<< unhashSubstitutions((pCurrentNode->substitutions()).back()).second<<endl;
        }
-
        return;
     }
 }
 
-/*and here. Maybe a barcode needs to have a total count at the node level
 int Trie::returnMaxCount(int& max,Node* pCurrentNode ){
     if ( pCurrentNode==NULL ){ //if this is the first time the function is called, set current to root
         pCurrentNode=mRootPointer;
@@ -251,4 +154,3 @@ int Trie::returnMaxCount(int& max,Node* pCurrentNode ){
     return max;
 }
 
-*/
