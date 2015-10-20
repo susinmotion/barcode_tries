@@ -54,18 +54,29 @@ void Trie::addImportantNode(Node* pImportantNode){
 
 void Trie::populateVariants(){
     for (int i=0; i<2000;++i){//initialize variant counts hash array to 0
-       mVariantCounts[i]=0;
+       mSubstitutions[i]=0;
     }
     cout<<mImportantNodes.size()<<"=number of important nodes"<<endl;
     while (!mImportantNodes.empty()){//go through important nodes and increment value in variant counts hash array as varaints are found.
         if (!mImportantNodes.top()->isTrash()){
-            vector <int> currentSubstitutions = mImportantNodes.top()->substitutions();
-            while (!currentSubstitutions.empty()){
-                int currentSubstitution = currentSubstitutions.back();
-                currentSubstitutions.pop_back();
-                mVariantCounts[currentSubstitution]++;
-                mImportantVariantsCount++;
+            if (mImportantNodes.top()->hasIndel()==true){
+                mIndelsCount++;
+                if (mIndels[mImportantNodes.top()->indel()]){
+                     mIndels[mImportantNodes.top()->indel()]++;
+                 }
+                else{
+                    mIndels[mImportantNodes.top()->indel()]=1;
+                }
             }
+            else{
+                vector <int> currentSubstitutions = mImportantNodes.top()->substitutions();
+                while (!currentSubstitutions.empty()){
+                    int currentSubstitution = currentSubstitutions.back();
+                    currentSubstitutions.pop_back();
+                    mSubstitutions[currentSubstitution]++;
+                    mSubstitutionsCount++;
+                }
+           }
         }
         mImportantNodes.pop();
     }
@@ -73,10 +84,13 @@ void Trie::populateVariants(){
 
 void Trie::printVariants(){
     for (int i=0; i<2000;++i){//unhash and output variants found in variant counts hash array. Output count/total count for each variant.
-        int count =mVariantCounts[i];
+        int count =mSubstitutions[i];
         if (count != 0){
-            cout<<unhashSubstitutions(i).first<<" "<<unhashSubstitutions(i).second<<" "<<float(count)/mImportantVariantsCount<<endl;
+            cout<<unhashSubstitutions(i).first<<" "<<unhashSubstitutions(i).second<<" "<<float(count)/mSubstitutionsCount<<endl;
         }
+    }
+    for(map< pair<int, int>, int>::const_iterator it = mIndels.begin(); it != mIndels.end(); ++it){
+        cout << it->first.first << " " << it->first.second << " " << it->second/float(mIndels.size()) << endl;
     }
 }
 
