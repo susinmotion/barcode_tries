@@ -60,10 +60,10 @@ void Trie::populateVariants(){
     while (!mImportantNodes.empty()){//go through important nodes and increment value in variant counts hash array as varaints are found.
         if (!mImportantNodes.top()->isTrash()){
             if (mImportantNodes.top()->hasIndel()==true){
-                mIndelsCount++;
-                if (mIndels[mImportantNodes.top()->indel()]){
-                     mIndels[mImportantNodes.top()->indel()]++;
-                 }
+                mVariantsCount++;
+                if ( mIndels[mImportantNodes.top()->indel()] ){
+                    mIndels[mImportantNodes.top()->indel()]++;
+                }
                 else{
                     mIndels[mImportantNodes.top()->indel()]=1;
                 }
@@ -74,7 +74,7 @@ void Trie::populateVariants(){
                     int currentSubstitution = currentSubstitutions.back();
                     currentSubstitutions.pop_back();
                     mSubstitutions[currentSubstitution]++;
-                    mSubstitutionsCount++;
+                    mVariantsCount++;
                 }
            }
         }
@@ -86,11 +86,11 @@ void Trie::printVariants(){
     for (int i=0; i<2000;++i){//unhash and output variants found in variant counts hash array. Output count/total count for each variant.
         int count =mSubstitutions[i];
         if (count != 0){
-            cout<<unhashSubstitutions(i).first<<" "<<unhashSubstitutions(i).second<<" "<<float(count)/mSubstitutionsCount<<endl;
+            cout<<unhashSubstitutions(i).first<<" "<<unhashSubstitutions(i).second<<" "<<float(count)/mVariantsCount<<endl;
         }
     }
     for(map< pair<int, int>, int>::const_iterator it = mIndels.begin(); it != mIndels.end(); ++it){
-        cout << it->first.first << " " << it->first.second << " " << it->second/float(mIndels.size()) << endl;
+        cout << it->first.first << " " << it->first.second << " " << it->second/float(mVariantsCount) << endl;
     }
 }
 
