@@ -7,6 +7,6 @@ int hashSubstitutions (int pos, char nucleotide);
 
 pair<int, char> unhashSubstitutions (int variantHash);
 
-void checkVariants(string sequence, string target, LeafData* pCurrentData);
+void checkVariants(string sequence, string target, Node* pCurrentNode);
 
 
