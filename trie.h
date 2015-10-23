@@ -24,9 +24,8 @@ private:
     int mThresholdOfImportance;
     stack <Node*> mImportantNodes;
     map<pair<int, int>, int> mIndels;
-    int mIndelsCount;
     int mSubstitutions[2000];
-    int mSubstitutionsCount;
+    int mVariantsCount;
 };
 
 #endif
