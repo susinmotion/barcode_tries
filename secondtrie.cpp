@@ -4,6 +4,7 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include "trie.h"
 
 using namespace std;
 
@@ -12,16 +13,17 @@ int main(){  //file config.cfg contains a list of config files
     cout<<"start"<<endl;
     ifstream infile("config.cfg");
     string filename;
-    infile>> filename;
+    getline (infile,filename);
     while (infile >> filename){
-
-        Trie* t = new Trie();
+        cout <<"opening "<<filename<<endl;
     
-        readFileIntoTrie(t, filename);
+        vector <Trie*> tries = readFileIntoTrie(filename);
         cout <<"read file"<<endl;  
-   
-        t->populateVariants();
-        t->printVariants();
+        
+        for (int i=0; i<tries.size(); ++i){      
+            tries[i]->populateVariants();
+            tries[i]->printVariants();
+        }
     }
     //int max=0; //is there a better way to do this max situation?
     //cout<<t->returnMaxCount(max)<<" is the max count"<<endl; 
