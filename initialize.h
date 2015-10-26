@@ -1,7 +1,8 @@
 #include "trie.h"
 #include <map>
 #include <string>
+#include <vector>
 
-map <string, int> readConfig(string filename);
+map <string, vector <string> > readConfig(string filename);
 int ** initializeHashMtx();
-void readFileIntoTrie(Trie* trie, string filename);
+vector <Trie*> readFileIntoTrie(string filename);
