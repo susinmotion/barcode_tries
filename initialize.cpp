@@ -5,21 +5,22 @@
 #include <cstdlib>
 using namespace std;
 
-map <string, string> readConfig(){ //read config file into map of user defined variables
+map <string, string> readConfig(string filename){ //read config file into map of user defined variables
     map <string, string> userDefinedVariables;
     userDefinedVariables.clear();
-    ifstream infile("example.cfg");
+    ifstream infile(filename.c_str());
     string key;
     string value;
     while (infile >> key >>value){
+        cout <<key<<endl;
         pair <string, string> varPair = make_pair (key, value);
         userDefinedVariables.insert(varPair);
     }
     return userDefinedVariables;
 }
     
-void readFileIntoTrie(Trie* trie){//set constants based on config file
-    map <string, string> userDefinedVariables=readConfig();
+void readFileIntoTrie(Trie* trie, string filename){//set constants based on config file
+    map <string, string> userDefinedVariables=readConfig(filename);
     const int BARCODE_LENGTH=atoi(userDefinedVariables["BARCODE_LENGTH"].c_str() );
 //    string FILENAME = "/mnt/storage/data/justin/Archive/miseq/Data/Intensities/BaseCalls/1_S1_L001_R1_001.fastq";
     const string FORWARD_ALIGN_SEQ=userDefinedVariables["FORWARD_ALIGN_SEQ"];

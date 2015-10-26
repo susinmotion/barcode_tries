@@ -1,20 +1,28 @@
 #include <iostream>
 #include "initialize.h"
 #include <ctime>
+#include <fstream>
+#include <vector>
+#include <string>
 
 using namespace std;
 
-int main(){  
+int main(){  //file config.cfg contains a list of config files
     clock_t begin = clock();
     cout<<"start"<<endl;
+    ifstream infile("config.cfg");
+    string filename;
+    infile>> filename;
+    while (infile >> filename){
+
+        Trie* t = new Trie();
     
-    Trie* t = new Trie();
-    
-    readFileIntoTrie(t);
-    cout <<"read file"<<endl;  
+        readFileIntoTrie(t, filename);
+        cout <<"read file"<<endl;  
    
-    t->populateVariants();
-    t->printVariants();
+        t->populateVariants();
+        t->printVariants();
+    }
     //int max=0; //is there a better way to do this max situation?
     //cout<<t->returnMaxCount(max)<<" is the max count"<<endl; 
     clock_t end = clock();

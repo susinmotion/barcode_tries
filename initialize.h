@@ -2,6 +2,6 @@
 #include <map>
 #include <string>
 
-map <string, int> readConfig();
+map <string, int> readConfig(string filename);
 int ** initializeHashMtx();
-void readFileIntoTrie(Trie* trie);
+void readFileIntoTrie(Trie* trie, string filename);
