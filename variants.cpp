@@ -39,12 +39,14 @@ pair<int, char> unhashSubstitutions (int variantHash){//unhash int into pos/nucl
 void checkVariants(string sequence, string target, Node* pCurrentNode){
     int variantPos;
     vector <int> currentSubstitutions;
+    cout <<sequence<<" "<<" "<<target<<endl;
     for (int i=0; i<(min(sequence.length(), target.length())); ++i){
         if ( sequence[i]!=target[i] && sequence[i]!='N'){//check to see if the sequence differs from the target
             variantPos = i;
             if ( sequence.length()!=target.length() ){//if the sequence is longer or shorter than expected mark indel
                 int indelLength=sequence.length()-target.length();
                 pair <int,int> indel=make_pair(variantPos, indelLength);
+                cout<<sequence<<" "<<target <<"indel"<<endl;
 
                 if ( (pCurrentNode->count()>0) && (pCurrentNode->indel()!=indel) ){//if there's been a read before that doesn't match the indel found, trash all reads from this barcode
                     pCurrentNode->makeTrash();

@@ -11,20 +11,15 @@ using namespace std;
 int main(){  //file config.cfg contains a list of config files
     clock_t begin = clock();
     cout<<"start"<<endl;
-    ifstream infile("config.cfg");
-    string filename;
-    getline (infile,filename);
-    while (infile >> filename){
-        cout <<"opening "<<filename<<endl;
     
-        vector <Trie*> tries = readFileIntoTrie(filename);
-        cout <<"read file"<<endl;  
+    vector <Trie*> tries = readFileIntoTrie("test.cfg");
+    cout <<"read file"<<endl;  
         
-        for (int i=0; i<tries.size(); ++i){      
-            tries[i]->populateVariants();
-            tries[i]->printVariants();
-        }
+    for (int i=0; i<tries.size(); ++i){      
+        tries[i]->populateVariants();
+        tries[i]->printVariants();
     }
+
     //int max=0; //is there a better way to do this max situation?
     //cout<<t->returnMaxCount(max)<<" is the max count"<<endl; 
     clock_t end = clock();

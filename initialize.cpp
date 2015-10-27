@@ -40,6 +40,7 @@ vector<Trie*> readFileIntoTrie(string filename){//set constants based on config 
     const vector <string> FORWARD_ALIGN_SEQ=userDefinedVariables["FORWARD_ALIGN_SEQ"];
     const vector <string> REVERSE_ALIGN_SEQ=userDefinedVariables["REVERSE_ALIGN_SEQ"];
     const vector <string> TARGET=userDefinedVariables["TARGET"];
+    const vector <string> FILENAMES =userDefinedVariables["FILENAME"];
     
     vector<Trie*> tries;
     for (int i=0; i<FORWARD_ALIGN_SEQ.size(); ++i){
@@ -47,40 +48,39 @@ vector<Trie*> readFileIntoTrie(string filename){//set constants based on config 
         cout <<"made a trie"<<endl;
         tries.at(i)->setThresholdOfImportance( atoi (userDefinedVariables["THRESHOLD_OF_IMPORTANCE"].at(0).c_str()) );
     }
+    for (int i=0; i<FILENAMES.size(); ++i){
+        ifstream readfile (FILENAMES[i].c_str());
 
-    ifstream readfile (userDefinedVariables["FILENAME"].at(0).c_str());
+        int count=0;
+        string sequence;
+        string barcode;
+        string throwoutstring;
+        int indexForwardAlign;
+        int indexReverseAlign;
+        if (readfile.is_open()){
+            cout<<userDefinedVariables["FILENAME"][i]<<" is open"<<endl;
+            while (getline(readfile,throwoutstring)){//read sequence. 4 lines is a read. 2nd line has sequence
+                count++;
+                readfile>>sequence;
+                for (int i=0; i<FORWARD_ALIGN_SEQ.size(); ++i){
+                    indexForwardAlign=sequence.find(FORWARD_ALIGN_SEQ[i],BARCODE_LENGTH);//find forward and reverse alignment sequences
+                    indexReverseAlign=sequence.find(REVERSE_ALIGN_SEQ[i],BARCODE_LENGTH+FORWARD_ALIGN_SEQ[i].length());
+                    if ((indexForwardAlign != -1) && (indexReverseAlign != -1) ){//if align.seq found, add read to trie
+                        barcode=sequence.substr(indexForwardAlign-BARCODE_LENGTH, BARCODE_LENGTH);//extract barcode and read from full sequence
+                        sequence=sequence.substr(BARCODE_LENGTH+FORWARD_ALIGN_SEQ[i].length(), indexReverseAlign-BARCODE_LENGTH-FORWARD_ALIGN_SEQ[i].length());//maybe rename this variable at some point
+                        tries[i]->addBarcode(barcode,sequence, TARGET[i]);
 
-    int count=0;
-    string sequence;
-    string barcode;
-    string throwoutstring;
-    int indexForwardAlign;
-    int indexReverseAlign;
-
-    if (readfile.is_open()){
-        cout<<userDefinedVariables["FILENAME"][0]<<" is open"<<endl;
-        while (getline(readfile,throwoutstring)){//read sequence. 4 lines is a read. 2nd line has sequence
-            count++;
-            readfile>>sequence;
-            for (int i=0; i<FORWARD_ALIGN_SEQ.size(); ++i){
-                indexForwardAlign=sequence.find(FORWARD_ALIGN_SEQ[i],BARCODE_LENGTH);//find forward and reverse alignment sequences
-                indexReverseAlign=sequence.find(REVERSE_ALIGN_SEQ[i],BARCODE_LENGTH+FORWARD_ALIGN_SEQ[i].length());
-
-                if ((indexForwardAlign != -1) && (indexReverseAlign != -1) ){//if align.seq found, add read to trie
-                    barcode=sequence.substr(indexForwardAlign-BARCODE_LENGTH, BARCODE_LENGTH);//extract barcode and read from full sequence
-                    sequence=sequence.substr(BARCODE_LENGTH+FORWARD_ALIGN_SEQ[i].length(), indexReverseAlign-BARCODE_LENGTH-FORWARD_ALIGN_SEQ[i].length());//maybe rename this variable at some point
-                    tries[i]->addBarcode(barcode,sequence, TARGET[i]);
-
-                    continue;
+                        break;
+                    }
                 }
+                getline(readfile,throwoutstring);
+                getline(readfile,throwoutstring);
+                getline(readfile,throwoutstring);                 
             }
-            getline(readfile,throwoutstring);
-            getline(readfile,throwoutstring);
-            getline(readfile,throwoutstring);                 
         }
-    }
-    else {
-        cout<<"Error opening file "<< userDefinedVariables["FILENAME"][0]<<endl;
+        else {
+            cout<<"Error opening file "<< userDefinedVariables["FILENAME"][i]<<endl;
+        }
     }
     return tries;
 }
