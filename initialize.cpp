@@ -53,13 +53,24 @@ vector<Trie*> readFileIntoTrie(string filename){//set constants based on config 
     map <string, vector <string> > userDefinedVariables=readConfig(filename);
     cout<<" done reading config "<<endl;
     const int BARCODE_LENGTH =atoi(userDefinedVariables["BARCODE_LENGTH"][0].c_str() );
-    const vector <string> FORWARD_ALIGN_SEQ=userDefinedVariables["FORWARD_ALIGN_SEQ"];
-    const vector <string> REVERSE_ALIGN_SEQ=userDefinedVariables["REVERSE_ALIGN_SEQ"];
-    const vector <string> TARGET=userDefinedVariables["TARGET"];
+    vector <string> FORWARD_ALIGN_SEQ=userDefinedVariables["FORWARD_ALIGN_SEQ"];
+    vector <string> REVERSE_ALIGN_SEQ=userDefinedVariables["REVERSE_ALIGN_SEQ"];
+    vector <string> TARGET=userDefinedVariables["TARGET"];
     const vector <string> FILENAMES =userDefinedVariables["FILENAME"];
     
+    int numberOfROIs=FORWARD_ALIGN_SEQ.size();
+
+    for (int i=0; i<numberOfROIs; ++i){
+        FORWARD_ALIGN_SEQ.push_back(reverseComplement(FORWARD_ALIGN_SEQ[i]));
+        REVERSE_ALIGN_SEQ.push_back(reverseComplement(REVERSE_ALIGN_SEQ[i]));
+        TARGET.push_back(reverseComplement(TARGET[i]));
+    }
+        for (int i=0; i<FORWARD_ALIGN_SEQ.size(); ++i){
+        cout<<FORWARD_ALIGN_SEQ[i]<<" "<<REVERSE_ALIGN_SEQ[i]<<" "<<TARGET[i]<<endl;
+
+    }
     vector<Trie*> tries;
-    for (int i=0; i<FORWARD_ALIGN_SEQ.size(); ++i){
+    for (int i=0; i<numberOfROIs; ++i){
         tries.push_back(new Trie);
         cout <<"made a trie"<<endl;
         tries.at(i)->setThresholdOfImportance( atoi (userDefinedVariables["THRESHOLD_OF_IMPORTANCE"].at(0).c_str()) );
@@ -84,7 +95,8 @@ vector<Trie*> readFileIntoTrie(string filename){//set constants based on config 
                     if ((indexForwardAlign != -1) && (indexReverseAlign != -1) ){//if align.seq found, add read to trie
                         barcode=sequence.substr(indexForwardAlign-BARCODE_LENGTH, BARCODE_LENGTH);//extract barcode and read from full sequence
                         sequence=sequence.substr(BARCODE_LENGTH+FORWARD_ALIGN_SEQ[i].length(), indexReverseAlign-BARCODE_LENGTH-FORWARD_ALIGN_SEQ[i].length());//maybe rename this variable at some point
-                        tries[i]->addBarcode(barcode,sequence, TARGET[i]);
+                        cout<<barcode<<" "<<sequence<<" "<<TARGET[i]<<endl;
+                        tries[i%numberOfROIs]->addBarcode(barcode,sequence, TARGET[i]);
 
                         break;
                     }

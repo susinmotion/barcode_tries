@@ -10,7 +10,7 @@ using namespace std;
 
 int main(){  //file config.cfg contains a list of config files
     cout<<reverseComplement("GGGGGGA")<<endl;
-    /*clock_t begin = clock();
+    clock_t begin = clock();
     cout<<"start"<<endl;
     
     vector <Trie*> tries = readFileIntoTrie("test.cfg");
@@ -27,6 +27,6 @@ int main(){  //file config.cfg contains a list of config files
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     cout << "I'm done "<< endl;
     cout << elapsed_secs <<endl;
-    */
+    
 }
 
