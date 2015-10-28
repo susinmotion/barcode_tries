@@ -7,6 +7,22 @@
 #include <vector>
 using namespace std;
 
+string reverseComplement(string sequence){
+    map <char, char> complements;
+    complements['A']='T';
+    complements ['T']='A';
+    complements ['G']='C';
+    complements ['C']='G';
+    complements ['N']='N';
+
+    string reverseComplement="";
+ 
+    for (int i = sequence.length()-1; i>=0; --i){
+        reverseComplement = reverseComplement+complements[sequence[i]];
+    }
+    return reverseComplement;
+}
+
 map <string, vector <string> > readConfig(string filename){ //read config file into map of user defined variables
     map <string, vector<string> > userDefinedVariables;
     userDefinedVariables.clear();
