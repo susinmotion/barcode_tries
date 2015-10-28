@@ -62,9 +62,11 @@ void checkVariants(string sequence, string target, Node* pCurrentNode){
         if (variantPos == -1){
             variantPos=min(sequence.length(), target.length());
         }
-        
+        if (variantPos==0){
+            cout<<sequence<<endl;
+        }
         pair <int,int> indel=make_pair(variantPos, indelLength);
-        cout<<sequence<<" "<<target <<"indel"<<endl;
+        //cout<<sequence<<" "<<target <<"indel"<<endl;
 
         if ( (pCurrentNode->count()>0) && (pCurrentNode->indel()!=indel) ){//if there's been a read before that doesn't match the indel found, trash all reads from this barcode
             pCurrentNode->makeTrash();
