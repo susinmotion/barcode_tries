@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
+#include <iostream>
 
 using namespace std;
 
@@ -36,19 +37,21 @@ pair<int, char> unhashSubstitutions (int variantHash){//unhash int into pos/nucl
     return pair<int, char>(pos, nucleotide);
 }
 
-void checkVariants(string sequence, string target, Node* pCurrentNode){
+void checkVariants(string sequence, string target, LeafData* pCurrentData){
     vector <int> currentSubstitutions;
     int variantPos=-1;
+
     for (int i=0; i<(min(sequence.length(), target.length())); ++i){
         if ( sequence[i]!=target[i] && sequence[i]!='N'){//check to see if the sequence differs from the target
             variantPos = i;
 
             if (sequence.length()==target.length()){
-                if ( pCurrentNode->hasIndel() ){//if we are getting a substitution and we had an indel before, trash
-                    pCurrentNode->makeTrash();
+                if ( pCurrentData->hasIndel() ){//if we are getting a substitution and we had an indel before, trash
+                    pCurrentData->makeTrash();
                     return;
                 }
                 int substitutionHash = hashSubstitutions(variantPos, sequence[variantPos]);
+                cout<<substitutionHash<<" hash "<<sequence<< " "<<variantPos<<" :pos "<<sequence[variantPos]<<endl;
                 currentSubstitutions.push_back(substitutionHash);
             }      
 
@@ -62,22 +65,19 @@ void checkVariants(string sequence, string target, Node* pCurrentNode){
         if (variantPos == -1){
             variantPos=min(sequence.length(), target.length());
         }
-        if (variantPos==0){
-            cout<<sequence<<endl;
-        }
         pair <int,int> indel=make_pair(variantPos, indelLength);
         //cout<<sequence<<" "<<target <<"indel"<<endl;
 
-        if ( (pCurrentNode->count()>0) && (pCurrentNode->indel()!=indel) ){//if there's been a read before that doesn't match the indel found, trash all reads from this barcode
-            pCurrentNode->makeTrash();
+        if ( (pCurrentData->count()>0) && (pCurrentData->indel()!=indel) ){//if there's been a read before that doesn't match the indel found, trash all reads from this barcode
+            pCurrentData->makeTrash();
         }
         else{
-            pCurrentNode->setIndel(indel);
+            pCurrentData->setIndel(indel);
         }
         return;
 
     }
     if (currentSubstitutions.size()!=0){
-        pCurrentNode->replaceSubstitutions(currentSubstitutions);
+        pCurrentData->replaceSubstitutions(currentSubstitutions);
     }
 }

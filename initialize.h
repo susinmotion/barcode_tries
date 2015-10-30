@@ -6,4 +6,4 @@
 string reverseComplement(string);
 map <string, vector <string> > readConfig(string filename);
 int ** initializeHashMtx();
-vector <Trie*> readFileIntoTrie(string filename);
+Trie* readFileIntoTrie(string filename);
