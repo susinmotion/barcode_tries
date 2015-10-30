@@ -13,13 +13,12 @@ int main(){  //file config.cfg contains a list of config files
     clock_t begin = clock();
     cout<<"start"<<endl;
     
-    vector <Trie*> tries = readFileIntoTrie("test.cfg");
+    Trie* trie = readFileIntoTrie("test.cfg");
     cout <<"read file"<<endl;  
-        
-    for (int i=0; i<tries.size(); ++i){      
-        tries[i]->populateVariants();
-        tries[i]->printVariants();
-    }
+    
+    trie->populateVariants();
+    trie->printVariants();        
+    
 
     //int max=0; //is there a better way to do this max situation?
     //cout<<t->returnMaxCount(max)<<" is the max count"<<endl; 

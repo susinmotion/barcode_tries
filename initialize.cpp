@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <sstream>
 #include <vector>
+#include <iostream>
 using namespace std;
 
 string reverseComplement(string sequence){
@@ -49,7 +50,7 @@ map <string, vector <string> > readConfig(string filename){ //read config file i
     return userDefinedVariables;
 }
     
-vector<Trie*> readFileIntoTrie(string filename){//set constants based on config file
+Trie* readFileIntoTrie(string filename){//set constants based on config file
     map <string, vector <string> > userDefinedVariables=readConfig(filename);
     cout<<" done reading config "<<endl;
     const int BARCODE_LENGTH =atoi(userDefinedVariables["BARCODE_LENGTH"][0].c_str() );
@@ -59,6 +60,7 @@ vector<Trie*> readFileIntoTrie(string filename){//set constants based on config 
     const vector <string> FILENAMES =userDefinedVariables["FILENAME"];
     
     int numberOfROIs=FORWARD_ALIGN_SEQ.size();
+    int numberOfPhases=atoi(userDefinedVariables["MAX_PHASE"][0].c_str() );
 
     for (int i=0; i<numberOfROIs; ++i){
         FORWARD_ALIGN_SEQ.push_back(reverseComplement(FORWARD_ALIGN_SEQ[i]));
@@ -69,12 +71,9 @@ vector<Trie*> readFileIntoTrie(string filename){//set constants based on config 
         cout<<FORWARD_ALIGN_SEQ[i]<<" "<<REVERSE_ALIGN_SEQ[i]<<" "<<TARGET[i]<<endl;
 
     }
-    vector<Trie*> tries;
-    for (int i=0; i<numberOfROIs; ++i){
-        tries.push_back(new Trie);
-        cout <<"made a trie"<<endl;
-        tries.at(i)->setThresholdOfImportance( atoi (userDefinedVariables["THRESHOLD_OF_IMPORTANCE"].at(0).c_str()) );
-    }
+    Trie* trie = new Trie;
+    trie->setThresholdROIPhase( atoi (userDefinedVariables["THRESHOLD_OF_IMPORTANCE"].at(0).c_str()), numberOfROIs, numberOfPhases);
+    
     for (int i=0; i<FILENAMES.size(); ++i){
         ifstream readfile (FILENAMES[i].c_str());
 
@@ -84,19 +83,25 @@ vector<Trie*> readFileIntoTrie(string filename){//set constants based on config 
         string throwoutstring;
         int indexForwardAlign;
         int indexReverseAlign;
+        int phase;
+        int ROINumber;
         if (readfile.is_open()){
             cout<<userDefinedVariables["FILENAME"][i]<<" is open"<<endl;
             while (getline(readfile,throwoutstring)){//read sequence. 4 lines is a read. 2nd line has sequence
                 count++;
                 readfile>>sequence;
+
                 for (int i=0; i<FORWARD_ALIGN_SEQ.size(); ++i){
                     indexForwardAlign=sequence.find(FORWARD_ALIGN_SEQ[i],BARCODE_LENGTH);//find forward and reverse alignment sequences
                     indexReverseAlign=sequence.find(REVERSE_ALIGN_SEQ[i],BARCODE_LENGTH+FORWARD_ALIGN_SEQ[i].length());
+
                     if ((indexForwardAlign != -1) && (indexReverseAlign != -1) ){//if align.seq found, add read to trie
                         barcode=sequence.substr(indexForwardAlign-BARCODE_LENGTH, BARCODE_LENGTH);//extract barcode and read from full sequence
-                        sequence=sequence.substr(BARCODE_LENGTH+FORWARD_ALIGN_SEQ[i].length(), indexReverseAlign-BARCODE_LENGTH-FORWARD_ALIGN_SEQ[i].length());//maybe rename this variable at some point
+                        sequence=sequence.substr(indexForwardAlign+FORWARD_ALIGN_SEQ[i].length(), indexReverseAlign-indexForwardAlign-FORWARD_ALIGN_SEQ[i].length());//maybe rename this variable at some point
+                        phase = indexForwardAlign-BARCODE_LENGTH;
+                        ROINumber = i%numberOfROIs;
                         cout<<barcode<<" "<<sequence<<" "<<TARGET[i]<<endl;
-                        tries[i%numberOfROIs]->addBarcode(barcode,sequence, TARGET[i]);
+                        trie->addBarcode(ROINumber, phase,barcode,sequence, TARGET[i]);
 
                         break;
                     }
@@ -110,6 +115,6 @@ vector<Trie*> readFileIntoTrie(string filename){//set constants based on config 
             cout<<"Error opening file "<< userDefinedVariables["FILENAME"][i]<<endl;
         }
     }
-    return tries;
+    return trie;
 }
 
