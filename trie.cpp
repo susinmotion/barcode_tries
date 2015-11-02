@@ -5,6 +5,9 @@
 #include <vector>
 #include <string>
 #include <stack>
+#include <fstream>
+#include <cstdlib>
+#include <sstream>
 using namespace std;
 
 Node* Trie::pRootPointer(){
@@ -47,10 +50,11 @@ void Trie::addBarcode(int ROINumber, int phase, string barcode, string sequence,
     }
 }
 
-void Trie::setThresholdROIPhase(int threshold, int numberOfROIs, int numberOfPhases){
+void Trie::setThresholdROIPhaseGenes(int threshold, int numberOfROIs, int numberOfPhases, vector<string>genes){
     mThresholdOfImportance=threshold;
     mNumberOfROIs= numberOfROIs;
     mNumberOfPhases = numberOfPhases;
+    mGenes = genes;
 }
 
 stack <Node*> Trie::importantNodes(){
@@ -63,9 +67,11 @@ void Trie::addImportantNode(Node* pImportantNode){
 
 void Trie::populateVariants(){
     mVariantsCount= vector <vector<int> >(mNumberOfROIs, vector<int>(mNumberOfPhases,  0));
-    mSubstitutions= vector<vector <vector<int> > >(mNumberOfROIs, vector<vector<int> >(mNumberOfPhases, vector<int> (2000, 0)));
+    mNodesChecked= vector <vector<int> >(mNumberOfROIs, vector<int>(mNumberOfPhases,  0));
+    map<int, int> empty_map1;
+    mSubstitutions= vector<vector <map <int, int> > >( mNumberOfROIs, vector< map<int, int> >(mNumberOfPhases, empty_map1));
     map<pair<int,int>, int> empty_map;
-    mIndels = vector<vector <map <pair<int,int>, int> > >( mNumberOfROIs, vector< map<pair<int,int>, int> >(mNumberOfPhases, (empty_map)));
+    mIndels = vector<vector <map <pair<int,int>, int> > >( mNumberOfROIs, vector< map<pair<int,int>, int> >(mNumberOfPhases, empty_map));
               
 
     cout<<mImportantNodes.size()<<"=number of important nodes"<<endl;
@@ -76,6 +82,7 @@ void Trie::populateVariants(){
             for (int j=0; j<mNumberOfPhases; ++j){
                 LeafData* currentData=mImportantNodes.top()->leafData()[i][j];
                 if (currentData!=NULL){
+                    mNodesChecked[i][j]++;
                    if (!currentData->isTrash()){
                         if (currentData->hasIndel()==true){
                             mVariantsCount[i][j]++;
@@ -96,6 +103,7 @@ void Trie::populateVariants(){
                             }
                         }
                     }
+                    else{cout<<"Trash"<<endl;}
 
                 }
             }
@@ -104,23 +112,28 @@ void Trie::populateVariants(){
     }
 }
 
+
 void Trie::printVariants(){
     cout<<"printing trie "<<endl;
 
     for (int i=0; i<mNumberOfROIs; ++i){
         for (int j=0; j<mNumberOfPhases; ++j){
             if (mVariantsCount[i][j]!=0){
-                cout<<"ROI "<<i<<" Phase "<<j<<" Total variants found "<<mVariantsCount[i][j]<<endl;
-                for (int k=0; k<2000;++k){//unhash and output variants found in variant counts hash array. Output count/total count for each variant.
-                    int count= mSubstitutions[i][j][k];
-                    if (count != 0){
-                        cout<<unhashSubstitutions(i).first<<" "<<unhashSubstitutions(i).second<<" "<<count<<endl;
-                    } 
-                
+                ostringstream os;
+                os<<j;
+                string filename= mGenes[i]+"_"+os.str()+".txt";
+
+                ofstream outfile;
+                outfile.open (filename.c_str());
+
+                outfile<<"ROI: "<<mGenes[i]<<endl<<"Phase: "<<j<<endl<<"Total nodes checked: "<< mNodesChecked[i][j]<<endl<<"Total variants found: "<<mVariantsCount[i][j]<<endl;
+                for (map <int, int>::const_iterator it=mSubstitutions[i][j].begin(); it != mSubstitutions[i][j].end(); ++it){
+                    outfile<<unhashSubstitutions(it->first).first<<" "<<unhashSubstitutions(it->first).second<<" "<< it->second << endl;
                 }
                 for(map< pair<int, int>, int>::const_iterator it = mIndels[i][j].begin(); it != mIndels[i][j].end(); ++it){
-                    cout << it->first.first << " " << it->first.second << " " << it->second << endl;
+                    outfile << it->first.first << " " << it->first.second << " " << it->second << endl;
                 }
+                outfile.close();
             }
         }
     }  

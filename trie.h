@@ -12,7 +12,7 @@ public:
     Trie(){ mRootPointer = new Node; }
     Node* pRootPointer();
     void addBarcode(int ROINumber, int phase, string barcode, string sequence="", string target="");
-    void setThresholdROIPhase(int threshold, int numberOfROIs, int numberOfPhases);
+    void setThresholdROIPhaseGenes(int threshold, int numberOfROIs, int numberOfPhases, vector <string> genes);
     stack <Node*> importantNodes();
     void addImportantNode(Node* importantNodePointer);
     void populateVariants();
@@ -29,7 +29,9 @@ private:
     stack <Node*> mImportantNodes;
     vector <vector <map<pair<int, int>, int> > >mIndels;
     vector< vector <int> > mVariantsCount;
-    vector< vector< vector <int> > >mSubstitutions;
+    vector< vector <int> > mNodesChecked;
+    vector< vector< map <int,int> > >mSubstitutions;
+    vector <string> mGenes;
 
 };
 
