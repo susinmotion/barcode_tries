@@ -54,13 +54,14 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
     map <string, vector <string> > userDefinedVariables=readConfig(filename);
     cout<<" done reading config "<<endl;
     const int BARCODE_LENGTH =atoi(userDefinedVariables["BARCODE_LENGTH"][0].c_str() );
+    const vector <string> GENES = userDefinedVariables["GENES"];
     vector <string> FORWARD_ALIGN_SEQ=userDefinedVariables["FORWARD_ALIGN_SEQ"];
     vector <string> REVERSE_ALIGN_SEQ=userDefinedVariables["REVERSE_ALIGN_SEQ"];
     vector <string> TARGET=userDefinedVariables["TARGET"];
     const vector <string> FILENAMES =userDefinedVariables["FILENAME"];
     
     int numberOfROIs=FORWARD_ALIGN_SEQ.size();
-    int numberOfPhases=atoi(userDefinedVariables["MAX_PHASE"][0].c_str() );
+    int numberOfPhases=atoi(userDefinedVariables["MAX_PHASE"][0].c_str() )+1;
 
     for (int i=0; i<numberOfROIs; ++i){
         FORWARD_ALIGN_SEQ.push_back(reverseComplement(FORWARD_ALIGN_SEQ[i]));
@@ -72,7 +73,7 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
 
     }
     Trie* trie = new Trie;
-    trie->setThresholdROIPhase( atoi (userDefinedVariables["THRESHOLD_OF_IMPORTANCE"].at(0).c_str()), numberOfROIs, numberOfPhases);
+    trie->setThresholdROIPhaseGenes( atoi (userDefinedVariables["THRESHOLD_OF_IMPORTANCE"].at(0).c_str()), numberOfROIs, numberOfPhases, GENES);
     
     for (int i=0; i<FILENAMES.size(); ++i){
         ifstream readfile (FILENAMES[i].c_str());
@@ -100,7 +101,7 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
                         sequence=sequence.substr(indexForwardAlign+FORWARD_ALIGN_SEQ[i].length(), indexReverseAlign-indexForwardAlign-FORWARD_ALIGN_SEQ[i].length());//maybe rename this variable at some point
                         phase = indexForwardAlign-BARCODE_LENGTH;
                         ROINumber = i%numberOfROIs;
-                        cout<<barcode<<" "<<sequence<<" "<<TARGET[i]<<endl;
+                        //cout<<barcode<<" "<<sequence<<" "<<TARGET[i]<<endl;
                         trie->addBarcode(ROINumber, phase,barcode,sequence, TARGET[i]);
 
                         break;
