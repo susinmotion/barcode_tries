@@ -75,14 +75,14 @@ void Trie::populateVariants(){
     map<pair<int,int>, int> empty_map;
     mIndels = vector<vector <map <pair<int,int>, int> > >( mNumberOfROIs, vector< map<pair<int,int>, int> >(mNumberOfPhases, empty_map));
               
-
-    cout<<mImportantNodes.size()<<"=number of important nodes"<<endl;
     cout<<mNumberOfROIs<< " rois"<<endl;
     cout<<mNumberOfPhases<<" phases"<<endl;
+    int totalImportantNodes=0;
     for (int i=0; i<mNumberOfROIs; ++i){
         for (int j=0; j<mNumberOfPhases; ++j){
             while (!mImportantNodes[i][j].empty()){//go through important nodes and increment value in variant counts hash array as varaints are found.
                 LeafData* currentData=mImportantNodes[i][j].top()->leafData()[i][j];
+                totalImportantNodes++;
                 if (currentData!=NULL){
                     mNodesChecked[i][j]++;
                    if (!currentData->isTrash()){
@@ -101,18 +101,19 @@ void Trie::populateVariants(){
                                 int currentSubstitution = currentSubstitutions.back();
                                 currentSubstitutions.pop_back();
                                 mSubstitutions[i][j][currentSubstitution]++;
-                                cout<<i<<" "<<j<<" "<<currentSubstitution<<" "<<mSubstitutions[i][j][currentSubstitution]<<endl;
+                                //cout<<i<<" "<<j<<" "<<currentSubstitution<<" "<<mSubstitutions[i][j][currentSubstitution]<<endl;
                                 mVariantsCount[i][j]++;
                             }
                         }
                     }
-                    else{cout<<"Trash"<<endl;}
+                   // else{cout<<"Trash"<<endl;}
 
                 }
                 mImportantNodes[i][j].pop(); 
             }      
         }
     }
+    cout<<totalImportantNodes<<"=number of important nodes"<<endl;
 }
 
 
