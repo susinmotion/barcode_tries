@@ -44,7 +44,7 @@ void Trie::addBarcode(int ROINumber, int phase, string barcode, string sequence,
             pCurrentData->setCount();
             pCurrentNode->setLeafData(ROINumber, phase, pCurrentData);
             if (pCurrentNode->leafData()[ROINumber][phase]->count()==mThresholdOfImportance){//if there are enough reads, add pointer to list of important nodes for output later
-                addImportantNode(pCurrentNode);
+                addImportantNode(pCurrentNode, ROINumber, phase);
             }
         }
     }
@@ -55,14 +55,16 @@ void Trie::setThresholdROIPhaseGenes(int threshold, int numberOfROIs, int number
     mNumberOfROIs= numberOfROIs;
     mNumberOfPhases = numberOfPhases;
     mGenes = genes;
+    stack <Node*> empty_stack;
+    mImportantNodes=vector <vector <stack <Node*> > >(mNumberOfROIs, vector<stack<Node* > >(mNumberOfPhases, empty_stack));
 }
 
-stack <Node*> Trie::importantNodes(){
+vector< vector< stack <Node*> > >Trie::importantNodes(){
     return mImportantNodes;
 }
 
-void Trie::addImportantNode(Node* pImportantNode){
-    mImportantNodes.push(pImportantNode);
+void Trie::addImportantNode(Node* pImportantNode, int ROINumber, int phase){
+    mImportantNodes[ROINumber][phase].push(pImportantNode);
 }
 
 void Trie::populateVariants(){
@@ -77,11 +79,10 @@ void Trie::populateVariants(){
     cout<<mImportantNodes.size()<<"=number of important nodes"<<endl;
     cout<<mNumberOfROIs<< " rois"<<endl;
     cout<<mNumberOfPhases<<" phases"<<endl;
-    while (!mImportantNodes.empty()){//go through important nodes and increment value in variant counts hash array as varaints are found.
-        for (int i=0; i<mNumberOfROIs; ++i){
-            for (int j=0; j<mNumberOfPhases; ++j){
-                cout<<i<<" "<<j<<endl;
-                LeafData* currentData=mImportantNodes.top()->leafData()[i][j];
+    for (int i=0; i<mNumberOfROIs; ++i){
+        for (int j=0; j<mNumberOfPhases; ++j){
+            while (!mImportantNodes[i][j].empty()){//go through important nodes and increment value in variant counts hash array as varaints are found.
+                LeafData* currentData=mImportantNodes[i][j].top()->leafData()[i][j];
                 if (currentData!=NULL){
                     mNodesChecked[i][j]++;
                    if (!currentData->isTrash()){
@@ -100,6 +101,7 @@ void Trie::populateVariants(){
                                 int currentSubstitution = currentSubstitutions.back();
                                 currentSubstitutions.pop_back();
                                 mSubstitutions[i][j][currentSubstitution]++;
+                                cout<<i<<" "<<j<<" "<<currentSubstitution<<" "<<mSubstitutions[i][j][currentSubstitution]<<endl;
                                 mVariantsCount[i][j]++;
                             }
                         }
@@ -107,9 +109,9 @@ void Trie::populateVariants(){
                     else{cout<<"Trash"<<endl;}
 
                 }
-            }
+                mImportantNodes[i][j].pop(); 
+            }      
         }
-        mImportantNodes.pop();       
     }
 }
 

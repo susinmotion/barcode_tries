@@ -13,8 +13,8 @@ public:
     Node* pRootPointer();
     void addBarcode(int ROINumber, int phase, string barcode, string sequence="", string target="");
     void setThresholdROIPhaseGenes(int threshold, int numberOfROIs, int numberOfPhases, vector <string> genes);
-    stack <Node*> importantNodes();
-    void addImportantNode(Node* importantNodePointer);
+    vector< vector<stack <Node*> > >importantNodes();
+    void addImportantNode(Node* importantNodePointer, int ROINumber, int phase);
     void populateVariants();
     void printVariants();
     void printTrie(Node* pCurrentNodePointer = NULL, string barcode= string(18,'\0'), int index=0);
@@ -26,12 +26,12 @@ private:
     int mThresholdOfImportance;
     int mNumberOfROIs;
     int mNumberOfPhases;
-    stack <Node*> mImportantNodes;
-    vector <vector <map<pair<int, int>, int> > >mIndels;
+    vector< vector <stack <Node*> > >mImportantNodes;
+    vector< vector <map<pair<int, int>, int> > >mIndels;
     vector< vector <int> > mVariantsCount;
     vector< vector <int> > mNodesChecked;
     vector< vector< map <int,int> > >mSubstitutions;
-    vector <string> mGenes;
+    vector< string> mGenes;
 
 };
 
