@@ -68,10 +68,6 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
         REVERSE_ALIGN_SEQ.push_back(reverseComplement(REVERSE_ALIGN_SEQ[i]));
         TARGET.push_back(reverseComplement(TARGET[i]));
     }
-        for (int i=0; i<FORWARD_ALIGN_SEQ.size(); ++i){
-        cout<<FORWARD_ALIGN_SEQ[i]<<" "<<REVERSE_ALIGN_SEQ[i]<<" "<<TARGET[i]<<endl;
-
-    }
     Trie* trie = new Trie;
     trie->setThresholdROIPhaseGenes( atoi (userDefinedVariables["THRESHOLD_OF_IMPORTANCE"].at(0).c_str()), numberOfROIs, numberOfPhases, GENES);
     
@@ -97,9 +93,16 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
                     indexReverseAlign=sequence.find(REVERSE_ALIGN_SEQ[i],BARCODE_LENGTH+FORWARD_ALIGN_SEQ[i].length());
 
                     if ((indexForwardAlign != -1) && (indexReverseAlign != -1) ){//if align.seq found, add read to trie
-                        barcode=sequence.substr(indexForwardAlign-BARCODE_LENGTH, BARCODE_LENGTH);//extract barcode and read from full sequence
-                        sequence=sequence.substr(indexForwardAlign+FORWARD_ALIGN_SEQ[i].length(), indexReverseAlign-indexForwardAlign-FORWARD_ALIGN_SEQ[i].length());//maybe rename this variable at some point
-                        phase = indexForwardAlign-BARCODE_LENGTH;
+                        if (i<= numberOfROIs){
+                            barcode=sequence.substr(indexForwardAlign-BARCODE_LENGTH, BARCODE_LENGTH);//extract barcode and read from full sequence
+                            phase = indexForwardAlign-BARCODE_LENGTH;
+                            sequence=sequence.substr(indexForwardAlign+FORWARD_ALIGN_SEQ[i].length(), indexReverseAlign-indexForwardAlign-FORWARD_ALIGN_SEQ[i].length());//maybe rename this variable at some point
+                        }
+                        else{
+                            barcode= reverseComplement(sequence.substr(indexForwardAlign+FORWARD_ALIGN_SEQ[i].length(), BARCODE_LENGTH));
+                            phase=sequence.length()-BARCODE_LENGTH-indexForwardAlign-FORWARD_ALIGN_SEQ[i].length();
+                            sequence=reverseComplement(sequence.substr(indexReverseAlign+REVERSE_ALIGN_SEQ[i].length(), indexForwardAlign));
+                        }
                         ROINumber = i%numberOfROIs;
                         //cout<<barcode<<" "<<sequence<<" "<<TARGET[i]<<endl;
                         trie->addBarcode(ROINumber, phase,barcode,sequence, TARGET[i]);
