@@ -160,8 +160,10 @@ int Trie::returnBarcodeCount(string barcode){
 }
 */
 
-/*same here
+
 void Trie::printTrie(Node* pCurrentNode, string barcode, int index){
+
+
     if ( pCurrentNode == NULL ){//if this is the first iteration, set current at root of trie
         pCurrentNode = mRootPointer;
         cout<<"Barcode Count"<<endl;
@@ -177,15 +179,33 @@ void Trie::printTrie(Node* pCurrentNode, string barcode, int index){
             printTrie(pCurrentNode, barcode, index);
         }
     }
-    else if( pCurrentNode->count()!=0 ){//if we reach a leaf, print the count and variants
-       cout<<barcode<<" "<<pCurrentNode->count()<<endl;
-       if (!pCurrentNode->substitutions().empty()){
-           cout<<" "<<unhashSubstitutions((pCurrentNode->substitutions()).back()).first<<" "<< unhashSubstitutions((pCurrentNode->substitutions()).back()).second<<endl;
+    else if( !pCurrentNode->leafData().empty()){//if we reach a leaf, print the count and variants
+        ofstream summaryFile;
+        summaryFile.open("summary.txt");
+        summaryFile<<"barcode: "<<barcode<<endl;
+        for (int i=0; i<mNumberOfROIs; ++i){
+            summaryFile<<mGenes[i]<<endl;
+            for (int j=0; j<mNumberOfPhases; ++j){
+                summaryFile<<"phase "<<j<<endl;
+                LeafData* currentData= pCurrentNode->leafData()[i][j];
+                if (!currentData->substitutions().empty()){
+                    for (vector<int>::const_iterator it = currentData->substitutions().begin(); it != currentData->substitutions().end(); ++it){
+                        summaryFile<<" "<<unhashSubstitutions(*it).first<<" "<< unhashSubstitutions(*it).second<<endl;
+                    }
+                }
+                
+                if (currentData->hasIndel()){                    
+                    summaryFile<<currentData->indel().first<<" "<<currentData->indel().second<<endl;
+                    
+                }
+            }
+        summaryFile.close();
        }
+
        return;
     }
 }
-*/
+
 /*and here. Maybe a barcode needs to have a total count at the node level
 int Trie::returnMaxCount(int& max,Node* pCurrentNode ){
     if ( pCurrentNode==NULL ){ //if this is the first time the function is called, set current to root
