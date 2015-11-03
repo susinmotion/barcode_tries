@@ -38,7 +38,6 @@ pair<int, char> unhashSubstitutions (int variantHash){//unhash int into pos/nucl
 }
 
 void checkVariants(string sequence, string target, LeafData* pCurrentData){
-    cout<<sequence<<endl;
     vector <int> currentSubstitutions;
     int variantPos=-1;
 
