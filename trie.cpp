@@ -80,6 +80,7 @@ void Trie::populateVariants(){
     while (!mImportantNodes.empty()){//go through important nodes and increment value in variant counts hash array as varaints are found.
         for (int i=0; i<mNumberOfROIs; ++i){
             for (int j=0; j<mNumberOfPhases; ++j){
+                cout<<i<<" "<<j<<endl;
                 LeafData* currentData=mImportantNodes.top()->leafData()[i][j];
                 if (currentData!=NULL){
                     mNodesChecked[i][j]++;
