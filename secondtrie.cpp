@@ -18,7 +18,7 @@ int main(){  //file config.cfg contains a list of config files
     
     trie->populateVariants();
     trie->printVariants();        
-    
+    trie->printTrie();
 
     //int max=0; //is there a better way to do this max situation?
     //cout<<t->returnMaxCount(max)<<" is the max count"<<endl; 
