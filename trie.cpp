@@ -182,21 +182,22 @@ void Trie::printTrie(Node* pCurrentNode, string barcode, int index){
     else if( !pCurrentNode->leafData().empty()){//if we reach a leaf, print the count and variants
         ofstream summaryFile;
         summaryFile.open("summary.txt");
-        summaryFile<<"barcode: "<<barcode<<endl;
+        cout<<"barcode: "<<barcode<<endl;
         for (int i=0; i<mNumberOfROIs; ++i){
-            summaryFile<<mGenes[i]<<endl;
+            cout<<mGenes[i]<<endl;
             for (int j=0; j<mNumberOfPhases; ++j){
-                summaryFile<<"phase "<<j<<endl;
                 LeafData* currentData= pCurrentNode->leafData()[i][j];
-                if (!currentData->substitutions().empty()){
-                    for (vector<int>::const_iterator it = currentData->substitutions().begin(); it != currentData->substitutions().end(); ++it){
-                        summaryFile<<" "<<unhashSubstitutions(*it).first<<" "<< unhashSubstitutions(*it).second<<endl;
+                if (currentData!=NULL){
+                    cout<<"phase "<<j<<endl;
+                    if (!currentData->substitutions().empty()){
+                        for (vector<int>::const_iterator it = currentData->substitutions().begin(); it != currentData->substitutions().end(); ++it){
+                            cout<<" "<<unhashSubstitutions(*it).first<<" "<< unhashSubstitutions(*it).second<<endl;
+                        }
                     }
-                }
                 
-                if (currentData->hasIndel()){                    
-                    summaryFile<<currentData->indel().first<<" "<<currentData->indel().second<<endl;
-                    
+                    if (currentData->hasIndel()){                   
+                        cout<<currentData->indel().first<<" "<<currentData->indel().second<<endl;
+                    }
                 }
             }
         summaryFile.close();

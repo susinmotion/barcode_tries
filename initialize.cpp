@@ -58,7 +58,7 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
     vector <string> FORWARD_ALIGN_SEQ=userDefinedVariables["FORWARD_ALIGN_SEQ"];
     vector <string> REVERSE_ALIGN_SEQ=userDefinedVariables["REVERSE_ALIGN_SEQ"];
     vector <string> TARGET=userDefinedVariables["TARGET"];
-    const vector <string> FILENAMES =userDefinedVariables["FILENAME"];
+   // const vector <string> FILENAMES =userDefinedVariables["FILENAME"];
     
     int numberOfROIs=FORWARD_ALIGN_SEQ.size();
     int numberOfPhases=atoi(userDefinedVariables["MAX_PHASE"][0].c_str() )+1;
@@ -70,8 +70,8 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
     Trie* trie = new Trie;
     trie->setThresholdROIPhaseGenes( atoi (userDefinedVariables["THRESHOLD_OF_IMPORTANCE"].at(0).c_str()), numberOfROIs, numberOfPhases, GENES);
     
-    for (int i=0; i<FILENAMES.size(); ++i){
-        ifstream readfile (FILENAMES[i].c_str());
+   // for (int i=0; i<FILENAMES.size(); ++i){
+     //   ifstream readfile (FILENAMES[i].c_str());
 
         int count=0;
         string sequence;
@@ -81,11 +81,12 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
         int ROINumber;
         int indexForwardAlign;
         int indexReverseAlign;
-        if (readfile.is_open()){
-            cout<<userDefinedVariables["FILENAME"][i]<<" is open"<<endl;
-            while (getline(readfile,throwoutstring)){//read sequence. 4 lines is a read. 2nd line has sequence
+        //if (readfile.is_open()){
+
+        //    cout<<userDefinedVariables["FILENAME"][i]<<" is open"<<endl;
+            while (getline(cin,throwoutstring)){//read sequence. 4 lines is a read. 2nd line has sequence
                 count++;
-                readfile>>sequence;
+                cin>>sequence;
 
                 for (int i=0; i<numberOfROIs; ++i){
                     indexForwardAlign=sequence.find(FORWARD_ALIGN_SEQ[i],BARCODE_LENGTH);//find forward and reverse alignment sequences
@@ -120,15 +121,15 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
                 }
 
 
-                getline(readfile,throwoutstring);
-                getline(readfile,throwoutstring);
-                getline(readfile,throwoutstring);                 
+                getline(cin,throwoutstring);
+                getline(cin,throwoutstring);
+                getline(cin,throwoutstring);                 
             }
-        }
-        else {
-            cout<<"Error opening file "<< userDefinedVariables["FILENAME"][i]<<endl;
-        }
-    }
+       // }
+      //  else {
+      //      cout<<"Error opening file "<< userDefinedVariables["FILENAME"][i]<<endl;
+      //  }
+    //}
     return trie;
 }
 
