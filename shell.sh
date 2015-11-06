@@ -1,10 +1,9 @@
 #!/bin/bash
 
-source config.cfg
-echo $FILENAME
-arr=$(echo $FILENAME | tr "," "\n")
-#cat $FILENAME1 $FILENAME2 > allfiles.gz
+head -n 1 config.cfg>tmp.cfg
+source tmp.cfg
+echo $FILENAMES
+arr=$(echo $FILENAMES | tr "," "\n")
 echo ${arr[*]}
 gzcat ${arr[*]} | ./secondtrie
-
-
+rm tmp.cfg
