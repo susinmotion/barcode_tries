@@ -36,7 +36,7 @@ map <string, vector <string> > readConfig(string filename){ //read config file i
             vector <string> values;
             cout <<key<<" "<<allValues<<endl;
             stringstream ss(allValues);
-            while (getline (ss, value, ';')){
+            while (getline (ss, value, ',')){
                 values.push_back(value);
             }
 
