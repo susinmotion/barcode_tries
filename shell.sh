@@ -1,6 +1,10 @@
 #!/bin/bash
 
 source config.cfg
-echo $FILENAME1
-cat $FILENAME1 $FILENAME2 > allfiles.gz
-gzcat $FILENAME1 | ./secondtrie
+echo $FILENAME
+arr=$(echo $FILENAME | tr "," "\n")
+#cat $FILENAME1 $FILENAME2 > allfiles.gz
+echo ${arr[*]}
+gzcat ${arr[*]} | ./secondtrie
+
+
