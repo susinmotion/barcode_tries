@@ -8,8 +8,9 @@ echo ${arr[*]}
 if [ "$ZIPPED" = "yes" ]
 	then
 	echo $ZIPPED
-	gzcat ${arr[*]} | ./secondtrie
-fi
+	zcat ${arr[*]} | ./secondtrie
+
 else
-	${arr[*]} | ./secondtrie
+        ./secondtrie < ${arr[*]}
+fi
 rm tmp.cfg
