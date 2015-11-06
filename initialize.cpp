@@ -68,7 +68,7 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
         REVERSE_ALIGN_SEQ.push_back(reverseComplement(REVERSE_ALIGN_SEQ[i]));
     }
     Trie* trie = new Trie;
-    trie->setThresholdROIPhaseGenes( atoi (userDefinedVariables["THRESHOLD_OF_IMPORTANCE"].at(0).c_str()), numberOfROIs, numberOfPhases, GENES);
+    trie->setThresholdROIPhaseGenesBarcodelen( atoi (userDefinedVariables["THRESHOLD_OF_IMPORTANCE"].at(0).c_str()), numberOfROIs, numberOfPhases, GENES, BARCODE_LENGTH);
     
    // for (int i=0; i<FILENAMES.size(); ++i){
      //   ifstream readfile (FILENAMES[i].c_str());

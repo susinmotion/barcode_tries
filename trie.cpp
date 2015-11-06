@@ -8,6 +8,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <sstream>
+#include <typeinfo>
 using namespace std;
 
 Node* Trie::pRootPointer(){
@@ -50,13 +51,14 @@ void Trie::addBarcode(int ROINumber, int phase, string barcode, string sequence,
     }
 }
 
-void Trie::setThresholdROIPhaseGenes(int threshold, int numberOfROIs, int numberOfPhases, vector<string>genes){
+void Trie::setThresholdROIPhaseGenesBarcodelen(int threshold, int numberOfROIs, int numberOfPhases, vector<string>genes, int barcodeLength){
     mThresholdOfImportance=threshold;
     mNumberOfROIs= numberOfROIs;
     mNumberOfPhases = numberOfPhases;
     mGenes = genes;
     stack <Node*> empty_stack;
     mImportantNodes=vector <vector <stack <Node*> > >(mNumberOfROIs, vector<stack<Node* > >(mNumberOfPhases, empty_stack));
+    mBarcodeLength=barcodeLength;
 }
 
 vector< vector< stack <Node*> > >Trie::importantNodes(){
@@ -129,7 +131,6 @@ void Trie::printVariants(){
 
                 ofstream outfile;
                 outfile.open (filename.c_str());
-
                 outfile<<"ROI: "<<mGenes[i]<<endl<<"Phase: "<<j<<endl<<"Total nodes checked: "<< mNodesChecked[i][j]<<endl<<"Total variants found: "<<mVariantsCount[i][j]<<endl;
                 for (map <int, int>::const_iterator it=mSubstitutions[i][j].begin(); it != mSubstitutions[i][j].end(); ++it){
                     outfile<<unhashSubstitutions(it->first).first<<" "<<unhashSubstitutions(it->first).second<<" "<< it->second << endl;
@@ -167,6 +168,7 @@ void Trie::printTrie(Node* pCurrentNode, string barcode, int index){
     if ( pCurrentNode == NULL ){//if this is the first iteration, set current at root of trie
         pCurrentNode = mRootPointer;
         cout<<"Barcode Count"<<endl;
+        barcode=string(mBarcodeLength, '\0');
     }
     else{//add the content of this node to the barcode
         barcode[index] = pCurrentNode->content();
@@ -181,22 +183,23 @@ void Trie::printTrie(Node* pCurrentNode, string barcode, int index){
     }
     else if( !pCurrentNode->leafData().empty()){//if we reach a leaf, print the count and variants
         ofstream summaryFile;
-        summaryFile.open("summary.txt");
-        cout<<"barcode: "<<barcode<<endl;
+        summaryFile.open("summary.txt", ios::app);
+        summaryFile<<"barcode: "<<barcode<<endl;
+        cout<<barcode<<endl;
         for (int i=0; i<mNumberOfROIs; ++i){
-            cout<<mGenes[i]<<endl;
+            summaryFile<<mGenes[i]<<endl;
             for (int j=0; j<mNumberOfPhases; ++j){
                 LeafData* currentData= pCurrentNode->leafData()[i][j];
                 if (currentData!=NULL){
-                    cout<<"phase "<<j<<endl;
+                    summaryFile<<"phase "<<j<<endl;
                     if (!currentData->substitutions().empty()){
                         for (vector<int>::const_iterator it = currentData->substitutions().begin(); it != currentData->substitutions().end(); ++it){
-                            cout<<" "<<unhashSubstitutions(*it).first<<" "<< unhashSubstitutions(*it).second<<endl;
+                            summaryFile<<" "<<unhashSubstitutions(*it).first<<" "<< unhashSubstitutions(*it).second<<endl;
                         }
                     }
                 
                     if (currentData->hasIndel()){                   
-                        cout<<currentData->indel().first<<" "<<currentData->indel().second<<endl;
+                        summaryFile<<currentData->indel().first<<" "<<currentData->indel().second<<endl;
                     }
                 }
             }
