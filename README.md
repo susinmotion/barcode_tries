@@ -20,24 +20,24 @@ In addition, users can opt to output a file named "summary.txt" containing varia
 ##UNDERSTANDING THE CONFIG FILE:
 Below is an explanation of each of the variables in config.cfg. Multiple parameters are comma delimited (first_parameter,second_parameter)--no white space.
 
-`FILENAMES=example.tar.gz,example2.txt.gz`
+`FILENAMES=example.tar.gz,example2.txt.gz`<br>
 List of input files, in zipped format. Each file must be zipped separately, but the program can tolerate a number of zipped formats. Note the equals sign following FILENAMES. Do not delete it! No white space.
 
-####GENES gene1,gene2
+`GENES gene1,gene2`<br>
 Names of the genes of interest, used for labeling output files. 
 
-####BARCODE_LENGTH 4
+`BARCODE_LENGTH 4`<br>
 Length of a barcode
 
-####FORWARD_ALIGN_SEQ GTTCTTCGG,AGCTTTA
-####REVERSE_ALIGN_SEQ GGGGG,TACT
-####TARGET AAAA,TGACTTAG
+`FORWARD_ALIGN_SEQ GTTCTTCGG,AGCTTTA`<br>
+`REVERSE_ALIGN_SEQ GGGGG,TACT`<br>
+`TARGET AAAA,TGACTTAG`<br>
 Forward and reverse align sequences, and target sequences, corresponding to the gene names. The program handles reverse complements, so no need to list these separately. 
 
-####THRESHOLD_OF_IMPORTANCE 3
+`THRESHOLD_OF_IMPORTANCE 3`<br>
 How many reads constitutes a trial. Reads that don't meet this threshold will be excluded from analyses. 
 
-####MAX_PHASE 5
+`MAX_PHASE 5`<br>
 The greatest number of bases preceding the barcode. For example, if you have reads with 0, 2, 6, and 7 bases preceding the barcode, put 7 here.
 
 
