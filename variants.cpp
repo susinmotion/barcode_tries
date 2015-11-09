@@ -51,7 +51,6 @@ void checkVariants(string sequence, string target, LeafData* pCurrentData){
                     return;
                 }
                 int substitutionHash = hashSubstitutions(variantPos, sequence[variantPos]);
-                cout<<variantPos<<" "<<sequence[variantPos]<<endl;
                 currentSubstitutions.push_back(substitutionHash);
             }      
 

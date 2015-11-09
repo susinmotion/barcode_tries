@@ -87,7 +87,6 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
             while (getline(cin,throwoutstring)){//read sequence. 4 lines is a read. 2nd line has sequence
                 count++;
                 cin>>sequence;
-
                 for (int i=0; i<numberOfROIs; ++i){
                     indexForwardAlign=sequence.find(FORWARD_ALIGN_SEQ[i],BARCODE_LENGTH);//find forward and reverse alignment sequences
                     indexReverseAlign=sequence.find(REVERSE_ALIGN_SEQ[i],BARCODE_LENGTH+FORWARD_ALIGN_SEQ[i].length());
@@ -104,7 +103,6 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
                 }
 
                 if ((indexForwardAlign==-1) || (indexReverseAlign==-1) ){
-                    cout<<"reverse?"<<endl;
                     for (int i= numberOfROIs; i<FORWARD_ALIGN_SEQ.size(); ++i){
                         indexReverseAlign=sequence.find(REVERSE_ALIGN_SEQ[i]);
                         indexForwardAlign=sequence.find(FORWARD_ALIGN_SEQ[i], indexReverseAlign+REVERSE_ALIGN_SEQ[i].length());
@@ -130,6 +128,7 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
       //      cout<<"Error opening file "<< userDefinedVariables["FILENAME"][i]<<endl;
       //  }
     //}
+   cout<<"made the trie"<<endl;
     return trie;
 }
 
