@@ -1,6 +1,6 @@
 #!/bin/bash
 
-head -n 2 config.cfg>tmp.cfg
+head -n 2 example.cfg>tmp.cfg
 source tmp.cfg
 echo $FILENAMES
 arr=$(echo $FILENAMES | tr "," "\n")
@@ -11,6 +11,6 @@ if [ "$ZIPPED" = "yes" ]
 	zcat ${arr[*]} | ./secondtrie
 
 else
-        ./secondtrie < ${arr[*]}
+        cat ${arr[*]} | ./secondtrie
 fi
 rm tmp.cfg
