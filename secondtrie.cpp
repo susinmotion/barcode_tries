@@ -9,11 +9,10 @@
 using namespace std;
 
 int main(){  //file config.cfg contains a list of config files
-    cout<<reverseComplement("GGGGGGA")<<endl;
     clock_t begin = clock();
     cout<<"start"<<endl;
     
-    Trie* trie = readFileIntoTrie("config.cfg");
+    Trie* trie = readFileIntoTrie("example.cfg");
     cout <<"read file"<<endl;  
     
     trie->populateVariants();
