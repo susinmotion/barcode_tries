@@ -192,9 +192,11 @@ void Trie::printTrie(Node* pCurrentNode, string barcode, int index){
                 LeafData* currentData= pCurrentNode->leafData()[i][j];
                 if (currentData!=NULL){
                     summaryFile<<"phase "<<j<<endl;
+
                     if (!currentData->substitutions().empty()){
                         for (vector<int>::const_iterator it = currentData->substitutions().begin(); it != currentData->substitutions().end(); ++it){
                             summaryFile<<" "<<unhashSubstitutions(*it).first<<" "<< unhashSubstitutions(*it).second<<endl;
+                                                    cout<<*it<<endl;
                         }
                     }
                 
