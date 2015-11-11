@@ -58,7 +58,7 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
     vector <string> FORWARD_ALIGN_SEQ=userDefinedVariables["FORWARD_ALIGN_SEQ"];
     vector <string> REVERSE_ALIGN_SEQ=userDefinedVariables["REVERSE_ALIGN_SEQ"];
     vector <string> TARGET=userDefinedVariables["TARGET"];
-   // const vector <string> FILENAMES =userDefinedVariables["FILENAME"];
+    const vector <string> FILENAMES =userDefinedVariables["FILENAMES"];
     
     int numberOfROIs=FORWARD_ALIGN_SEQ.size();
     int numberOfPhases=atoi(userDefinedVariables["MAX_PHASE"][0].c_str() )+1;
@@ -71,7 +71,7 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
     trie->setThresholdROIPhaseGenesBarcodelen( atoi (userDefinedVariables["THRESHOLD_OF_IMPORTANCE"].at(0).c_str()), numberOfROIs, numberOfPhases, GENES, BARCODE_LENGTH);
     
    // for (int i=0; i<FILENAMES.size(); ++i){
-     //   ifstream readfile (FILENAMES[i].c_str());
+      //  ifstream readfile (FILENAMES[i].c_str());
 
         int count=0;
         string sequence;
@@ -81,9 +81,9 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
         int ROINumber;
         int indexForwardAlign;
         int indexReverseAlign;
-        //if (readfile.is_open()){
+      //  if (readfile.is_open()){
 
-        //    cout<<userDefinedVariables["FILENAME"][i]<<" is open"<<endl;
+           // cout<<userDefinedVariables["FILENAMES"][i]<<" is open"<<endl;
             while (getline(cin,throwoutstring)){//read sequence. 4 lines is a read. 2nd line has sequence
                 count++;
                 cin>>sequence;
@@ -95,8 +95,10 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
 
                         barcode=sequence.substr(indexForwardAlign-BARCODE_LENGTH, BARCODE_LENGTH);//extract barcode and read from full sequence
                         phase = indexForwardAlign-BARCODE_LENGTH;
+                        if (phase>=numberOfPhases){ break;}
                         sequence=sequence.substr(indexForwardAlign+FORWARD_ALIGN_SEQ[i].length(), indexReverseAlign-indexForwardAlign-FORWARD_ALIGN_SEQ[i].length());//maybe rename this variable at some point
                         ROINumber= i;
+//cout<<barcode<<" "<<phase<<" "<<sequence<<endl;
                         trie->addBarcode(ROINumber, phase,barcode,sequence, TARGET[ROINumber]);
                         break;
                     }
@@ -110,7 +112,8 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
                         if ((indexForwardAlign != -1) && (indexReverseAlign != -1) ){
                             barcode= reverseComplement(sequence.substr(indexForwardAlign+FORWARD_ALIGN_SEQ[i].length(), BARCODE_LENGTH));
                             phase=sequence.length()-BARCODE_LENGTH-indexForwardAlign-FORWARD_ALIGN_SEQ[i].length();
-                            sequence=reverseComplement(sequence.substr((indexReverseAlign+REVERSE_ALIGN_SEQ[i].length()), indexForwardAlign-indexReverseAlign-REVERSE_ALIGN_SEQ[i].length()));
+                            if (phase>=numberOfPhases){ break;}                           
+                             sequence=reverseComplement(sequence.substr((indexReverseAlign+REVERSE_ALIGN_SEQ[i].length()), indexForwardAlign-indexReverseAlign-REVERSE_ALIGN_SEQ[i].length()));
                             ROINumber = i%numberOfROIs;
                             trie->addBarcode(ROINumber, phase,barcode,sequence, TARGET[ROINumber]);
                             break;
@@ -123,11 +126,11 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
                 getline(cin,throwoutstring);
                 getline(cin,throwoutstring);                 
             }
-       // }
-      //  else {
-      //      cout<<"Error opening file "<< userDefinedVariables["FILENAME"][i]<<endl;
       //  }
-    //}
+       // else {
+        //    cout<<"Error opening file "<< userDefinedVariables["FILENAME"][i]<<endl;
+    //    }
+    }
    cout<<"made the trie"<<endl;
     return trie;
 }
