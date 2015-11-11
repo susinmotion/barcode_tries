@@ -9,7 +9,6 @@
 #include <cstdlib>
 #include <sstream>
 #include <typeinfo>
-#include <iomanip>
 using namespace std;
 
 Node* Trie::pRootPointer(){
@@ -72,7 +71,6 @@ void Trie::addImportantNode(Node* pImportantNode, int ROINumber, int phase){
 
 void Trie::populateVariants(){
     mVariantsCount= vector <vector<int> >(mNumberOfROIs, vector<int>(mNumberOfPhases,  0));
-    mSubstitutionsCount= vector< vector <int> >(mNumberOfROIs, vector<int>(mNumberOfPhases,0 ));
     mNodesChecked= vector <vector<int> >(mNumberOfROIs, vector<int>(mNumberOfPhases,  0));
     map<int, int> empty_map1;
     mSubstitutions= vector<vector <map <int, int> > >( mNumberOfROIs, vector< map<int, int> >(mNumberOfPhases, empty_map1));
@@ -107,7 +105,6 @@ void Trie::populateVariants(){
                                 mSubstitutions[i][j][currentSubstitution]++;
                                 //cout<<i<<" "<<j<<" "<<currentSubstitution<<" "<<mSubstitutions[i][j][currentSubstitution]<<endl;
                                 mVariantsCount[i][j]++;
-                                mSubstitutionsCount[i][j]++;
                             }
                         }
                     }
@@ -122,36 +119,19 @@ void Trie::populateVariants(){
 }
 
 
-void Trie::printVariants(int targetLength){
+void Trie::printVariants(){
     cout<<"printing trie "<<endl;
+
     for (int i=0; i<mNumberOfROIs; ++i){
         for (int j=0; j<mNumberOfPhases; ++j){
             if (mVariantsCount[i][j]!=0){
                 ostringstream os;
                 os<<j;
                 string filename= mGenes[i]+"_"+os.str()+".txt";
-                string matrixFilename = mGenes[i]+"_"+os.str()+"matrix.txt";
-                ofstream outfile;
-                ofstream matrixOutfile;
-                outfile.open (filename.c_str());
-                matrixOutfile.open (matrixFilename.c_str());
 
+                ofstream outfile;
+                outfile.open (filename.c_str());
                 outfile<<"ROI: "<<mGenes[i]<<endl<<"Phase: "<<j<<endl<<"Total nodes checked: "<< mNodesChecked[i][j]<<endl<<"Total variants found: "<<mVariantsCount[i][j]<<endl;
-                map<int,int>::iterator it1;
-                for (int l=0; l<5; ++l){//go through each base
-                    for (int k = 0; k<targetLength; ++k){
-                        it1=mSubstitutions[i][j].find(k*5+l);
-                        if (it1 == mSubstitutions[i][j].end()){
-                            cout<<k*5+l<< " not found"<<endl;
-                            matrixOutfile<<left<<setw(15)<<setfill(' ')<<"0";   
-                        }
-                        else {
-                            cout<<it1->second<<" count of "<<k*5+l<<endl;
-                            matrixOutfile<<left<<setw(15)<<setfill(' ')<<it1->second/(float)mSubstitutionsCount[i][j];
-                        }
-                    }
-                    matrixOutfile<<endl;
-                }
                 for (map <int, int>::const_iterator it=mSubstitutions[i][j].begin(); it != mSubstitutions[i][j].end(); ++it){
                     outfile<<unhashSubstitutions(it->first).first<<" "<<unhashSubstitutions(it->first).second<<" "<< it->second << endl;
                 }
@@ -163,7 +143,6 @@ void Trie::printVariants(int targetLength){
         }
     }  
 }
-
 /* WHAT do we actually want for this? For a given ROI and a given PHase, the barcode count? OR the total count regardless?
 int Trie::returnBarcodeCount(string barcode){
     Node* pCurrentNode = mRootPointer;
@@ -206,6 +185,7 @@ void Trie::printTrie(Node* pCurrentNode, string barcode, int index){
         ofstream summaryFile;
         summaryFile.open("summary.txt", ios::app);
         summaryFile<<"barcode: "<<barcode<<endl;
+        cout<<barcode<<endl;
         for (int i=0; i<mNumberOfROIs; ++i){
             summaryFile<<mGenes[i]<<endl;
             for (int j=0; j<mNumberOfPhases; ++j){
@@ -214,14 +194,15 @@ void Trie::printTrie(Node* pCurrentNode, string barcode, int index){
                     summaryFile<<"phase "<<j<<endl;
 
                     if (!currentData->substitutions().empty()){
-                        for (int q=0; q<currentData->substitutions().size(); ++q){
-                            summaryFile<<" "<<unhashSubstitutions(currentData->substitutions()[q]).first<<" "<< unhashSubstitutions(currentData->substitutions()[q]).second<<endl;
+                        for (vector<int>::const_iterator it = currentData->substitutions().begin(); it != currentData->substitutions().end(); ++it){
+                            summaryFile<<" "<<unhashSubstitutions(*it).first<<" "<< unhashSubstitutions(*it).second<<endl;
+                                                    cout<<*it<<endl;
                         }
                     }
                 
                     if (currentData->hasIndel()){                   
                         summaryFile<<currentData->indel().first<<" "<<currentData->indel().second<<endl;
-}
+                    }
                 }
             }
         summaryFile.close();

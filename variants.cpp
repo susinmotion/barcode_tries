@@ -50,7 +50,7 @@ void checkVariants(string sequence, string target, LeafData* pCurrentData){
                     pCurrentData->makeTrash();
                     return;
                 }
-  int substitutionHash = hashSubstitutions(variantPos, sequence[variantPos]);
+                int substitutionHash = hashSubstitutions(variantPos, sequence[variantPos]);
                 currentSubstitutions.push_back(substitutionHash);
             }      
 
@@ -65,6 +65,7 @@ void checkVariants(string sequence, string target, LeafData* pCurrentData){
             variantPos=min(sequence.length(), target.length());
         }
         pair <int,int> indel=make_pair(variantPos, indelLength);
+        //cout<<sequence<<" "<<target <<"indel"<<endl;
 
         if ( (pCurrentData->count()>0) && (pCurrentData->indel()!=indel) ){//if there's been a read before that doesn't match the indel found, trash all reads from this barcode
             pCurrentData->makeTrash();
