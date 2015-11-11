@@ -184,8 +184,8 @@ void Trie::printTrie(Node* pCurrentNode, string barcode, int index){
     else if( !pCurrentNode->leafData().empty()){//if we reach a leaf, print the count and variants
         ofstream summaryFile;
         summaryFile.open("summary.txt", ios::app);
-        summaryFile<<"barcode: "<<barcode<<endl;
-        cout<<barcode<<endl;
+        
+ summaryFile<<"barcode: "<<barcode<<endl;
         for (int i=0; i<mNumberOfROIs; ++i){
             summaryFile<<mGenes[i]<<endl;
             for (int j=0; j<mNumberOfPhases; ++j){
@@ -194,15 +194,14 @@ void Trie::printTrie(Node* pCurrentNode, string barcode, int index){
                     summaryFile<<"phase "<<j<<endl;
 
                     if (!currentData->substitutions().empty()){
-                        for (vector<int>::const_iterator it = currentData->substitutions().begin(); it != currentData->substitutions().end(); ++it){
-                            summaryFile<<" "<<unhashSubstitutions(*it).first<<" "<< unhashSubstitutions(*it).second<<endl;
-                                                    cout<<*it<<endl;
+                        for (int q=0; q<currentData->substitutions().size(); ++q){
+                            summaryFile<<" "<<unhashSubstitutions(currentData->substitutions()[q]).first<<" "<< unhashSubstitutions(currentData->substitutions()[q]).second<<endl;
                         }
                     }
                 
                     if (currentData->hasIndel()){                   
                         summaryFile<<currentData->indel().first<<" "<<currentData->indel().second<<endl;
-                    }
+}
                 }
             }
         summaryFile.close();
