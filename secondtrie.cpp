@@ -11,8 +11,8 @@ using namespace std;
 int main(){  //file config.cfg contains a list of config files
     clock_t begin = clock();
     cout<<"start"<<endl;
-    
     Trie* trie = readFileIntoTrie("example.cfg");
+    cout<<outputfilename<<endl;
     cout <<"read file"<<endl;  
     
     string target="TGTCTCAGTTTATGGACCAGAACAACCCGCTGTCTGAGATTACGCACAAACGTCGTATCTCCGCACTCGGCCCAGGCGGTCT";

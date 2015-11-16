@@ -7,3 +7,4 @@ string reverseComplement(string);
 map <string, vector <string> > readConfig(string filename);
 int ** initializeHashMtx();
 Trie* readFileIntoTrie(string filename);
+extern string outputfilename;
