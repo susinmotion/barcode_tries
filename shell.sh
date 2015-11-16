@@ -1,13 +1,11 @@
 #!/bin/bash
 
-head -n 2 example.cfg>tmp.cfg
+head -n 2 configforveryshort5.cfg>tmp.cfg
 source tmp.cfg
-echo $FILENAMES
 arr=$(echo $FILENAMES | tr "," "\n")
 echo ${arr[*]}
 if [ "$ZIPPED" = "yes" ]
 	then
-	echo $ZIPPED
 	zcat ${arr[*]} | ./secondtrie
 
 else
