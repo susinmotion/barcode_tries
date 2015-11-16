@@ -8,14 +8,7 @@ echo ${arr[*]}
 
 if [ "$ZIPPED" = "yes" ]
 	then
-	arr2=
-	for f in ${arr[*]}
-    do
-    	arr2+=($f)
-    	arr2+=(trashzip.gz)
-    done
-    echo ${arr2[*]}
-	gunzip -c  ${arr2[*]} | ./secondtrie
+		gunzip -c ${arr[*]} | ./secondtrie
 
 else
 	for f in ${arr[*]}
