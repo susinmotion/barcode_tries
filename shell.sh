@@ -1,10 +1,11 @@
 #!/bin/bash
 
-head -n 2 example.cfg>tmp.cfg
+head -n 3 example.cfg>tmp.cfg
 source tmp.cfg
 echo $FILENAMES
 arr=$(echo $FILENAMES | tr "," "\n")
 echo ${arr[*]}
+mkdir $OUTPUTFILENAME
 if [ "$ZIPPED" = "yes" ]
 	then
 	echo $ZIPPED

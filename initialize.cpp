@@ -32,8 +32,11 @@ map <string, vector <string> > readConfig(string filename){ //read config file i
         string key;
         string allValues;
         string value;
-        while (infile >> key >> allValues ){
+        string keyandValues;
+        while (infile >> keyandValues ){
+            key =keyandValues.substr(0, keyandValues.find("="));
             vector <string> values;
+            string allValues= keyandValues.substr(keyandValues.find("=")+1);
             cout <<key<<" "<<allValues<<endl;
             stringstream ss(allValues);
             while (getline (ss, value, ',')){
@@ -59,7 +62,7 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
     vector <string> REVERSE_ALIGN_SEQ=userDefinedVariables["REVERSE_ALIGN_SEQ"];
     vector <string> TARGET=userDefinedVariables["TARGET"];
     const vector <string> FILENAMES =userDefinedVariables["FILENAMES"];
-    
+    string outputfilename = userDefinedVariables["OUTPUTFILENAME"][0];
     int numberOfROIs=FORWARD_ALIGN_SEQ.size();
     int numberOfPhases=atoi(userDefinedVariables["MAX_PHASE"][0].c_str() )+1;
 
@@ -108,7 +111,7 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
 
                 if ((indexForwardAlign != -1) && (indexReverseAlign != -1) ){
                     barcode= reverseComplement(sequence.substr(indexForwardAlign+FORWARD_ALIGN_SEQ[i].length(), BARCODE_LENGTH));
-                    phase=sequence.length()-BARCODE_LENGTH-indexForwardAlign-FORWARD_ALIGN_SEQ[i].length();
+                    phase=indexReverseAlign;
                     if (phase>=numberOfPhases){ break;}                           
                      sequence=reverseComplement(sequence.substr((indexReverseAlign+REVERSE_ALIGN_SEQ[i].length()), indexForwardAlign-indexReverseAlign-REVERSE_ALIGN_SEQ[i].length()));
                     ROINumber = i%numberOfROIs;
