@@ -1,16 +1,28 @@
 #!/bin/bash
 
-head -n 2 example.cfg>tmp.cfg
+head -n 2 configforveryshort5.cfg>tmp.cfg
 source tmp.cfg
-echo $FILENAMES
 arr=$(echo $FILENAMES | tr "," "\n")
 echo ${arr[*]}
+
+
 if [ "$ZIPPED" = "yes" ]
 	then
-	echo $ZIPPED
-	zcat ${arr[*]} | ./secondtrie
+	arr2=
+	for f in ${arr[*]}
+    do
+    	arr2+=($f)
+    	arr2+=(trashzip.gz)
+    done
+    echo ${arr2[*]}
+	gunzip -c  ${arr2[*]} | ./secondtrie
 
 else
-        cat ${arr[*]} | ./secondtrie
+	for f in ${arr[*]}
+    do
+        echo "Processing $f"
+        sed -i '' -e '$a\' $f
+    done
+    cat ${arr[*]} | ./secondtrie
 fi
 rm tmp.cfg
