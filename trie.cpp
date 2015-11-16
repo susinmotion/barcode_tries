@@ -142,11 +142,9 @@ void Trie::printVariants(int targetLength){
                     for (int k = 0; k<targetLength; ++k){
                         it1=mSubstitutions[i][j].find(k*5+l);
                         if (it1 == mSubstitutions[i][j].end()){
-                            cout<<k*5+l<< " not found"<<endl;
                             matrixOutfile<<left<<setw(15)<<setfill(' ')<<"0";   
                         }
                         else {
-                            cout<<it1->second<<" count of "<<k*5+l<<endl;
                             matrixOutfile<<left<<setw(15)<<setfill(' ')<<it1->second/(float)mSubstitutionsCount[i][j];
                         }
                     }
