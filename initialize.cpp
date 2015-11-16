@@ -96,6 +96,7 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
                 if (phase>=numberOfPhases){ break;}
                 sequence=sequence.substr(indexForwardAlign+FORWARD_ALIGN_SEQ[i].length(), indexReverseAlign-indexForwardAlign-FORWARD_ALIGN_SEQ[i].length());//maybe rename this variable at some point
                 ROINumber= i;
+                cout<<barcode<<" "<<sequence<<endl;
                 trie->addBarcode(ROINumber, phase,barcode,sequence, TARGET[ROINumber]);
                 break;
             }
