@@ -147,7 +147,7 @@ void Trie::printTrieImportantOnly(Node* pCurrentNode, string barcode, int index)
         for (int i=0; i<mNumberOfROIs; ++i){
             for (int j=0; j<mNumberOfPhases; ++j){
                 LeafData* currentData= pCurrentNode->leafData()[i][j];
-                if (currentData!=NULL && !currentData->isTrash() && find(mImportantNodes[i][j].begin(), mImportantNodes[i][j].end(), pCurrentNode)!=mImportantNodes[i][j].end()){
+if (currentData!=NULL && !currentData->isTrash() && mImportantNodes[i][j].find(pCurrentNode)!=mImportantNodes[i][j].end() ){
                     summaryFile<<barcode<<" "<<mGenes[i]<<" phase "<<j<<endl;
                     summaryFile<<currentData->count()<<" reads"<<endl;
                     if (!currentData->substitutions().empty()){
