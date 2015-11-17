@@ -58,17 +58,17 @@ void Trie::setThresholdROIPhaseGenesBarcodelen(int threshold, int numberOfROIs, 
     mNumberOfROIs= numberOfROIs;
     mNumberOfPhases = numberOfPhases;
     mGenes = genes;
-    stack <Node*> empty_stack;
-    mImportantNodes=vector <vector <stack <Node*> > >(mNumberOfROIs, vector<stack<Node* > >(mNumberOfPhases, empty_stack));
+    vector <Node*> empty_vector;
+    mImportantNodes=vector <vector <vector <Node*> > >(mNumberOfROIs, vector<vector<Node* > >(mNumberOfPhases, empty_vector));
     mBarcodeLength=barcodeLength;
 }
 
-vector< vector< stack <Node*> > >Trie::importantNodes(){
+vector< vector< vector <Node*> > >Trie::importantNodes(){
     return mImportantNodes;
 }
 
 void Trie::addImportantNode(Node* pImportantNode, int ROINumber, int phase){
-    mImportantNodes[ROINumber][phase].push(pImportantNode);
+    mImportantNodes[ROINumber][phase].push_back(pImportantNode);
 }
 
 void Trie::populateVariants(){
@@ -86,7 +86,7 @@ void Trie::populateVariants(){
     for (int i=0; i<mNumberOfROIs; ++i){
         for (int j=0; j<mNumberOfPhases; ++j){
             while (!mImportantNodes[i][j].empty()){//go through important nodes and increment value in variant counts hash array as varaints are found.
-                LeafData* currentData=mImportantNodes[i][j].top()->leafData()[i][j];
+                LeafData* currentData=mImportantNodes[i][j].back()->leafData()[i][j];
                 totalImportantNodes++;
                 if (currentData!=NULL){
                     mNodesChecked[i][j]++;
@@ -115,11 +115,56 @@ void Trie::populateVariants(){
                    // else{cout<<"Trash"<<endl;}
 
                 }
-                mImportantNodes[i][j].pop(); 
+                mImportantNodes[i][j].pop_back(); 
             }      
         }
     }
     cout<<totalImportantNodes<<"=number of important nodes"<<endl;
+}
+
+void Trie::printTrieImportantOnly(Node* pCurrentNode, string barcode, int index){
+//this function needs to be called before populate variants
+    if ( pCurrentNode == NULL ){//if this is the first iteration, set current at root of trie
+        pCurrentNode = mRootPointer;
+        cout<<"Barcode Count"<<endl;
+        barcode=string(mBarcodeLength, '\0');
+    }
+    else{//add the content of this node to the barcode
+        barcode[index] = pCurrentNode->content();
+        index++;
+    }
+    vector <Node*> children = pCurrentNode->children();
+    if ( !children.empty() ){//go to next level of trie
+        for (int i=0; i<children.size(); i++){
+            pCurrentNode = children[i];
+            printTrieImportantOnly(pCurrentNode, barcode, index);
+        }
+    }
+    else if( !pCurrentNode->leafData().empty() ){//if we reach a leaf, print the count and variants
+        ofstream summaryFile;
+        summaryFile.open("summaryIMPORTANT.txt", ios::app);
+        for (int i=0; i<mNumberOfROIs; ++i){
+            for (int j=0; j<mNumberOfPhases; ++j){
+                LeafData* currentData= pCurrentNode->leafData()[i][j];
+                if (currentData!=NULL && !currentData->isTrash() && find(mImportantNodes[i][j].begin(), mImportantNodes[i][j].end(), pCurrentNode)!=mImportantNodes[i][j].end()){
+                    summaryFile<<barcode<<" "<<mGenes[i]<<" phase "<<j<<endl;
+                    summaryFile<<currentData->count()<<" reads"<<endl;
+                    if (!currentData->substitutions().empty()){
+                        for (int q=0; q<currentData->substitutions().size(); ++q){
+                            summaryFile<<" "<<unhashSubstitutions(currentData->substitutions()[q]).first<<" "<< unhashSubstitutions(currentData->substitutions()[q]).second<<endl;
+                        }
+                    }
+                
+                    if (currentData->hasIndel()){                   
+                        summaryFile<<currentData->indel().first<<" "<<currentData->indel().second<<endl;
+}
+                }
+            }
+        summaryFile.close();
+       }
+
+       return;
+    }
 }
 
 
