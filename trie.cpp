@@ -18,6 +18,7 @@ Node* Trie::pRootPointer(){
 
 void Trie::addBarcode(int ROINumber, int phase, string barcode, string sequence, string target){
     Node* pCurrentNode = mRootPointer;
+    if (barcode.find('N') != -1){ return;}
     if ( barcode.length() == 0 ){
         pCurrentNode->initializeLeafData(mNumberOfROIs, mNumberOfPhases); // an empty barcode
         return;
