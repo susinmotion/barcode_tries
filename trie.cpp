@@ -10,6 +10,7 @@
 #include <sstream>
 #include <typeinfo>
 #include <iomanip>
+#include <set>
 using namespace std;
 
 Node* Trie::pRootPointer(){
@@ -58,17 +59,17 @@ void Trie::setThresholdROIPhaseGenesBarcodelen(int threshold, int numberOfROIs, 
     mNumberOfROIs= numberOfROIs;
     mNumberOfPhases = numberOfPhases;
     mGenes = genes;
-    vector <Node*> empty_vector;
-    mImportantNodes=vector <vector <vector <Node*> > >(mNumberOfROIs, vector<vector<Node* > >(mNumberOfPhases, empty_vector));
+    set <Node*> empty_set;
+    mImportantNodes=vector <vector <set <Node*> > >(mNumberOfROIs, vector<set<Node* > >(mNumberOfPhases, empty_set));
     mBarcodeLength=barcodeLength;
 }
 
-vector< vector< vector <Node*> > >Trie::importantNodes(){
+vector< vector< set <Node*> > >Trie::importantNodes(){
     return mImportantNodes;
 }
 
 void Trie::addImportantNode(Node* pImportantNode, int ROINumber, int phase){
-    mImportantNodes[ROINumber][phase].push_back(pImportantNode);
+    mImportantNodes[ROINumber][phase].insert(pImportantNode);
 }
 
 void Trie::populateVariants(){
@@ -85,8 +86,8 @@ void Trie::populateVariants(){
     int totalImportantNodes=0;
     for (int i=0; i<mNumberOfROIs; ++i){
         for (int j=0; j<mNumberOfPhases; ++j){
-            while (!mImportantNodes[i][j].empty()){//go through important nodes and increment value in variant counts hash array as varaints are found.
-                LeafData* currentData=mImportantNodes[i][j].back()->leafData()[i][j];
+            while (!mImportantNodes[i][j].empty()){//go through important nodes and increment value in variant counts hash array as varaints are found. 
+                LeafData* currentData=(*mImportantNodes[i][j].begin())->leafData()[i][j];
                 totalImportantNodes++;
                 if (currentData!=NULL){
                     mNodesChecked[i][j]++;
@@ -115,7 +116,7 @@ void Trie::populateVariants(){
                    // else{cout<<"Trash"<<endl;}
 
                 }
-                mImportantNodes[i][j].pop_back(); 
+                mImportantNodes[i][j].erase(mImportantNodes[i][j].begin()); 
             }      
         }
     }
