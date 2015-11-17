@@ -1,6 +1,6 @@
 #!/bin/bash
 
-head -n 2 configforveryshort5.cfg>tmp.cfg
+head -n 2 config.cfg>tmp.cfg
 source tmp.cfg
 arr=$(echo $FILENAMES | tr "," "\n")
 echo ${arr[*]}
