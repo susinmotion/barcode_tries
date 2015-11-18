@@ -60,23 +60,38 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
     vector <string> TARGET=userDefinedVariables["TARGET"];
     vector <string> PHASE_SHIFTS=userDefinedVariables["PHASE_SHIFTS_REV_TO_FORWARD"];
     const vector <string> FILENAMES =userDefinedVariables["FILENAMES"];
-    
-    map <int, int> PHASE_MAP;
-    for (int i=0; i<PHASE_SHIFTS.size(); ++i){
-        int key =atoi((PHASE_SHIFTS[i].substr(0, PHASE_SHIFTS[i].find(":"))).c_str());
-        int value=atoi((PHASE_SHIFTS[i].substr(PHASE_SHIFTS[i].find(":")+1,PHASE_SHIFTS[i].length())).c_str());
-        PHASE_MAP.insert(make_pair(key, value));
+    vector <int> TARGET_LENGTHS;
+
+    for (int i=0; i<TARGET.size(); ++i){
+        TARGET_LENGTHS.push_back(TARGET[i].length());
     }
+    
     
     int numberOfROIs=FORWARD_ALIGN_SEQ.size();
     int numberOfPhases=atoi(userDefinedVariables["MAX_PHASE"][0].c_str() )+1;
+
+    map<int, int> empty_map;
+    vector <map <int, int> > PHASE_MAPS=vector <map <int, int> >(numberOfROIs, empty_map);
+    string keyvalue;
+    for (int i=0; i<PHASE_SHIFTS.size(); ++i){
+        stringstream ss(PHASE_SHIFTS[i]);
+        while (getline (ss, keyvalue, '|')){
+            cout<<keyvalue<<endl;
+            int key =atoi((keyvalue.substr(0, keyvalue.find(":"))).c_str());
+            cout<<key<<endl;
+            int value=atoi((keyvalue.substr(keyvalue.find(":")+1,keyvalue.length())).c_str());
+            cout<<value<<endl;
+            PHASE_MAPS[i].insert(make_pair(key, value));
+        }
+
+    }
 
     for (int i=0; i<numberOfROIs; ++i){
         FORWARD_ALIGN_SEQ.push_back(reverseComplement(FORWARD_ALIGN_SEQ[i]));
         REVERSE_ALIGN_SEQ.push_back(reverseComplement(REVERSE_ALIGN_SEQ[i]));
     }
     Trie* trie = new Trie;
-    trie->setThresholdROIPhaseGenesBarcodelen( atoi (userDefinedVariables["THRESHOLD_OF_IMPORTANCE"].at(0).c_str()), numberOfROIs, numberOfPhases, GENES, BARCODE_LENGTH);
+    trie->setThresholdROIPhaseGenesBarcodelenTargetlen( atoi (userDefinedVariables["THRESHOLD_OF_IMPORTANCE"].at(0).c_str()), numberOfROIs, numberOfPhases, GENES, BARCODE_LENGTH, TARGET_LENGTHS);
     
    // for (int i=0; i<FILENAMES.size(); ++i){
       //  ifstream readfile (FILENAMES[i].c_str());
@@ -116,8 +131,8 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
                 if ((indexForwardAlign != -1) && (indexReverseAlign != -1) ){
                     barcode= reverseComplement(sequence.substr(indexForwardAlign+FORWARD_ALIGN_SEQ[i].length(), BARCODE_LENGTH));
                     int rawphase= indexReverseAlign;
-                    map <int, int>::iterator it=PHASE_MAP.find(rawphase);
-                    if (it == PHASE_MAP.end()){
+                    map <int, int>::iterator it=PHASE_MAPS[i].find(rawphase);
+                    if (it == PHASE_MAPS[i].end()){
                         phase = rawphase;
                     }
                     else{
