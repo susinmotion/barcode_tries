@@ -54,11 +54,12 @@ void Trie::addBarcode(int ROINumber, int phase, string barcode, string sequence,
     }
 }
 
-void Trie::setThresholdROIPhaseGenesBarcodelen(int threshold, int numberOfROIs, int numberOfPhases, vector<string>genes, int barcodeLength){
+void Trie::setThresholdROIPhaseGenesBarcodelenTargetlen(int threshold, int numberOfROIs, int numberOfPhases, vector<string>genes, int barcodeLength, vector <int> targetLength){
     mThresholdOfImportance=threshold;
     mNumberOfROIs= numberOfROIs;
     mNumberOfPhases = numberOfPhases;
     mGenes = genes;
+    mTargetLength= targetLength;
     set <Node*> empty_set;
     mImportantNodes=vector <vector <set <Node*> > >(mNumberOfROIs, vector<set<Node* > >(mNumberOfPhases, empty_set));
     mBarcodeLength=barcodeLength;
@@ -169,7 +170,7 @@ if (currentData!=NULL && !currentData->isTrash() && mImportantNodes[i][j].find(p
 }
 
 
-void Trie::printVariants(int targetLength){
+void Trie::printVariants(){
     cout<<"printing trie "<<endl;
     for (int i=0; i<mNumberOfROIs; ++i){
         for (int j=0; j<mNumberOfPhases; ++j){
@@ -186,7 +187,7 @@ void Trie::printVariants(int targetLength){
                 outfile<<"ROI: "<<mGenes[i]<<endl<<"Phase: "<<j<<endl<<"Total nodes checked: "<< mNodesChecked[i][j]<<endl<<"Total variants found: "<<mVariantsCount[i][j]<<endl;
                 map<int,int>::iterator it1;
                 for (int l=0; l<5; ++l){//go through each base
-                    for (int k = 0; k<targetLength; ++k){
+                    for (int k = 0; k<mTargetLength[i]; ++k){
                         it1=mSubstitutions[i][j].find(k*5+l);
                         if (it1 == mSubstitutions[i][j].end()){
                             matrixOutfile<<left<<setw(15)<<setfill(' ')<<"0";   
