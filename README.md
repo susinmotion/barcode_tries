@@ -53,9 +53,9 @@ Three sets of files will be output:
 * [GENE]_[PHASE].txt, for each gene/phase combination
 * [GENE]_[PHASE]matrix.txt, for each gene/phase combination
 
-*summary_IMPORTANT.txt*includes a list of all barcodes that met the threshold of importance, any variants found, and the number of times they were encountered for each phase/gene combination.
+**summary_IMPORTANT.txt** includes a list of all barcodes that met the threshold of importance, any variants found, and the number of times they were encountered for each phase/gene combination.
 
-*[GENE]_[PHASE].txt files* contain the name of the gene, the phase number, the number of barcodes with sufficient reads in this ROI/phase (this threshold is user set in "config.cfg"), the total number of variants found, and a list of variants.
+**[GENE]_[PHASE].txt files** contain the name of the gene, the phase number, the number of barcodes with sufficient reads in this ROI/phase (this threshold is user set in "config.cfg"), the total number of variants found, and a list of variants.
 Substitutions are noted Position Base TimesFound
 Indels are noted Position Length TimesFound. A negative length indicates a deletion; a positive length indicates an insertion.
 
@@ -74,4 +74,4 @@ Total variants found: 4
 2 G 46 denotes that the third base (position 2, starting at 0) was replaced by G 46 times in the sample.
 2 -5 50 denotes that a deletion of 5 base pairs starting at the 3rd base (position 2) was found 50 times in the sample. 
 
-*[GENE]_[PHASE]matrix.txt files* contain 5 rows and n columns, where n is the length of the target sequence. Each row indicates a base (A,C,G,T,N) and each column indicates a position in the target sequence, so a row/column pair represents a particular substitution. Numbers in each position in the matrix represent the proportion (of the total number of substitutions for that gene/phase combo) that that substitution was found.
+**[GENE]_[PHASE]matrix.txt files** contain 5 rows and n columns, where n is the length of the target sequence. Each row indicates a base (A,C,G,T,N) and each column indicates a position in the target sequence, so a row/column pair represents a particular substitution. Numbers in each position in the matrix represent the proportion (of the total number of substitutions for that gene/phase combo) that that substitution was found.
