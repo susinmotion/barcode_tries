@@ -127,7 +127,7 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
                     int rawphase= indexReverseAlign;
                     ROINumber = i%numberOfROIs;
                     map <int, int>::iterator it=PHASE_MAPS[ROINumber].find(rawphase);
-                    if (it == PHASE_MAPS[i].end()){
+                    if (it == PHASE_MAPS[ROINumber].end()){
                         phase = rawphase;
                     }
                     else{
