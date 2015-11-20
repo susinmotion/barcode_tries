@@ -76,16 +76,12 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
     for (int i=0; i<PHASE_SHIFTS.size(); ++i){
         stringstream ss(PHASE_SHIFTS[i]);
         while (getline (ss, keyvalue, '|')){
-            cout<<keyvalue<<endl;
             int key =atoi((keyvalue.substr(0, keyvalue.find(":"))).c_str());
-            cout<<key<<endl;
             int value=atoi((keyvalue.substr(keyvalue.find(":")+1,keyvalue.length())).c_str());
-            cout<<value<<endl;
             PHASE_MAPS[i].insert(make_pair(key, value));
         }
 
     }
-
     for (int i=0; i<numberOfROIs; ++i){
         FORWARD_ALIGN_SEQ.push_back(reverseComplement(FORWARD_ALIGN_SEQ[i]));
         REVERSE_ALIGN_SEQ.push_back(reverseComplement(REVERSE_ALIGN_SEQ[i]));
@@ -111,11 +107,9 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
         for (int i=0; i<numberOfROIs; ++i){
             indexForwardAlign=sequence.find(FORWARD_ALIGN_SEQ[i],BARCODE_LENGTH);//find forward and reverse alignment sequences
             indexReverseAlign=sequence.find(REVERSE_ALIGN_SEQ[i],BARCODE_LENGTH+FORWARD_ALIGN_SEQ[i].length());
-
             if ((indexForwardAlign != -1) && (indexReverseAlign != -1) ){//if align.seq found, add read to trie
                 barcode=sequence.substr(indexForwardAlign-BARCODE_LENGTH, BARCODE_LENGTH);//extract barcode and read from full sequence
                 phase = indexForwardAlign-BARCODE_LENGTH;   
-            
                 if (phase>=numberOfPhases){break;}
                 sequence=sequence.substr(indexForwardAlign+FORWARD_ALIGN_SEQ[i].length(), indexReverseAlign-indexForwardAlign-FORWARD_ALIGN_SEQ[i].length());//maybe rename this variable at some point
                 ROINumber= i;
@@ -131,17 +125,16 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
                 if ((indexForwardAlign != -1) && (indexReverseAlign != -1) ){
                     barcode= reverseComplement(sequence.substr(indexForwardAlign+FORWARD_ALIGN_SEQ[i].length(), BARCODE_LENGTH));
                     int rawphase= indexReverseAlign;
-                    map <int, int>::iterator it=PHASE_MAPS[i].find(rawphase);
+                    ROINumber = i%numberOfROIs;
+                    map <int, int>::iterator it=PHASE_MAPS[ROINumber].find(rawphase);
                     if (it == PHASE_MAPS[i].end()){
                         phase = rawphase;
                     }
                     else{
                         phase= it->second;
-                        cout<<phase<<endl;
                     }                 
                     if (phase>=numberOfPhases){ break;}                           
                     sequence=reverseComplement(sequence.substr((indexReverseAlign+REVERSE_ALIGN_SEQ[i].length()), indexForwardAlign-indexReverseAlign-REVERSE_ALIGN_SEQ[i].length()));
-                    ROINumber = i%numberOfROIs;
                     trie->addBarcode(ROINumber, phase,barcode,sequence, TARGET[ROINumber]);
                     break;
                 }
