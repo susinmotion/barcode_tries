@@ -61,6 +61,11 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
     vector <string> PHASE_SHIFTS=userDefinedVariables["PHASE_SHIFTS_REV_TO_FORWARD"];
     const vector <string> FILENAMES =userDefinedVariables["FILENAMES"];
     vector <int> TARGET_LENGTHS;
+    vector <int> THRESHOLDS_OF_IMPORTANCE;
+
+    for (int i=0; i<userDefinedVariables["THRESHOLD_OF_IMPORTANCE"].size(); ++i){
+        THRESHOLDS_OF_IMPORTANCE.push_back(atoi(userDefinedVariables["THRESHOLD_OF_IMPORTANCE"][i].c_str()));
+    }
 
     for (int i=0; i<TARGET.size(); ++i){
         TARGET_LENGTHS.push_back(TARGET[i].length());
@@ -87,7 +92,7 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
         REVERSE_ALIGN_SEQ.push_back(reverseComplement(REVERSE_ALIGN_SEQ[i]));
     }
     Trie* trie = new Trie;
-    trie->setThresholdROIPhaseGenesBarcodelenTargetlen( atoi (userDefinedVariables["THRESHOLD_OF_IMPORTANCE"].at(0).c_str()), numberOfROIs, numberOfPhases, GENES, BARCODE_LENGTH, TARGET_LENGTHS);
+    trie->setThresholdROIPhaseGenesBarcodelenTargetlen( THRESHOLDS_OF_IMPORTANCE, numberOfROIs, numberOfPhases, GENES, BARCODE_LENGTH, TARGET_LENGTHS);
     
    // for (int i=0; i<FILENAMES.size(); ++i){
       //  ifstream readfile (FILENAMES[i].c_str());

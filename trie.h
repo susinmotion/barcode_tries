@@ -12,7 +12,7 @@ public:
     Trie(){ mRootPointer = new Node; }
     Node* pRootPointer();
     void addBarcode(int ROINumber, int phase, string barcode, string sequence="", string target="");
-    void setThresholdROIPhaseGenesBarcodelenTargetlen(int threshold, int numberOfROIs, int numberOfPhases, vector <string> genes, int barcodeLength, vector <int> targetLength);
+    void setThresholdROIPhaseGenesBarcodelenTargetlen(vector <int> threshold, int numberOfROIs, int numberOfPhases, vector <string> genes, int barcodeLength, vector <int> targetLength);
     vector< vector<set <Node*> > >importantNodes();
     void addImportantNode( Node* importantNodePointer, int ROINumber, int phase );
     void populateVariants();
@@ -21,14 +21,16 @@ public:
     void printTrie( Node* pCurrentNodePointer = NULL, string barcode= string(18,'\0'), int index=0 );
     int returnBarcodeCount(string barcode);
     int returnMaxCount( int& max, Node* pCurrentNode=NULL );
+    void printCounts();
 
 private:
     Node* mRootPointer;
-    int mThresholdOfImportance;
+    vector <int> mThresholdOfImportance;
     int mNumberOfROIs;
     int mNumberOfPhases;
     int mBarcodeLength;
-    vector <int> mTargetLength;
+    vector< int > mTargetLength;
+    vector< int > mCounts;
     vector< vector <set <Node*> > >mImportantNodes;
     vector< vector <map<pair<int, int>, int> > >mIndels;
     vector< vector <int> > mVariantsCount;
