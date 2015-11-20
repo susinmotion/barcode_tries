@@ -3,7 +3,7 @@
 #include <map>
 #include "node.h"
 #include <string>
-#include <stack>
+#include <set>
 #include <vector>
 using namespace std;
 
@@ -12,14 +12,15 @@ public:
     Trie(){ mRootPointer = new Node; }
     Node* pRootPointer();
     void addBarcode(int ROINumber, int phase, string barcode, string sequence="", string target="");
-    void setThresholdROIPhaseGenesBarcodelen(int threshold, int numberOfROIs, int numberOfPhases, vector <string> genes, int barcodeLength);
-    vector< vector<stack <Node*> > >importantNodes();
-    void addImportantNode(Node* importantNodePointer, int ROINumber, int phase);
+    void setThresholdROIPhaseGenesBarcodelenTargetlen(int threshold, int numberOfROIs, int numberOfPhases, vector <string> genes, int barcodeLength, vector <int> targetLength);
+    vector< vector<set <Node*> > >importantNodes();
+    void addImportantNode( Node* importantNodePointer, int ROINumber, int phase );
     void populateVariants();
-    void printVariants(int targetLength);
-    void printTrie(Node* pCurrentNodePointer = NULL, string barcode= string(18,'\0'), int index=0);
+    void printVariants();
+    void printTrieImportantOnly( Node* pCurrentNode=NULL, string barcode=string(18, '\0'), int index=0 );
+    void printTrie( Node* pCurrentNodePointer = NULL, string barcode= string(18,'\0'), int index=0 );
     int returnBarcodeCount(string barcode);
-    int returnMaxCount(int& max, Node* pCurrentNode=NULL );
+    int returnMaxCount( int& max, Node* pCurrentNode=NULL );
 
 private:
     Node* mRootPointer;
@@ -27,7 +28,8 @@ private:
     int mNumberOfROIs;
     int mNumberOfPhases;
     int mBarcodeLength;
-    vector< vector <stack <Node*> > >mImportantNodes;
+    vector <int> mTargetLength;
+    vector< vector <set <Node*> > >mImportantNodes;
     vector< vector <map<pair<int, int>, int> > >mIndels;
     vector< vector <int> > mVariantsCount;
     vector< vector <int> > mSubstitutionsCount;
