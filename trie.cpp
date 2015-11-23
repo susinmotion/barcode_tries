@@ -51,16 +51,24 @@ void Trie::addBarcode(int ROINumber, int phase, string barcode, string sequence,
                 addImportantNode(pCurrentNode, ROINumber, phase);
             }
             if (pCurrentNode->leafData()[ROINumber][phase]->count()>=mThresholdOfImportance[0] && pCurrentNode->leafData()[ROINumber][phase]->count()<=200){
-                mCounts[pCurrentNode->leafData()[ROINumber][phase]->count()]++;
+                mCounts[ROINumber][phase][pCurrentNode->leafData()[ROINumber][phase]->count()]++;
             }
         }
     }
 }
 
 void Trie::printCounts(){
-    for (int i=2; i<mCounts.size()-1; ++i){
-        if (mCounts[i+1]>0){
-            cout<<mCounts[i+1]-mCounts[i]<<" nodes were found "<<i+1<<" times"<<endl;
+    ofstream outfile;
+    outfile.open("counts.txt");
+    for (int i=0; i<mNumberOfROIs; ++i){
+        outfile<<"ROI "<<mGenes[i]<<endl;
+        for (int j=0; j<mNumberOfPhases; ++j){
+            outfile<<" phase "<<j<<":"<<endl;
+            for (int k=2; k<mCounts[i][j].size()-1; ++k){
+                if (mCounts[i][j][k+1]>0){
+                    outfile<<"  "<<mCounts[i][j][k+1]-mCounts[i][j][k]<<" nodes were found "<<k+1<<" times"<<endl;
+                }
+            }
         }
     }
 }
@@ -74,7 +82,7 @@ void Trie::setThresholdROIPhaseGenesBarcodelenTargetlen(vector <int> threshold, 
     set <Node*> empty_set;
     mImportantNodes=vector <vector <set <Node*> > >(mNumberOfROIs, vector<set<Node* > >(mNumberOfPhases, empty_set));
     mBarcodeLength=barcodeLength;
-    mCounts=vector<int>(200,0);
+    mCounts=vector< vector <vector<int> > >(mNumberOfROIs, vector< vector <int> >(mNumberOfPhases,vector <int>(200,0)));
 }
 
 vector< vector< set <Node*> > >Trie::importantNodes(){
