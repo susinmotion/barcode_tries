@@ -17,8 +17,7 @@ int main(){  //file config.cfg contains a list of config files
     
 
     //trie->printTrieImportantOnly();
-    trie->populateVariants();
-    trie->printVariants(); 
+    trie->populateAndPrintVariants();
     trie->printCounts();       
    // trie->printTrie();
 

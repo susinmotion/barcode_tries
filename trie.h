@@ -15,17 +15,18 @@ public:
     void setThresholdROIPhaseGenesBarcodelenTargetlen(vector <int> threshold, int numberOfROIs, int numberOfPhases, vector <string> genes, int barcodeLength, vector <int> targetLength);
     vector< vector<set <Node*> > >importantNodes();
     void addImportantNode( Node* importantNodePointer, int ROINumber, int phase );
-    void populateVariants();
-    void printVariants();
+    void populateVariants(int threshold);
+    void printVariants(int threshold);
     void printTrieImportantOnly( Node* pCurrentNode=NULL, string barcode=string(18, '\0'), int index=0 );
     void printTrie( Node* pCurrentNodePointer = NULL, string barcode= string(18,'\0'), int index=0 );
     int returnBarcodeCount(string barcode);
     int returnMaxCount( int& max, Node* pCurrentNode=NULL );
     void printCounts();
+    void populateAndPrintVariants();
 
 private:
     Node* mRootPointer;
-    vector <int> mThresholdOfImportance;
+    vector <int> mThresholdsOfImportance;
     int mNumberOfROIs;
     int mNumberOfPhases;
     int mBarcodeLength;
