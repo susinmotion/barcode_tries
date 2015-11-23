@@ -30,7 +30,7 @@ private:
     int mNumberOfPhases;
     int mBarcodeLength;
     vector< int > mTargetLength;
-    vector< int > mCounts;
+    vector< vector <vector< int > > >mCounts;
     vector< vector <set <Node*> > >mImportantNodes;
     vector< vector <map<pair<int, int>, int> > >mIndels;
     vector< vector <int> > mVariantsCount;
