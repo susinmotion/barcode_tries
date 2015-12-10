@@ -2,24 +2,24 @@
 This software takes in barcoded fastq files and outputs the number of reads reflecting each varaint.
 
 ##TO USE:
-Download the file and unarchive as you choose. 
+Download the file and unarchive as you choose. All contents can be found at github.com/susinmotion/barcode_tries. An easy-to-read version of this document can also be found at that URL.
 
 ##SETTING CONGIFURATIONS:
 Open config.cfg in the text editor of your choice. Edit the existing text to reflect the names of genes of interest, barcode length, target sequences, etc. Use a comma (,-no spaces) to separate multiple entries for a given variable. Note the equals sign after ZIPPED and FILENAMES--do not delete it.
 A detailed description of the configuration variables follows in "Config File Details."
 
 ##RUNNING THE PROGRAM:
-In your terminal (cmd for windows), type make and press enter.
-If this does not yield errors, you're good to go.
-Type ./shell.sh & and press enter.
+In your terminal (cmd for windows), type `make` and press enter.<br>
+If this does not yield errors, you're good to go.<br>
+Type ./shell.sh & and press enter.<br>
 The process could take between 15 minutes and 12 hours, depending on the memory of your computer and the size of the files.
 
 ##RESULTS:
 An output file will be created for each ROI(Gene) and Phase listed, named [GENE]_[PHASE].txt and including a list of variants and counts for a given ROI/Phase.
-In addition, users can opt to output a file named "summary.txt" containing variants for each barcode for all ROI/phase combinations by setting OUTPUT_SUMMARY_FILE TRUE in the config file.
+~~In addition, users can opt to output a file named "summary.txt" containing variants for each barcode for all ROI/phase combinations by setting OUTPUT_SUMMARY_FILE TRUE in the config file. This file is HUGE and will take up valuable memory. Setting this parameter is not recommended.~~
 
 ##UNDERSTANDING THE CONFIG FILE:
-Below is an explanation of each of the variables in config.cfg. Multiple parameters are comma delimited (first_parameter,second_parameter)--no white space--and should be listed in a consistent order across parameters.
+Below is an explanation of each of the variables in config.cfg. Multiple parameters are comma delimited (first_parameter,second_parameter)--no white space--and should be listed in a consistent order across parameters. If multiple ROIs share the same parameters, they still must be listed twice. For example, for two ROIs with a forward alignment sequence of AAA `FORWARD_ALIGN_SEQ AAA,AAA`<br>
 
 `ZIPPED=yes`<br>
 Type yes (all lower case) if input files are zipped, no if they are not zipped.
@@ -36,7 +36,7 @@ Length of a barcode
 `FORWARD_ALIGN_SEQ GTTCTTCGG,AGCTTTA`<br>
 `REVERSE_ALIGN_SEQ GGGGG,TACT`<br>
 `TARGET AAAA,TGACTTAG`<br>
-Forward and reverse align sequences, and target sequences, corresponding to the gene names. The program handles reverse complements, so no need to list these separately. Target sequences should not include the alignment sequences. 
+Forward and reverse align sequences, and target sequences, corresponding to the gene names. The program handles reverse complements, so no need to list these separately. Targets should not include the alignment sequences. 
 
 `THRESHOLD_OF_IMPORTANCE 3`<br>
 How many reads constitutes a trial. Reads that don't meet this threshold will be excluded from analyses. 
@@ -49,11 +49,11 @@ If the phases from reverse complement reads do not correspond directly to those 
 
 ##UNDERSTANDING YOUR RESULTS:
 Three sets of files will be output:
-* summary_IMPORTANT.txt
+~~* summary_IMPORTANT.txt~~
 * [GENE]_[PHASE].txt, for each gene/phase combination
 * [GENE]_[PHASE]matrix.txt, for each gene/phase combination
 
-**summary_IMPORTANT.txt** includes a list of all barcodes that met the threshold of importance, any variants found, and the number of times they were encountered for each phase/gene combination.
+~~**summary_IMPORTANT.txt** includes a list of all barcodes that met the threshold of importance, any variants found, and the number of times they were encountered for each phase/gene combination.~~
 
 **[GENE]_[PHASE].txt files** contain the name of the gene, the phase number, the number of barcodes with sufficient reads in this ROI/phase (this threshold is user set in "config.cfg"), the total number of variants found, and a list of variants.
 Substitutions are noted Position Base TimesFound
@@ -74,4 +74,4 @@ Total variants found: 4
 2 G 46 denotes that the third base (position 2, starting at 0) was replaced by G 46 times in the sample.
 2 -5 50 denotes that a deletion of 5 base pairs starting at the 3rd base (position 2) was found 50 times in the sample. 
 
-**[GENE]_[PHASE]matrix.txt files** contain 5 rows and n columns, where n is the length of the target sequence. Each row indicates a base (A,C,G,T,N) and each column indicates a position in the target sequence, so a row/column pair represents a particular substitution. Numbers in each position in the matrix represent the proportion (of the total number of substitutions for that gene/phase combo) that that substitution was found.
+**[GENE]_[PHASE]matrix.txt files** contain 5 rows and n columns, where n is the length of the target sequence. Each row indicates a base (A,C,G,T,N) and each column indicates a position in the the target sequence, so a row/column pair represents a particular substitution. Numbers in each position in the matrix represent the proportion (of the total number of substitutions for that gene/phase combo) that that substitution was found.
