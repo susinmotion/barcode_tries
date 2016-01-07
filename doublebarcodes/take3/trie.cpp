@@ -11,13 +11,14 @@
 #include <typeinfo>
 #include <iomanip>
 #include <set>
+#include <map>
 using namespace std;
 
 Node* Trie::pRootPointer(){
     return mRootPointer;
 }
 
-void Trie::addBarcode(int ROINumber, int phase, string barcode, string sequence, string target){
+void Trie::addBarcode(int ROINumber, int phase, string barcode, string barcode2, string sequence, string target){
     Node* pCurrentNode = mRootPointer;
     if (barcode.find('N') != -1){ return;}
     if ( barcode.length() == 0 ){
@@ -46,7 +47,7 @@ void Trie::addBarcode(int ROINumber, int phase, string barcode, string sequence,
             }
             checkVariants(sequence, target, pCurrentData);
             pCurrentData->setCount();
-            pCurrentNode->setLeafData(ROINumber, phase, pCurrentData);
+            pCurrentNode->setLeafData(ROINumber, phase, barcode2, pCurrentData);
             if (pCurrentNode->leafData()[ROINumber][phase]->count()==mThresholdsOfImportance[0]){//if there are enough reads, add pointer to list of important nodes for output later
                 addImportantNode(pCurrentNode, ROINumber, phase);
             }
@@ -78,10 +79,12 @@ void Trie::setThresholdROIPhaseGenesBarcodelenTargetlen(vector <int> threshold, 
     mNumberOfROIs= numberOfROIs;
     mNumberOfPhases = numberOfPhases;
     mGenes = genes;
+cout<<genes[0]<<endl;
     mTargetLength= targetLength;
     set <Node*> empty_set;
     mImportantNodes=vector <vector <set <Node*> > >(mNumberOfROIs, vector<set<Node* > >(mNumberOfPhases, empty_set));
     mBarcodeLength=barcodeLength;
+    map <string, int> emptyMap;
     mCounts=vector< vector <vector<int> > >(mNumberOfROIs, vector< vector <int> >(mNumberOfPhases,vector <int>(200,0)));
 }
 
@@ -173,7 +176,7 @@ void Trie::printTrieImportantOnly(Node* pCurrentNode, string barcode, int index)
                 LeafData* currentData= pCurrentNode->leafData()[i][j];
                 if (currentData!=NULL && !currentData->isTrash() && mImportantNodes[i][j].find(pCurrentNode)!=mImportantNodes[i][j].end() ){
                     summaryFile<<barcode<<" "<<mGenes[i]<<" phase "<<j<<endl;
-                    summaryFile<<currentData->count()<<" reads"<<endl;
+                    /*summaryFile<<currentData->count()<<" reads"<<endl;
                     if (!currentData->substitutions().empty()){
                         for (int q=0; q<currentData->substitutions().size(); ++q){
                             summaryFile<<" "<<unhashSubstitutions(currentData->substitutions()[q]).first<<" "<< unhashSubstitutions(currentData->substitutions()[q]).second<<endl;
@@ -183,11 +186,17 @@ void Trie::printTrieImportantOnly(Node* pCurrentNode, string barcode, int index)
                     if (currentData->hasIndel()){                   
                         summaryFile<<currentData->indel().first<<" "<<currentData->indel().second<<endl;
 }
-                }
-            }
-        summaryFile.close();
-       }
+                }*/
+ 		    for (int k=0; k<currentData->secondBarcodes().size(); ++k){
+		    	summaryFile<<currentData->secondBarcodes()[k]<<" "<<currentData->secondBarcodeCounts()[k]<<endl;			
+	
+	   	    }	
+            	}
+	
+	    }
 
+	    summaryFile.close();
+	}       
        return;
     }
 }
@@ -203,26 +212,27 @@ void Trie::printVariants(int threshold){
                 ostringstream os2;
                 os2<<threshold;
                 string filename= mGenes[i]+"_"+os.str()+"_thresh"+os2.str()+".txt";
-                string matrixFilename = mGenes[i]+"_"+os.str()+"_thresh"+os2.str()+"_matrix.txt";
+                string doubleBarcodefilename = mGenes[i]+"_"+os.str()+"_thresh"+os2.str()+"_barcodes.txt";
                 ofstream outfile;
-                ofstream matrixOutfile;
+                ofstream doubleBarcodefile;
                 outfile.open (filename.c_str());
-                matrixOutfile.open (matrixFilename.c_str());
-
+		doubleBarcodefile.open(doubleBarcodefilename.c_str());
+                //matrixOutfile.open (matrixFilename.c_str());
+		
                 outfile<<"ROI: "<<mGenes[i]<<endl<<"Phase: "<<j<<endl<<"Total nodes checked: "<< mNodesChecked[i][j]<<endl<<"Total variants found: "<<mVariantsCount[i][j]<<endl;
-                map<int,int>::iterator it1;
-                for (int l=0; l<5; ++l){//go through each base
-                    for (int k = 0; k<mTargetLength[i]; ++k){
-                        it1=mSubstitutions[i][j].find(k*5+l);
-                        if (it1 == mSubstitutions[i][j].end()){
-                            matrixOutfile<<left<<setw(15)<<setfill(' ')<<"0";   
-                        }
-                        else {
-                            matrixOutfile<<left<<setw(15)<<setfill(' ')<<it1->second/(float)mSubstitutionsCount[i][j];
-                        }
-                    }
-                    matrixOutfile<<endl;
-                }
+               // map<int,int>::iterator it1;
+               // for (int l=0; l<5; ++l){//go through each base
+                    //for (int k = 0; k<mTargetLength[i]; ++k){
+                      //  it1=mSubstitutions[i][j].find(k*5+l);
+                        //if (it1 == mSubstitutions[i][j].end()){
+                          //  matrixOutfile<<left<<setw(15)<<setfill(' ')<<"0";   
+                       // }
+                        //else {
+                          //  matrixOutfile<<left<<setw(15)<<setfill(' ')<<it1->second/(float)mSubstitutionsCount[i][j];
+                       // }
+                    //}
+                   // matrixOutfile<<endl;
+                //}
                 for (map <int, int>::const_iterator it=mSubstitutions[i][j].begin(); it != mSubstitutions[i][j].end(); ++it){
                     outfile<<unhashSubstitutions(it->first).first<<" "<<unhashSubstitutions(it->first).second<<" "<< it->second << endl;
                 }

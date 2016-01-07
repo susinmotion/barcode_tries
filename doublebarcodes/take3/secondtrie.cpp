@@ -12,13 +12,14 @@ int main(){  //file config.cfg contains a list of config files
     clock_t begin = clock();
     cout<<"start"<<endl;
     
-    Trie* trie = readFileIntoTrie("configforveryshort5.cfg");
+    Trie* trie = readFileIntoTrie("config.cfg");
     cout <<"read file"<<endl;  
     
 
-    //trie->printTrieImportantOnly();
-    trie->populateAndPrintVariants();
-    trie->printCounts();       
+    trie->printTrieImportantOnly();
+cout<<"done printing"<<endl;
+    //trie->populateAndPrintVariants();
+    //trie->printCounts();       
    // trie->printTrie();
 
     //int max=0; //is there a better way to do this max situation?
