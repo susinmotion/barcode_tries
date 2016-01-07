@@ -1,0 +1,39 @@
+ROI: mrcA
+Phase: 9
+Total nodes checked: 115
+Total variants found: 83
+1 N 1
+8 N 1
+10 N 3
+13 N 1
+15 N 1
+16 N 3
+20 N 1
+21 N 4
+22 N 1
+24 N 1
+28 N 3
+33 N 2
+34 N 19
+36 N 1
+38 N 4
+39 N 1
+43 N 3
+48 N 1
+49 N 2
+51 N 1
+52 N 2
+55 N 1
+56 N 1
+58 N 1
+59 N 6
+60 N 6
+62 N 2
+66 N 1
+68 N 2
+70 N 1
+73 N 2
+78 N 1
+82 N 1
+83 N 1
+84 N 1
