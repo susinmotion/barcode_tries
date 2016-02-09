@@ -40,7 +40,8 @@ Length of a barcode
 Forward and reverse align sequences, and target sequences, corresponding to the gene names. The program handles reverse complements, so no need to list these separately. Targets should not include the alignment sequences. 
 
 `THRESHOLD_OF_IMPORTANCE 3`<br>
-How many reads constitutes a trial. Reads that don't meet this threshold will be excluded from analyses. 
+How many reads of the same barcode constitutes a trial. Reads that don't meet this threshold will be excluded from analyses. The recommended lower limit for this value is 3.
+
 
 `MAX_PHASE 5`<br>
 The greatest number of bases preceding the barcode. For example, if you have reads with 0, 2, 6, and 7 bases preceding the barcode, put 7 here.
