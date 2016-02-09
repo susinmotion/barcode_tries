@@ -1,0 +1,47 @@
+ROI: cspe
+Phase: 0
+Total nodes checked: 62
+Total variants found: 83
+2 N 1
+4 N 1
+9 N 1
+15 N 2
+16 N 1
+18 N 2
+22 N 8
+24 N 1
+25 N 2
+32 N 4
+33 N 2
+34 N 1
+35 N 1
+36 N 1
+39 N 3
+40 N 1
+43 N 2
+45 N 1
+46 N 1
+53 N 1
+54 N 1
+55 N 1
+56 N 2
+57 N 1
+59 N 1
+61 N 2
+66 N 2
+69 N 1
+72 N 2
+77 N 1
+80 N 2
+82 N 2
+83 N 1
+84 N 1
+85 N 1
+86 N 1
+87 N 2
+88 N 2
+89 N 2
+90 N 4
+91 N 4
+92 N 1
+93 N 9
