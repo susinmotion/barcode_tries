@@ -6,8 +6,7 @@ arr=$(echo $FILENAMES | tr "," "\n")
 echo ${arr[*]}
 
 
-
-if [ "$ZIPPED" = "True" ]
+if [ "$ZIPPED" = "yes" ]
 	then
 		gunzip -c ${arr[*]} | ./secondtrie
 
