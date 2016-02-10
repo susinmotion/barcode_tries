@@ -22,7 +22,7 @@ In addition, users can opt to output a file named "summary.txt" containing varia
 Below is an explanation of each of the variables in config.cfg. Multiple parameters are comma delimited (first_parameter,second_parameter)--no white space--and should be listed in a consistent order across parameters.
 
 `ZIPPED=yes`<br>
-Type yes (all lower case) if input files are zipped, no if they are not zipped.
+Type True (capital T) if input files are zipped, False if they are not zipped.
 
 `FILENAMES=example.tar.gz,example2.txt.gz`<br>
 List of input files. All files for a given run must either be zipped or unzipped. Each file must be zipped separately, but the program can tolerate a number of zipped formats. Note the equals sign following FILENAMES. Do not delete it! No white space.
@@ -39,7 +39,7 @@ Length of a barcode
 Forward and reverse align sequences, and target sequences, corresponding to the gene names. The program handles reverse complements, so no need to list these separately. Target sequences should not include the alignment sequences. 
 
 `THRESHOLD_OF_IMPORTANCE 3`<br>
-How many reads constitutes a trial. Reads that don't meet this threshold will be excluded from analyses. 
+How many reads of the same barcode constitutes a trial. Reads that don't meet this threshold will be excluded from analyses. The recommended lower limit for this value is three.
 
 `MAX_PHASE 5`<br>
 The greatest number of bases preceding the barcode. For example, if you have reads with 0, 2, 6, and 7 bases preceding the barcode, put 7 here.
