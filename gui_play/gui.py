@@ -1,5 +1,6 @@
 # MyApp.py
 import Tkinter as tk
+from ROI import ROI
 #from Tkinter import Label, Button, Frame, Entry, END
 # Extend the Frame class, to inherit
 # the mainloop function.
@@ -57,46 +58,6 @@ class MyApp(tk.Frame):
 		# Function called when the button
 		# is pressed.
 
-	def new_ROI_window(self):
-	    window = tk.Toplevel(self)
-	    window.forwardLabel=tk.Label(window, text="fwd. align sequence")
-	    window.forwardLabel.grid(row=1, column=0)
-	    window.forward=tk.Entry(window, fg="gray")
-	    window.forward.insert(tk.END, "eg. ACGTAA")
-	    window.forward.bind("<Button-1>", lambda event: self.remove_default_text(window.forward))
-	    window.forward.clicked=False
-	    #window.forward.pack(pady=(0,10))
-
-	    window.barcodelabel=tk.Label(window, text="sample barcode (for length)")
-	    window.barcodelabel.grid(row=1, column=1)
-	    window.barcode=tk.Entry(window, fg="gray")
-	    window.barcode.insert(tk.END, "eg. NNNNNN (length=5)")
-	    window.barcode.bind("<Button-1>", lambda event: self.remove_default_text(window.barcode))
-	    window.barcode.clicked=False
-	    #window.barcode.pack(pady=(0,10))
-
-	    window.targetlabel=tk.Label(window, text="target sequence")
-	    window.targetlabel.grid(row=1, column=2)
-	    window.target=tk.Entry(window, fg="gray")
-	    window.target.insert(tk.END, "eg. ACGGGGTATTACCCCTAGTATA")
-	    window.target.bind("<Button-1>", lambda event: self.remove_default_text(window.target))
-	    window.target.clicked=False
-	    window.target.grid(row=0, column=2, sticky=(tk.E, tk.W))
-
-	    window.reverselabel=tk.Label(window, text="rev. align sequence")
-	    window.reverselabel.grid(row=1, column=3)
-	    window.reverse=tk.Entry(window, fg="gray")
-	    window.reverse.insert(tk.END, "eg. CAGATTA")
-	    window.reverse.bind("<Button-1>", lambda event: self.remove_default_text(window.reverse))
-	    window.reverse.clicked=False
-	    window.reverse.grid(row=0, column=3, sticky=(tk.E, tk.W))
-
-	    window.forward.grid(row=0, column=0, sticky=(tk.E, tk.W))
-	    window.barcode.grid(row=0, column=1, sticky=(tk.E, tk.W))
-
-	    window.b = tk.Button(window,text = "Save ROI",command = self.saveROI(window))
-	    window.b.grid(row=2, column=0)
-
 	def save(self): 
 		with open("config","wb") as f:
 			f.write("ZIPPED="+str(self.zipped.get())+"\n")
@@ -115,16 +76,10 @@ class MyApp(tk.Frame):
 
 	def on_resize(self,event):
 		pass
-		
-	def saveROI(self,window):
-		print "HII"
-		#window.destroy()
 
-class ROI(tk.Frame):
-	def __init__(self, master):
-		tk.Frame.__init__(self, master)
-		self.pack()
-		self.submit=tk.Label(self, text="My button")
+	def new_ROI_window(self):
+		self.ROI=ROI(master=self)
+
 
 class ROIData():
 	def __init__(self, forward, barcode_length, reverse, target, phase_shifts):
