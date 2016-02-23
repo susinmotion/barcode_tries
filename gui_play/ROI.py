@@ -22,12 +22,8 @@ class ROI(tk.Toplevel):
 	    self.forward.clicked=False
 	    #self.forward.pack(pady=(0,10))
 
-	    self.barcodelabel=tk.Label(self, text="sample barcode (for length)")
-	    self.barcodelabel.grid(row=3, column=1)
-	    self.barcode=tk.Entry(self, fg="gray")
-	    self.barcode.insert(tk.END, "eg. NNNNNN (length=5)")
-	    self.barcode.bind("<Button-1>", lambda event: remove_default_text(self,self.barcode))
-	    self.barcode.clicked=False
+	    self.barcodelabel=tk.Label(self, text="Barcode")
+	    self.barcodelabel.grid(row=2, column=1)
 	    #self.barcode.pack(pady=(0,10))
 
 	    self.targetlabel=tk.Label(self, text="target sequence")
@@ -48,7 +44,7 @@ class ROI(tk.Toplevel):
 	    self.target.grid(row=2, column=2, sticky=(tk.E, tk.W))
 	    self.reverse.grid(row=2, column=3, sticky=(tk.E, tk.W))
 	    self.forward.grid(row=2, column=0, sticky=(tk.E, tk.W))
-	    self.barcode.grid(row=2, column=1, sticky=(tk.E, tk.W))
+	    #self.barcode.grid(row=2, column=1, sticky=(tk.E, tk.W))
 
 	    self.maxphase_label=tk.Label(self, text="max phase")
 	    self.maxphase_label.grid(row=4, column=1)
@@ -84,7 +80,7 @@ class ROI(tk.Toplevel):
 			self.temp_ph=tk.Entry(self, fg="black", width=5, justify=tk.LEFT)
 			self.rev_phase_objects.append(self.temp_ph )
 
-			self.ph_lab=tk.Label(self, text=(str(i)+"  ->"), anchor=tk.E)
+			self.ph_lab=tk.Label(self, text=(str(i)+"  <->"), anchor=tk.E)
 			self.ph_lab.grid(row=row, column=1)
 
 			self.rev_phase_objects[i].grid(row=row, column=2)
@@ -94,10 +90,9 @@ class ROI(tk.Toplevel):
 	def set_data(self):
 
 		rev_phases=[int(item.get()) for item in self.rev_phase_objects]
-		print rev_phases
-		return ROIData(gene=self.gene.get(),forward=self.forward.get(), reverse=self.reverse.get(), target=self.target.get(), barcode=self.barcode.get(), rev_phases=rev_phases) 
+		return ROIData(gene=self.gene.get(),forward=self.forward.get(), reverse=self.reverse.get(), target=self.target.get(), rev_phases=rev_phases) 
 
-	def saveROI(self):
+	def saveROI(self):                                                                    
 		incomplete=False
 		try:
 			self.data=self.set_data()
@@ -107,8 +102,6 @@ class ROI(tk.Toplevel):
 			return
 
 		for value in values:
-			print type(value)
-			print self.data.__dict__
 			if type(value)==str:
 				if value=="" or ("eg." in value):
 					self.show_incomplete()

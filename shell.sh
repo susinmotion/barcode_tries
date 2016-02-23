@@ -1,4 +1,5 @@
 #!/bin/bash
+python run.py
 
 head -n 2 config.cfg>tmp.cfg
 source tmp.cfg
