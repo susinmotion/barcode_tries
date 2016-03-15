@@ -114,8 +114,9 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
             indexReverseAlign=sequence.find(REVERSE_ALIGN_SEQ[i],BARCODE_LENGTH+FORWARD_ALIGN_SEQ[i].length());
             if ((indexForwardAlign != -1) && (indexReverseAlign != -1) ){//if align.seq found, add read to trie
                 barcode=sequence.substr(indexForwardAlign-BARCODE_LENGTH, BARCODE_LENGTH);//extract barcode and read from full sequence
-                phase = indexForwardAlign-BARCODE_LENGTH;
-		if (phase>=numberOfPhases){break;}
+                phase = indexForwardAlign-BARCODE_LENGTH;   
+                if (phase>=numberOfPhases){break;}
+
                 sequence=sequence.substr(indexForwardAlign+FORWARD_ALIGN_SEQ[i].length(), indexReverseAlign-indexForwardAlign-FORWARD_ALIGN_SEQ[i].length());//maybe rename this variable at some point
                 ROINumber= i;
                 trie->addBarcode(ROINumber, phase,barcode,sequence, TARGET[ROINumber]);
@@ -130,10 +131,11 @@ Trie* readFileIntoTrie(string filename){//set constants based on config file
                 if ((indexForwardAlign != -1) && (indexReverseAlign != -1) ){
                     barcode= reverseComplement(sequence.substr(indexForwardAlign+FORWARD_ALIGN_SEQ[i].length(), BARCODE_LENGTH));
                     int rawphase= indexReverseAlign;
-		    ROINumber = i%numberOfROIs;
+                    ROINumber = i%numberOfROIs;
                     map <int, int>::iterator it=PHASE_MAPS[ROINumber].find(rawphase);
                     if (it == PHASE_MAPS[ROINumber].end()){
-			phase = rawphase;
+                        phase = rawphase;
+
                     }
                     else{
                         phase= it->second;

@@ -2,6 +2,7 @@
 This software takes in barcoded fastq files and outputs the number of reads reflecting each varaint.
 
 ##TO USE:
+
 Download the file and unarchive as you choose. All contents can be found at github.com/susinmotion/barcode_tries. An easy-to-read version of this document can also be found at that URL.
 
 ##SETTING CONGIFURATIONS:
@@ -9,6 +10,7 @@ Open config.cfg in the text editor of your choice. Edit the existing text to ref
 A detailed description of the configuration variables follows in "Config File Details."
 
 ##RUNNING THE PROGRAM:
+
 In your terminal (cmd for windows), type `make` and press enter.<br>
 If this does not yield errors, you're good to go.<br>
 Type `./shell.sh >output.txt&` and press enter. <br>
@@ -23,10 +25,11 @@ An output file will be created for each ROI(Gene) and Phase listed, named [GENE]
 Below is an explanation of each of the variables in config.cfg. Multiple parameters are comma delimited (first_parameter,second_parameter)--no white space--and should be listed in a consistent order across parameters. If multiple ROIs share the same parameters, they still must be listed twice. For example, for two ROIs with a forward alignment sequence of AAA `FORWARD_ALIGN_SEQ AAA,AAA`<br>
 
 `ZIPPED=yes`<br>
-Type yes (all lower case) if input files are zipped, no if they are not zipped.
+Type True (capital T) if input files are zipped, False if they are not zipped.
+
 
 `FILENAMES=example.tar.gz,example2.txt.gz`<br>
-List of input files. All files for a given run must either be zipped or unzipped. Each file must be zipped separately, but the program can tolerate a number of zipped formats. Note the equals sign following FILENAMES. Do not delete it! No white space.
+List of input files. All files for a given run must either be zipped or unzipped. Each file must be zipped separately, but the program can tolerate a number of zipped formats. Note the equals sign following FILENAMES. Do not delete it! No white space. Special characters (| ' " ` , : ;) are not permitted in filenames.
 
 `GENES gene1,gene2`<br>
 Names of the genes of interest, used for labeling output files. 
@@ -37,6 +40,7 @@ Length of a barcode
 `FORWARD_ALIGN_SEQ GTTCTTCGG,AGCTTTA`<br>
 `REVERSE_ALIGN_SEQ GGGGG,TACT`<br>
 `TARGET AAAA,TGACTTAG`<br>
+
 Forward and reverse align sequences, and target sequences, corresponding to the gene names. The program handles reverse complements, so no need to list these separately. Targets should not include the alignment sequences. 
 
 `THRESHOLD_OF_IMPORTANCE 3`<br>
@@ -51,11 +55,13 @@ If the phases from reverse complement reads do not correspond directly to those 
 
 ##UNDERSTANDING YOUR RESULTS:
 Three sets of files will be output:
+
 ~~* summary_IMPORTANT.txt~~
 * [GENE]_[PHASE].txt, for each gene/phase combination
 * [GENE]_[PHASE]matrix.txt, for each gene/phase combination
 
 ~~**summary_IMPORTANT.txt** includes a list of all barcodes that met the threshold of importance, any variants found, and the number of times they were encountered for each phase/gene combination.~~
+
 
 **[GENE]_[PHASE].txt files** contain the name of the gene, the phase number, the number of barcodes with sufficient reads in this ROI/phase (this threshold is user set in "config.cfg"), the total number of variants found, and a list of variants.
 Substitutions are noted Position Base TimesFound
@@ -76,6 +82,5 @@ Total variants found: 4
 2 G 46 denotes that the third base (position 2, starting at 0) was replaced by G 46 times in the sample.
 2 -5 50 denotes that a deletion of 5 base pairs starting at the 3rd base (position 2) was found 50 times in the sample. 
 
-**[GENE]_[PHASE]matrix.txt files** contain 5 rows and n columns, where n is the length of the target sequence. Each row indicates a base (A,C,G,T,N) and each column indicates a position in the the target sequence, so a row/column pair represents a particular substitution. Numbers in each position in the matrix represent the proportion (of the total number of substitutions for that gene/phase combo) that that substitution was found.
-
+**[GENE]_[PHASE]matrix.txt files** contain 5 rows and n columns, where n is the length of the target sequence. Each row indicates a base (A,C,G,T,N) and each column indicates a position in the target sequence, so a row/column pair represents a particular substitution. Numbers in each position in the matrix represent the proportion (of the total number of substitutions for that gene/phase combo) that that substitution was found.
 

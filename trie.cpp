@@ -78,7 +78,6 @@ void Trie::setThresholdROIPhaseGenesBarcodelenTargetlen(vector <int> threshold, 
     mNumberOfROIs= numberOfROIs;
     mNumberOfPhases = numberOfPhases;
     mGenes = genes;
-cout<<genes[0]<<endl;
     mTargetLength= targetLength;
     set <Node*> empty_set;
     mImportantNodes=vector <vector <set <Node*> > >(mNumberOfROIs, vector<set<Node* > >(mNumberOfPhases, empty_set));
