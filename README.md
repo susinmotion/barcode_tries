@@ -24,7 +24,7 @@ An output file will be created for each ROI(Gene) and Phase listed, named [GENE]
 ##UNDERSTANDING THE CONFIG FILE:
 Below is an explanation of each of the variables in config.cfg. Multiple parameters are comma delimited (first_parameter,second_parameter)--no white space--and should be listed in a consistent order across parameters. If multiple ROIs share the same parameters, they still must be listed twice. For example, for two ROIs with a forward alignment sequence of AAA `FORWARD_ALIGN_SEQ AAA,AAA`<br>
 
-`ZIPPED=yes`<br>
+`ZIPPED=True`<br>
 Type True (capital T) if input files are zipped, False if they are not zipped.
 
 
