@@ -50,26 +50,36 @@ void Trie::addBarcode(int ROINumber, int phase, string barcode, string sequence,
             if (pCurrentNode->leafData()[ROINumber][phase]->count()==mThresholdsOfImportance[0]){//if there are enough reads, add pointer to list of important nodes for output later
                 addImportantNode(pCurrentNode, ROINumber, phase);
             }
-            if (pCurrentNode->leafData()[ROINumber][phase]->count()>=mThresholdsOfImportance[0] && pCurrentNode->leafData()[ROINumber][phase]->count()<=200){
+            //if (pCurrentNode->leafData()[ROINumber][phase]->count()>=mThresholdsOfImportance[0] && pCurrentNode->leafData()[ROINumber][phase]->count()<=200){
                 mCounts[ROINumber][phase][pCurrentNode->leafData()[ROINumber][phase]->count()]++;
-            }
+            //}
         }
     }
 }
 
 void Trie::printCounts(){
-    ofstream outfile;
-    outfile.open("counts.txt");
+    ofstream outfile2;
+    outfile2.open("total_counts.txt");
+    int counts [mNumberOfROIs];
     for (int i=0; i<mNumberOfROIs; ++i){
-        outfile<<"ROI "<<mGenes[i]<<endl;
+	ofstream outfile;
+	string outfilename="counts_"+mGenes[i]+".txt";
+        outfile.open(outfilename.c_str());
+	counts[i]=0;
+	outfile<<"ROI "<<mGenes[i]<<endl;
+	outfile2<<"ROI "<<mGenes[i]<<" ";
+	cout<<"ROI "<<mGenes[i]<<endl;
         for (int j=0; j<mNumberOfPhases; ++j){
             outfile<<" phase "<<j<<":"<<endl;
-            for (int k=2; k<mCounts[i][j].size()-1; ++k){
-                if (mCounts[i][j][k+1]>0){
-                    outfile<<"  "<<mCounts[i][j][k+1]-mCounts[i][j][k]<<" nodes were found "<<k+1<<" times"<<endl;
-                }
+            counts[i]=counts[i]+mCounts[i][j][1];
+	    for (int k=0; k<mCounts[i][j].size()-1; ++k){
+		if (mCounts[i][j][k]-mCounts[i][j][k+1]>0){
+		     outfile<<"  "<<mCounts[i][j][k]-mCounts[i][j][k+1]<<" nodes were found exactly "<<k<<" times"<<endl;
+		}
             }
         }
+	outfile2<<counts[i]<<endl;
+
     }
 }
 
